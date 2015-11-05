@@ -9,6 +9,7 @@ set(simplemailqt_SRC
     mimemessage.cpp
     mimemultipart.cpp
     mimepart.cpp
+    mimepart_p.h
     mimetext.cpp
     quotedprintable.cpp
     smtpclient.cpp

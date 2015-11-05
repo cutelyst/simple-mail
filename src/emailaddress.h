@@ -39,7 +39,6 @@ public:
     QString address() const;
     void setAddress(const QString &address);
 
-
 protected:
     EmailAddressPrivate *d_ptr;
 };

@@ -17,12 +17,13 @@
 */
 
 #include "mimehtml.h"
+#include "mimepart_p.h"
 
 /* [1] Constructors and Destructors */
 
 MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 {
-    this->cType = QStringLiteral("text/html");
+    d_ptr->cType = QStringLiteral("text/html");
 }
 
 MimeHtml::~MimeHtml() {}

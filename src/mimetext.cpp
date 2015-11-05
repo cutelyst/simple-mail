@@ -17,23 +17,20 @@
 */
 
 #include "mimetext.h"
-
-/* [1] Constructors and Destructors */
+#include "mimepart_p.h"
 
 MimeText::MimeText(const QString &txt)
 {
     this->text = txt;
-    this->cType = QStringLiteral("text/plain");
-    this->cCharset = QStringLiteral("utf-8");
-    this->cEncoding = _8Bit;
+    d_ptr->cType = QStringLiteral("text/plain");
+    d_ptr->cCharset = QStringLiteral("utf-8");
+    d_ptr->cEncoding = _8Bit;
 }
 
-MimeText::~MimeText() { }
+MimeText::~MimeText()
+{
 
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
+}
 
 void MimeText::setText(const QString & text)
 {
@@ -45,18 +42,11 @@ const QString & MimeText::getText() const
     return text;
 }
 
-/* [2] --- */
-
-
-/* [3] Protected Methods */
-
 void MimeText::prepare()
 {
-    this->content.clear();
-    this->content.append(text.toUtf8());
+    d_ptr->content.clear();
+    d_ptr->content.append(text.toUtf8());
 
     /* !!! IMPORTANT !!! */
     MimePart::prepare();
 }
-
-/* [3] --- */

@@ -16,15 +16,16 @@
   See the LICENSE file for more details.
 */
 
-#include "mimepart.h"
+#include "mimepart_p.h"
 #include "quotedprintable.h"
 
 /* [1] Constructors and Destructors */
 
-MimePart::MimePart()
+MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
-    cEncoding = _7Bit;
-    prepared = false;
+    Q_D(MimePart);
+    d->cEncoding = _7Bit;
+    d->prepared = false;
 }
 
 MimePart::~MimePart()
@@ -32,128 +33,134 @@ MimePart::~MimePart()
     return;
 }
 
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-
 void MimePart::setContent(const QByteArray & content)
 {
-    this->content = content;
+    Q_D(MimePart);
+    d->content = content;
 }
 
 void MimePart::setHeader(const QString & header)
 {
-    this->header = header;
+    Q_D(MimePart);
+    d->header = header;
 }
 
 void MimePart::addHeaderLine(const QString &line)
 {
-    this->header.append(line % QLatin1String("\r\n"));
+    Q_D(MimePart);
+    d->header.append(line % QLatin1String("\r\n"));
 }
 
 const QString& MimePart::getHeader() const
 {
-    return header;
+    Q_D(const MimePart);
+    return d->header;
 }
 
 const QByteArray& MimePart::getContent() const
 {
-    return content;
+    Q_D(const MimePart);
+    return d->content;
 }
 
 void MimePart::setContentId(const QString & cId)
 {
-    this->cId = cId;
+    Q_D(MimePart);
+    d->cId = cId;
 }
 
 const QString & MimePart::getContentId() const
 {
-    return this->cId;
+    Q_D(const MimePart);
+    return d->cId;
 }
 
 void MimePart::setContentName(const QString & cName)
 {
-    this->cName = cName;
+    Q_D(MimePart);
+    d->cName = cName;
 }
 
 const QString & MimePart::getContentName() const
 {
-    return this->cName;
+    Q_D(const MimePart);
+    return d->cName;
 }
 
 void MimePart::setContentType(const QString & cType)
 {
-    this->cType = cType;
+    Q_D(MimePart);
+    d->cType = cType;
 }
 
 const QString & MimePart::getContentType() const
 {
-    return this->cType;
+    Q_D(const MimePart);
+    return d->cType;
 }
 
 void MimePart::setCharset(const QString & charset)
 {
-    this->cCharset = charset;
+    Q_D(MimePart);
+    d->cCharset = charset;
 }
 
 const QString & MimePart::getCharset() const
 {
-    return this->cCharset;
+    Q_D(const MimePart);
+    return d->cCharset;
 }
 
 void MimePart::setEncoding(Encoding enc)
 {
-    this->cEncoding = enc;
+    Q_D(MimePart);
+    d->cEncoding = enc;
 }
 
 MimePart::Encoding MimePart::getEncoding() const
 {
-    return this->cEncoding;
+    Q_D(const MimePart);
+    return d->cEncoding;
 }
 
 MimeContentFormatter& MimePart::getContentFormatter()
 {
-    return this->formatter;
+    Q_D(MimePart);
+    return d->formatter;
 }
-
-/* [2] --- */
-
-
-/* [3] Public methods */
 
 QString MimePart::toString()
 {
-    if (!prepared)
+    Q_D(MimePart);
+
+    if (!d->prepared) {
         prepare();
+    }
 
-    return mimeString;
+    return d->mimeString;
 }
-
-/* [3] --- */
-
-
-/* [4] Protected methods */
 
 void MimePart::prepare()
 {
-    mimeString = QString();
+    Q_D(MimePart);
+
+    QString mimeString;
 
     /* === Header Prepare === */
 
     /* Content-Type */
-    mimeString.append(QLatin1String("Content-Type: ")).append(cType);
+    mimeString.append(QLatin1String("Content-Type: ")).append(d->cType);
 
-    if (!cName.isEmpty()) {
-        mimeString.append(QLatin1String("; name=\"") %cName % QLatin1String("\""));
+    if (!d->cName.isEmpty()) {
+        mimeString.append(QLatin1String("; name=\"") % d->cName % QLatin1String("\""));
     }
 
-    if (!cCharset.isEmpty()) {
-        mimeString.append(QLatin1String("; charset=")).append(cCharset);
+    if (!d->cCharset.isEmpty()) {
+        mimeString.append(QLatin1String("; charset=")).append(d->cCharset);
     }
 
-    if (!cBoundary.isEmpty()) {
-        mimeString.append(QLatin1String("; boundary=")).append(cBoundary);
+    if (!d->cBoundary.isEmpty()) {
+        mimeString.append(QLatin1String("; boundary=")).append(d->cBoundary);
     }
 
     mimeString.append(QLatin1String("\r\n"));
@@ -161,7 +168,7 @@ void MimePart::prepare()
 
     /* Content-Transfer-Encoding */
     mimeString.append(QLatin1String("Content-Transfer-Encoding: "));
-    switch (cEncoding)
+    switch (d->cEncoding)
     {
     case _7Bit:
         mimeString.append(QLatin1String("7bit\r\n"));
@@ -176,41 +183,37 @@ void MimePart::prepare()
         mimeString.append(QLatin1String("quoted-printable\r\n"));
         break;
     }
-    /* ------------------------ */
 
     /* Content-Id */
-    if (!cId.isNull())
-        mimeString.append(QLatin1String("Content-ID: <")).append(cId).append(QLatin1String(">\r\n"));
-    /* ---------- */
+    if (!d->cId.isNull()) {
+        mimeString.append(QLatin1String("Content-ID: <")).append(d->cId).append(QLatin1String(">\r\n"));
+    }
 
     /* Addition header lines */
 
-    mimeString.append(header).append(QLatin1String("\r\n"));
-
-    /* ------------------------- */
+    mimeString.append(d->header).append(QLatin1String("\r\n"));
 
     /* === End of Header Prepare === */
 
     /* === Content === */
-    switch (cEncoding)
+    switch (d->cEncoding)
     {
     case _7Bit:
-        mimeString.append(QString::fromLatin1(content));
+        mimeString.append(QString::fromLatin1(d->content));
         break;
     case _8Bit:
-        mimeString.append(QString::fromLatin1(content));
+        mimeString.append(QString::fromLatin1(d->content));
         break;
     case Base64:
-        mimeString.append(formatter.format(QString::fromLatin1(content.toBase64())));
+        mimeString.append(d->formatter.format(QString::fromLatin1(d->content.toBase64())));
         break;
     case QuotedPrintable:
-        mimeString.append(formatter.format(QuotedPrintable::encode(content), true));
+        mimeString.append(d->formatter.format(QuotedPrintable::encode(d->content), true));
         break;
     }
     mimeString.append(QLatin1String("\r\n"));
     /* === End of Content === */
 
-    prepared = true;
+    d->prepared = true;
+    d->mimeString = mimeString;
 }
-
-/* [4] --- */

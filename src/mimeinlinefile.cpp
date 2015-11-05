@@ -17,6 +17,7 @@
 */
 
 #include "mimeinlinefile.h"
+#include "mimepart_p.h"
 
 /* [1] Constructors and Destructors */
 
@@ -40,7 +41,7 @@ MimeInlineFile::~MimeInlineFile()
 
 void MimeInlineFile::prepare()
 {       
-    this->header.append(QStringLiteral("Content-Disposition: inline\r\n"));
+    d_ptr->header.append(QStringLiteral("Content-Disposition: inline\r\n"));
 
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();

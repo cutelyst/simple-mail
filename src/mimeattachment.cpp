@@ -17,6 +17,8 @@
 */
 
 #include "mimeattachment.h"
+#include "mimepart_p.h"
+
 #include <QFileInfo>
 
 /* [1] Constructors and Destructors */
@@ -41,7 +43,7 @@ MimeAttachment::~MimeAttachment()
 
 void MimeAttachment::prepare()
 {
-    this->header.append(QStringLiteral("Content-disposition: attachment\r\n"));
+    d_ptr->header.append(QStringLiteral("Content-disposition: attachment\r\n"));
 
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();

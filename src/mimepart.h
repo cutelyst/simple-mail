@@ -1,5 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This file is part of SmtpClient for Qt.
 
@@ -24,12 +25,12 @@
 
 #include "smtpexports.h"
 
+class MimePartPrivate;
 class SMTP_EXPORT MimePart : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(MimePart)
 public:
-
-    /* [0] Enumerations */
     enum Encoding {        
         _7Bit,
         _8Bit,
@@ -37,19 +38,8 @@ public:
         QuotedPrintable
     };
 
-
-    /* [0] --- */
-
-
-    /* [1] Constructors and Destructors */
-
     MimePart();
     ~MimePart();
-
-    /* [1] --- */
-
-
-    /* [2] Getters and Setters */
 
     const QString& getHeader() const;
     const QByteArray& getContent() const;
@@ -76,39 +66,12 @@ public:
 
     MimeContentFormatter& getContentFormatter();
 
-    /* [2] --- */
-
-
-    /* [3] Public methods */
-
     virtual QString toString();
 
     virtual void prepare();
 
-    /* [3] --- */
-
-
-
 protected:
-
-    /* [4] Protected members */
-
-    QString header;
-    QByteArray content;
-
-    QString cId;
-    QString cName;
-    QString cType;
-    QString cCharset;
-    QString cBoundary;
-    Encoding cEncoding;
-
-    QString mimeString;
-    bool prepared;
-
-    MimeContentFormatter formatter;
-
-    /* [4] --- */
+    MimePartPrivate *d_ptr;
 };
 
 #endif // MIMEPART_H
