@@ -40,7 +40,7 @@ MimeInlineFile::~MimeInlineFile()
 
 void MimeInlineFile::prepare()
 {       
-    this->header += "Content-Disposition: inline\r\n";
+    this->header.append(QStringLiteral("Content-Disposition: inline\r\n"));
 
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();

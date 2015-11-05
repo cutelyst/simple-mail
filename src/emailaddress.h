@@ -31,7 +31,7 @@ public:
     /* [1] Constructors and Destructors */
 
     EmailAddress();
-    EmailAddress(const QString & address, const QString & name="");
+    EmailAddress(const QString &address, const QString &name = QLatin1String(""));
 
     ~EmailAddress();
 

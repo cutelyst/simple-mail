@@ -30,7 +30,7 @@ public:
 
     /* [1] Constructors and Destructors */
 
-    MimeHtml(const QString &html = "");
+    MimeHtml(const QString &html = QLatin1String(""));
     ~MimeHtml();
 
     /* [1] --- */

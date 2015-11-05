@@ -57,7 +57,7 @@ public:
     void setContent(const QByteArray & content);
     void setHeader(const QString & header);
 
-    void addHeaderLine(const QString & line);
+    void addHeaderLine(const QString &line);
 
     void setContentId(const QString & cId);
     const QString & getContentId() const;

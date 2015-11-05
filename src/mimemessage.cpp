@@ -19,6 +19,7 @@
 #include "mimemessage.h"
 
 #include <QDateTime>
+#include <QtCore/QStringBuilder>
 #include "quotedprintable.h"
 #include <typeinfo>
 
@@ -156,102 +157,80 @@ QString MimeMessage::toString()
     /* =========== MIME HEADER ============ */
 
     /* ---------- Sender / From ----------- */
-    mime = "From:";
-    if (sender->getName() != "")
+    mime = QStringLiteral("From:");
+    if (!sender->getName().isEmpty())
     {
-        switch (hEncoding)
-        {
-        case MimePart::Base64:
-            mime += " =?utf-8?B?" + QByteArray().append(sender->getName()).toBase64() + "?=";
-            break;
-        case MimePart::QuotedPrintable:
-            mime += " =?utf-8?Q?" + QuotedPrintable::encode(QByteArray().append(sender->getName())).replace(' ', "_").replace(':',"=3A") + "?=";
-            break;
-        default:
-            mime += " " + sender->getName();
-        }
+        mime.append(encode(hEncoding, sender->getName()));
     }
-    mime += " <" + sender->getAddress() + ">\r\n";
+    mime += QStringLiteral(" <") % sender->getAddress() % QStringLiteral(">\r\n");
     /* ---------------------------------- */
 
 
     /* ------- Recipients / To ---------- */    
-    mime += "To:";
+    mime.append(QStringLiteral("To:"));
     QList<EmailAddress*>::iterator it;  int i;
     for (i = 0, it = recipientsTo.begin(); it != recipientsTo.end(); ++it, ++i)
     {
-        if (i != 0) { mime += ","; }
-
-        if ((*it)->getName() != "")
-        {
-            switch (hEncoding)
-            {
-            case MimePart::Base64:
-                mime += " =?utf-8?B?" + QByteArray().append((*it)->getName()).toBase64() + "?=";
-                break;
-            case MimePart::QuotedPrintable:
-                mime += " =?utf-8?Q?" + QuotedPrintable::encode(QByteArray().append((*it)->getName())).replace(' ', "_").replace(':',"=3A") + "?=";
-                break;
-            default:
-                mime += " " + (*it)->getName();
-            }
+        if (i != 0) {
+            mime.append(QLatin1Char(','));
         }
-        mime += " <" + (*it)->getAddress() + ">";
+
+        if (!(*it)->getName().isEmpty())
+        {
+            mime.append(encode(hEncoding, (*it)->getName()));
+        }
+        mime += QStringLiteral(" <") % (*it)->getAddress() % QLatin1Char('>');
     }
-    mime += "\r\n";
+    mime += QStringLiteral("\r\n");
     /* ---------------------------------- */
 
     /* ------- Recipients / Cc ---------- */
     if (recipientsCc.size() != 0) {
-        mime += "Cc:";
+        mime += QStringLiteral("Cc:");
     }
-    for (i = 0, it = recipientsCc.begin(); it != recipientsCc.end(); ++it, ++i)
-    {
-        if (i != 0) { mime += ","; }
 
-        if ((*it)->getName() != "")
-        {
-            switch (hEncoding)
-            {
-            case MimePart::Base64:
-                mime += " =?utf-8?B?" + QByteArray().append((*it)->getName()).toBase64() + "?=";
-                break;
-            case MimePart::QuotedPrintable:
-                mime += " =?utf-8?Q?" + QuotedPrintable::encode(QByteArray().append((*it)->getName())).replace(' ', "_").replace(':',"=3A") + "?=";
-                break;
-            default:
-                mime += " " + (*it)->getName();
-            }
+    for (i = 0, it = recipientsCc.begin(); it != recipientsCc.end(); ++it, ++i) {
+        if (i != 0) {
+            mime.append(QLatin1Char(','));
         }
-        mime += " <" + (*it)->getAddress() + ">";
+
+        if (!(*it)->getName().isEmpty()) {
+            mime.append(encode(hEncoding, (*it)->getName()));
+        }
+        mime += QLatin1String(" <") % (*it)->getAddress() % QLatin1Char('>');
     }
     if (recipientsCc.size() != 0) {
-        mime += "\r\n";
+        mime += QStringLiteral("\r\n");
     }
     /* ---------------------------------- */
 
     /* ------------ Subject ------------- */
-    mime += "Subject: ";
+    mime += QStringLiteral("Subject: ");
 
+    // TODO subject on previous implementation didn't prepend
+    // an empty space at the beggining, maybe add a conditional
+    // subject bool to encode()?
+    mime.append(encode(hEncoding, subject));
 
-    switch (hEncoding)
-    {
-    case MimePart::Base64:
-        mime += "=?utf-8?B?" + QByteArray().append(subject).toBase64() + "?=";
-        break;
-    case MimePart::QuotedPrintable:
-        mime += "=?utf-8?Q?" + QuotedPrintable::encode(QByteArray().append(subject)).replace(' ', "_").replace(':',"=3A") + "?=";
-        break;
-    default:
-        mime += subject;
-    }
-    /* ---------------------------------- */
-
-    mime += "\r\n";
-    mime += "MIME-Version: 1.0\r\n";
+    mime += QStringLiteral("\r\n");
+    mime += QStringLiteral("MIME-Version: 1.0\r\n");
 
     mime += content->toString();
     return mime;
+}
+
+QString MimeMessage::encode(MimePart::Encoding codec, const QString &data)
+{
+    switch (codec) {
+    case MimePart::Base64:
+        return QLatin1String(" =?utf-8?B?") % QString::fromLatin1(data.toLatin1().toBase64()) % QLatin1String("?=");
+    case MimePart::QuotedPrintable:
+        return QLatin1String(" =?utf-8?Q?") % QuotedPrintable::encode(data.toLatin1())
+                .replace(QLatin1Char(' '), QLatin1String("_"))
+                .replace(QLatin1Char(':'), QLatin1String("=3A")) % QLatin1String("?=");
+    default:
+        return QLatin1Char(' ') % data;
+    }
 }
 
 /* [3] --- */

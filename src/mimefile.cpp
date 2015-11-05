@@ -24,7 +24,7 @@
 MimeFile::MimeFile(QFile *file)
 {
     this->file = file;
-    this->cType = "application/octet-stream";
+    this->cType = QStringLiteral("application/octet-stream");
     this->cName = QFileInfo(*file).fileName();
     this->cEncoding = Base64;
 }
@@ -32,7 +32,7 @@ MimeFile::MimeFile(QFile *file)
 MimeFile::MimeFile(const QByteArray& stream, const QString& fileName)
 {
     this->cEncoding = Base64;
-    this->cType = "application/octet-stream";
+    this->cType = QStringLiteral("application/octet-stream");
     this->file = 0;
     this->cName = fileName;
     this->content = stream;

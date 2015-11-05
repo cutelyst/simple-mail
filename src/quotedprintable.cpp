@@ -25,19 +25,17 @@ QString QuotedPrintable::encode(const QByteArray &input)
     char byte;
     const char hex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    for (int i = 0; i < input.length() ; ++i)
-    {
+    for (int i = 0; i < input.length() ; ++i) {
         byte = input[i];
 
-        if ((byte == 0x20) || ((byte >= 33) && (byte <= 126) && (byte != 61)))
-        {
-            output.append(byte);
-        }
-        else
-        {
-            output.append('=');
-            output.append(hex[((byte >> 4) & 0x0F)]);
-            output.append(hex[(byte & 0x0F)]);
+        if ((byte == 0x20) || ((byte >= 33) && (byte <= 126) && (byte != 61))) {
+            // TODO check if QLatin1Char if fine here
+            output.append(QLatin1Char(byte));
+        } else {
+            // TODO check if QLatin1Char if fine here
+            output.append(QLatin1Char('='));
+            output.append(QLatin1Char(hex[((byte >> 4) & 0x0F)]));
+            output.append(QLatin1Char(hex[(byte & 0x0F)]));
         }
     }
 

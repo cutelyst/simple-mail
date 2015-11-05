@@ -23,8 +23,8 @@
 MimeText::MimeText(const QString &txt)
 {
     this->text = txt;
-    this->cType = "text/plain";
-    this->cCharset = "utf-8";
+    this->cType = QStringLiteral("text/plain");
+    this->cCharset = QStringLiteral("utf-8");
     this->cEncoding = _8Bit;
 }
 
@@ -53,7 +53,7 @@ const QString & MimeText::getText() const
 void MimeText::prepare()
 {
     this->content.clear();
-    this->content.append(text);
+    this->content.append(text.toUtf8());
 
     /* !!! IMPORTANT !!! */
     MimePart::prepare();

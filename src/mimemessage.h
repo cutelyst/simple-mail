@@ -75,6 +75,7 @@ public:
 protected:
 
     /* [4] Protected members */
+    QString encode(MimePart::Encoding codec, const QString &data);
 
     EmailAddress* sender;
     QList<EmailAddress*> recipientsTo, recipientsCc, recipientsBcc;

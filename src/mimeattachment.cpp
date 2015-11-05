@@ -41,7 +41,7 @@ MimeAttachment::~MimeAttachment()
 
 void MimeAttachment::prepare()
 {
-    this->header += "Content-disposition: attachment\r\n";
+    this->header.append(QStringLiteral("Content-disposition: attachment\r\n"));
 
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();

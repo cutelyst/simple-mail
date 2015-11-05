@@ -18,16 +18,16 @@
 
 #include "mimemultipart.h"
 #include <QTime>
-#include <QCryptographicHash>
+#include <QUuid>
 
 const QString MULTI_PART_NAMES[] = {
-    "multipart/mixed",         //    Mixed
-    "multipart/digest",        //    Digest
-    "multipart/alternative",   //    Alternative
-    "multipart/related",       //    Related
-    "multipart/report",        //    Report
-    "multipart/signed",        //    Signed
-    "multipart/encrypted"      //    Encrypted
+    QStringLiteral("multipart/mixed"),         //    Mixed
+    QStringLiteral("multipart/digest"),        //    Digest
+    QStringLiteral("multipart/alternative"),   //    Alternative
+    QStringLiteral("multipart/related"),       //    Related
+    QStringLiteral("multipart/report"),        //    Report
+    QStringLiteral("multipart/signed"),        //    Signed
+    QStringLiteral("multipart/encrypted")      //    Encrypted
 };
 
 MimeMultiPart::MimeMultiPart(MultiPartType type)
@@ -36,9 +36,7 @@ MimeMultiPart::MimeMultiPart(MultiPartType type)
     this->cType = MULTI_PART_NAMES[this->type];
     this->cEncoding = _8Bit;
 
-    QCryptographicHash md5(QCryptographicHash::Md5);
-    md5.addData(QByteArray().append(qrand()));
-    cBoundary = md5.result().toHex();
+    cBoundary = QString::fromLatin1(QUuid::createUuid().toRfc4122().toHex());
 }
 
 MimeMultiPart::~MimeMultiPart() {
@@ -58,12 +56,12 @@ void MimeMultiPart::prepare() {
 
     content = "";
     for (it = parts.begin(); it != parts.end(); it++) {
-        content += "--" + cBoundary + "\r\n";
+        content += "--" + cBoundary.toLatin1() + "\r\n";
         (*it)->prepare();
-        content += (*it)->toString();
+        content += (*it)->toString().toUtf8();
     };
 
-    content += "--" + cBoundary + "--\r\n";
+    content += "--" + cBoundary.toLatin1() + "--\r\n";
 
     MimePart::prepare();
 }

@@ -25,7 +25,6 @@ MimePart::MimePart()
 {
     cEncoding = _7Bit;
     prepared = false;
-    cBoundary = "";
 }
 
 MimePart::~MimePart()
@@ -48,9 +47,9 @@ void MimePart::setHeader(const QString & header)
     this->header = header;
 }
 
-void MimePart::addHeaderLine(const QString & line)
+void MimePart::addHeaderLine(const QString &line)
 {
-    this->header += line + "\r\n";
+    this->header.append(line % QLatin1String("\r\n"));
 }
 
 const QString& MimePart::getHeader() const
@@ -143,47 +142,50 @@ void MimePart::prepare()
     /* === Header Prepare === */
 
     /* Content-Type */
-    mimeString.append("Content-Type: ").append(cType);
+    mimeString.append(QLatin1String("Content-Type: ")).append(cType);
 
-    if (cName != "")
-        mimeString.append("; name=\"").append(cName).append("\"");
+    if (!cName.isEmpty()) {
+        mimeString.append(QLatin1String("; name=\"") %cName % QLatin1String("\""));
+    }
 
-    if (cCharset != "")
-        mimeString.append("; charset=").append(cCharset);
+    if (!cCharset.isEmpty()) {
+        mimeString.append(QLatin1String("; charset=")).append(cCharset);
+    }
 
-    if (cBoundary != "")
-        mimeString.append("; boundary=").append(cBoundary);
+    if (!cBoundary.isEmpty()) {
+        mimeString.append(QLatin1String("; boundary=")).append(cBoundary);
+    }
 
-    mimeString.append("\r\n");
+    mimeString.append(QLatin1String("\r\n"));
     /* ------------ */
 
     /* Content-Transfer-Encoding */
-    mimeString.append("Content-Transfer-Encoding: ");
+    mimeString.append(QLatin1String("Content-Transfer-Encoding: "));
     switch (cEncoding)
     {
     case _7Bit:
-        mimeString.append("7bit\r\n");
+        mimeString.append(QLatin1String("7bit\r\n"));
         break;
     case _8Bit:
-        mimeString.append("8bit\r\n");
+        mimeString.append(QLatin1String("8bit\r\n"));
         break;
     case Base64:
-        mimeString.append("base64\r\n");
+        mimeString.append(QLatin1String("base64\r\n"));
         break;
     case QuotedPrintable:
-        mimeString.append("quoted-printable\r\n");
+        mimeString.append(QLatin1String("quoted-printable\r\n"));
         break;
     }
     /* ------------------------ */
 
     /* Content-Id */
-    if (cId != NULL)
-        mimeString.append("Content-ID: <").append(cId).append(">\r\n");
+    if (!cId.isNull())
+        mimeString.append(QLatin1String("Content-ID: <")).append(cId).append(QLatin1String(">\r\n"));
     /* ---------- */
 
     /* Addition header lines */
 
-    mimeString.append(header).append("\r\n");
+    mimeString.append(header).append(QLatin1String("\r\n"));
 
     /* ------------------------- */
 
@@ -193,19 +195,19 @@ void MimePart::prepare()
     switch (cEncoding)
     {
     case _7Bit:
-        mimeString.append(QString(content).toLatin1());
+        mimeString.append(QString::fromLatin1(content));
         break;
     case _8Bit:
-        mimeString.append(content);
+        mimeString.append(QString::fromLatin1(content));
         break;
     case Base64:
-        mimeString.append(formatter.format(content.toBase64()));
+        mimeString.append(formatter.format(QString::fromLatin1(content.toBase64())));
         break;
     case QuotedPrintable:
         mimeString.append(formatter.format(QuotedPrintable::encode(content), true));
         break;
     }
-    mimeString.append("\r\n");
+    mimeString.append(QLatin1String("\r\n"));
     /* === End of Content === */
 
     prepared = true;

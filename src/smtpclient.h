@@ -60,7 +60,7 @@ public:
 
     /* [1] Constructors and Destructors */
 
-    SmtpClient(const QString & host = "localhost", int port = 25, ConnectionType ct = TcpConnection);
+    SmtpClient(const QString &host = QLatin1String("localhost"), int port = 25, ConnectionType ct = TcpConnection);
 
     ~SmtpClient();
 
@@ -126,20 +126,20 @@ protected:
 
     /* [4] Protected members */
 
-    QTcpSocket *socket;
+    QTcpSocket *socket = nullptr;
 
     QString host;
     int port;
     ConnectionType connectionType;
-    QString name;
+    QString name = QLatin1String("localhost");
 
     QString user;
     QString password;
-    AuthMethod authMethod;
+    AuthMethod authMethod = AuthPlain;
 
-    int connectionTimeout;
-    int responseTimeout;
-    int sendMessageTimeout;
+    int connectionTimeout = 5000;
+    int responseTimeout = 5000;
+    int sendMessageTimeout = 60000;
     
     
     QString responseText;
@@ -160,7 +160,7 @@ protected:
 
     /* [5] --- */
 
-protected slots:
+protected Q_SLOTS:
 
     /* [6] Protected slots */
 
@@ -171,7 +171,7 @@ protected slots:
     /* [6] --- */
 
 
-signals:
+Q_SIGNALS:
 
     /* [7] Signals */
 

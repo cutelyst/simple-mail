@@ -29,7 +29,7 @@ public:
 
     /* [1] Constructors and Destructors */
 
-    MimeText(const QString &text = "");
+    MimeText(const QString &text = QLatin1String(""));
     ~MimeText();
 
     /* [1] --- */
