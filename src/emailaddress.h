@@ -20,14 +20,13 @@
 #ifndef EMAILADDRESS_H
 #define EMAILADDRESS_H
 
-#include <QObject>
+#include <QSharedDataPointer>
 
 #include "smtpexports.h"
 
 class EmailAddressPrivate;
 class SMTP_EXPORT EmailAddress
 {
-    Q_DECLARE_PRIVATE(EmailAddress)
 public:
     EmailAddress();
     EmailAddress(const QString &address, const QString &name);
@@ -40,7 +39,15 @@ public:
     void setAddress(const QString &address);
 
 protected:
-    EmailAddressPrivate *d_ptr;
+    QSharedDataPointer<EmailAddressPrivate> d_ptr;
+
+private:
+    // Q_DECLARE_PRIVATE equivalent for shared data pointers
+    EmailAddressPrivate* d_func();
+    inline const EmailAddressPrivate* d_func() const
+    {
+        return d_ptr.constData();
+    }
 };
 
 #endif // EMAILADDRESS_H

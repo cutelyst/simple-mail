@@ -16,7 +16,7 @@
   See the LICENSE file for more details.
 */
 
-#include "mimemessage.h"
+#include "mimemessage_p.h"
 
 #include <QDateTime>
 #include <QtCore/QStringBuilder>
@@ -25,151 +25,165 @@
 
 /* [1] Constructors and Destructors */
 MimeMessage::MimeMessage(bool createAutoMimeContent) :
-    hEncoding(MimePart::_8Bit)
+    d_ptr(new MimeMessagePrivate)
 {
-    if (createAutoMimeContent)
-        this->content = new MimeMultiPart();
+    Q_D(MimeMessage);
+    if (createAutoMimeContent) {
+        d->content = new MimeMultiPart();
+    }
     
-    autoMimeContentCreated = createAutoMimeContent;
+    d->autoMimeContentCreated = createAutoMimeContent;
 }
 
 MimeMessage::~MimeMessage()
 {
-    if (this->autoMimeContentCreated)
-    {
-      this->autoMimeContentCreated = false;
-      delete (this->content);
+    Q_D(MimeMessage);
+
+    if (d->autoMimeContentCreated) {
+      d->autoMimeContentCreated = false;
+      delete (d->content);
     }
+    delete d_ptr;
 }
 
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-MimePart& MimeMessage::getContent() {
-    return *content;
+MimePart& MimeMessage::getContent()
+{
+    Q_D(MimeMessage);
+    return *d->content;
 }
 
-void MimeMessage::setContent(MimePart *content) {
-    if (this->autoMimeContentCreated)
-    {
-      this->autoMimeContentCreated = false;
-      delete (this->content);
+void MimeMessage::setContent(MimePart *content)
+{
+    Q_D(MimeMessage);
+    if (d->autoMimeContentCreated) {
+      d->autoMimeContentCreated = false;
+      delete (d->content);
     }
-    this->content = content;
+    d->content = content;
 }
 
 void MimeMessage::setSender(EmailAddress* e)
 {
-    this->sender = e;
+    Q_D(MimeMessage);
+    d->sender = e;
 }
 
 void MimeMessage::addRecipient(EmailAddress* rcpt, RecipientType type)
 {
-    switch (type)
-    {
+    Q_D(MimeMessage);
+    switch (type) {
     case To:
-        recipientsTo << rcpt;
+        d->recipientsTo.append(rcpt);
         break;
     case Cc:
-        recipientsCc << rcpt;
+        d->recipientsCc.append(rcpt);
         break;
     case Bcc:
-        recipientsBcc << rcpt;
+        d->recipientsBcc.append(rcpt);
         break;
     }
 }
 
-void MimeMessage::addTo(EmailAddress* rcpt) {
-    this->recipientsTo << rcpt;
+void MimeMessage::addTo(EmailAddress* rcpt)
+{
+    Q_D(MimeMessage);
+    d->recipientsTo.append(rcpt);
 }
 
-void MimeMessage::addCc(EmailAddress* rcpt) {
-    this->recipientsCc << rcpt;
+void MimeMessage::addCc(EmailAddress* rcpt)
+{
+    Q_D(MimeMessage);
+    d->recipientsCc.append(rcpt);
 }
 
-void MimeMessage::addBcc(EmailAddress* rcpt) {
-    this->recipientsBcc << rcpt;
+void MimeMessage::addBcc(EmailAddress* rcpt)
+{
+    Q_D(MimeMessage);
+    d->recipientsBcc.append(rcpt);
 }
 
 void MimeMessage::setSubject(const QString & subject)
 {
-    this->subject = subject;
+    Q_D(MimeMessage);
+    d->subject = subject;
 }
 
 void MimeMessage::addPart(MimePart *part)
 {
-    if (typeid(*content) == typeid(MimeMultiPart)) {
-        ((MimeMultiPart*) content)->addPart(part);
-    };
+    Q_D(MimeMessage);
+    if (typeid(*d->content) == typeid(MimeMultiPart)) {
+        ((MimeMultiPart*) d->content)->addPart(part);
+    }
 }
 
 void MimeMessage::setHeaderEncoding(MimePart::Encoding hEnc)
 {
-    this->hEncoding = hEnc;
+    Q_D(MimeMessage);
+    d->encoding = hEnc;
 }
 
-const EmailAddress & MimeMessage::getSender() const
+EmailAddress MimeMessage::sender() const
 {
-    return *sender;
+    Q_D(const MimeMessage);
+    return *d->sender;
 }
 
 const QList<EmailAddress*> & MimeMessage::getRecipients(RecipientType type) const
 {
+    Q_D(const MimeMessage);
     switch (type)
     {
     default:
     case To:
-        return recipientsTo;
+        return d->recipientsTo;
     case Cc:
-        return recipientsCc;
+        return d->recipientsCc;
     case Bcc:
-        return recipientsBcc;
+        return d->recipientsBcc;
     }
 }
 
-const QString & MimeMessage::getSubject() const
+QString MimeMessage::subject() const
 {
-    return subject;
+    Q_D(const MimeMessage);
+    return d->subject;
 }
 
 const QList<MimePart*> & MimeMessage::getParts() const
 {
-    if (typeid(*content) == typeid(MimeMultiPart)) {
-        return ((MimeMultiPart*) content)->getParts();
+    Q_D(const MimeMessage);
+    if (typeid(*d->content) == typeid(MimeMultiPart)) {
+        return ((MimeMultiPart*) d->content)->getParts();
     }
     else {
         QList<MimePart*> *res = new QList<MimePart*>();
-        res->append(content);
+        res->append(d->content);
         return *res;
     }
 }
 
-/* [2] --- */
-
-
-/* [3] Public Methods */
-
 QString MimeMessage::toString()
 {
+    Q_D(const MimeMessage);
+
     QString mime;
 
     /* =========== MIME HEADER ============ */
 
     /* ---------- Sender / From ----------- */
     mime = QStringLiteral("From:");
-    if (!sender->name().isEmpty())
+    if (!d->sender->name().isEmpty())
     {
-        mime.append(encode(hEncoding, sender->name()));
+        mime.append(MimeMessagePrivate::encode(d->encoding, d->sender->name()));
     }
-    mime += QStringLiteral(" <") % sender->address() % QStringLiteral(">\r\n");
+    mime += QStringLiteral(" <") % d->sender->address() % QStringLiteral(">\r\n");
     /* ---------------------------------- */
 
 
     /* ------- Recipients / To ---------- */    
     mime.append(QStringLiteral("To:"));
-    QList<EmailAddress*>::iterator it;  int i;
-    for (i = 0, it = recipientsTo.begin(); it != recipientsTo.end(); ++it, ++i)
+    QList<EmailAddress*>::const_iterator it;  int i;
+    for (i = 0, it = d->recipientsTo.constBegin(); it != d->recipientsTo.constEnd(); ++it, ++i)
     {
         if (i != 0) {
             mime.append(QLatin1Char(','));
@@ -177,7 +191,7 @@ QString MimeMessage::toString()
 
         if (!(*it)->name().isEmpty())
         {
-            mime.append(encode(hEncoding, (*it)->name()));
+            mime.append(MimeMessagePrivate::encode(d->encoding, (*it)->name()));
         }
         mime += QStringLiteral(" <") % (*it)->address() % QLatin1Char('>');
     }
@@ -185,21 +199,21 @@ QString MimeMessage::toString()
     /* ---------------------------------- */
 
     /* ------- Recipients / Cc ---------- */
-    if (recipientsCc.size() != 0) {
+    if (d->recipientsCc.size() != 0) {
         mime += QStringLiteral("Cc:");
     }
 
-    for (i = 0, it = recipientsCc.begin(); it != recipientsCc.end(); ++it, ++i) {
+    for (i = 0, it = d->recipientsCc.constBegin(); it != d->recipientsCc.constEnd(); ++it, ++i) {
         if (i != 0) {
             mime.append(QLatin1Char(','));
         }
 
         if (!(*it)->name().isEmpty()) {
-            mime.append(encode(hEncoding, (*it)->name()));
+            mime.append(MimeMessagePrivate::encode(d->encoding, (*it)->name()));
         }
         mime += QLatin1String(" <") % (*it)->address() % QLatin1Char('>');
     }
-    if (recipientsCc.size() != 0) {
+    if (!d->recipientsCc.isEmpty()) {
         mime += QStringLiteral("\r\n");
     }
     /* ---------------------------------- */
@@ -210,16 +224,16 @@ QString MimeMessage::toString()
     // TODO subject on previous implementation didn't prepend
     // an empty space at the beggining, maybe add a conditional
     // subject bool to encode()?
-    mime.append(encode(hEncoding, subject));
+    mime.append(MimeMessagePrivate::encode(d->encoding, d->subject));
 
     mime += QStringLiteral("\r\n");
     mime += QStringLiteral("MIME-Version: 1.0\r\n");
 
-    mime += content->toString();
+    mime += d->content->toString();
     return mime;
 }
 
-QString MimeMessage::encode(MimePart::Encoding codec, const QString &data)
+QString MimeMessagePrivate::encode(MimePart::Encoding codec, const QString &data)
 {
     switch (codec) {
     case MimePart::Base64:

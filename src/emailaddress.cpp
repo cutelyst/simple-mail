@@ -33,7 +33,7 @@ EmailAddress::EmailAddress(const QString &address, const QString &name) : d_ptr(
 
 EmailAddress::~EmailAddress()
 {
-    delete d_ptr;
+//    delete d_ptr;
 }
 
 void EmailAddress::setName(const QString & name)

@@ -17,17 +17,25 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef EMAILADDRESS_P_H
-#define EMAILADDRESS_P_H
+#include "mimemessage.h"
 
-#include "emailaddress.h"
+#ifndef MIMEMESSAGE_P_H
+#define MIMEMESSAGE_P_H
 
-class EmailAddressPrivate : public QSharedData
+class MimeMessagePrivate
 {
 public:
-    QString name;
-    QString address;
+    inline static QString encode(MimePart::Encoding codec, const QString &data);
+
+    QList<EmailAddress*> recipientsTo;
+    QList<EmailAddress*> recipientsCc;
+    QList<EmailAddress*> recipientsBcc;
+    QString subject;
+    EmailAddress *sender;
+    MimePart *content = nullptr;
+    MimePart::Encoding encoding = MimePart::_8Bit;
+    bool autoMimeContentCreated;
 };
 
-#endif // EMAILADDRESS_P_H
+#endif // MIMEMESSAGE_P_H
 

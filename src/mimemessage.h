@@ -26,25 +26,19 @@
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT MimeMessage : public QObject
+class MimeMessagePrivate;
+class SMTP_EXPORT MimeMessage
 {
+    Q_DECLARE_PRIVATE(MimeMessage)
 public:
-
     enum RecipientType {
         To,                 // primary
         Cc,                 // carbon copy
         Bcc                 // blind carbon copy
     };
 
-    /* [1] Constructors and Destructors */
-
     MimeMessage(bool createAutoMimeConent = true);
     ~MimeMessage();
-
-    /* [1] --- */
-
-
-    /* [2] Getters and Setters */
 
     void setSender(EmailAddress* e);
     void addRecipient(EmailAddress* rcpt, RecipientType type = To);
@@ -56,36 +50,18 @@ public:
 
     void setHeaderEncoding(MimePart::Encoding);
 
-    const EmailAddress & getSender() const;
+    EmailAddress sender() const;
     const QList<EmailAddress*> & getRecipients(RecipientType type = To) const;
-    const QString & getSubject() const;
+    QString subject() const;
     const QList<MimePart*> & getParts() const;
 
     MimePart& getContent();
     void setContent(MimePart *content);
-    /* [2] --- */
-
-
-    /* [3] Public methods */
 
     virtual QString toString();
 
-    /* [3] --- */
-
 protected:
-
-    /* [4] Protected members */
-    QString encode(MimePart::Encoding codec, const QString &data);
-
-    EmailAddress* sender;
-    QList<EmailAddress*> recipientsTo, recipientsCc, recipientsBcc;
-    QString subject;
-    MimePart *content;
-    bool autoMimeContentCreated;
-    
-    MimePart::Encoding hEncoding;
-
-    /* [4] --- */
+    MimeMessagePrivate *d_ptr;
 
 
 };
