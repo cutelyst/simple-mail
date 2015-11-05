@@ -158,11 +158,11 @@ QString MimeMessage::toString()
 
     /* ---------- Sender / From ----------- */
     mime = QStringLiteral("From:");
-    if (!sender->getName().isEmpty())
+    if (!sender->name().isEmpty())
     {
-        mime.append(encode(hEncoding, sender->getName()));
+        mime.append(encode(hEncoding, sender->name()));
     }
-    mime += QStringLiteral(" <") % sender->getAddress() % QStringLiteral(">\r\n");
+    mime += QStringLiteral(" <") % sender->address() % QStringLiteral(">\r\n");
     /* ---------------------------------- */
 
 
@@ -175,11 +175,11 @@ QString MimeMessage::toString()
             mime.append(QLatin1Char(','));
         }
 
-        if (!(*it)->getName().isEmpty())
+        if (!(*it)->name().isEmpty())
         {
-            mime.append(encode(hEncoding, (*it)->getName()));
+            mime.append(encode(hEncoding, (*it)->name()));
         }
-        mime += QStringLiteral(" <") % (*it)->getAddress() % QLatin1Char('>');
+        mime += QStringLiteral(" <") % (*it)->address() % QLatin1Char('>');
     }
     mime += QStringLiteral("\r\n");
     /* ---------------------------------- */
@@ -194,10 +194,10 @@ QString MimeMessage::toString()
             mime.append(QLatin1Char(','));
         }
 
-        if (!(*it)->getName().isEmpty()) {
-            mime.append(encode(hEncoding, (*it)->getName()));
+        if (!(*it)->name().isEmpty()) {
+            mime.append(encode(hEncoding, (*it)->name()));
         }
-        mime += QLatin1String(" <") % (*it)->getAddress() % QLatin1Char('>');
+        mime += QLatin1String(" <") % (*it)->address() % QLatin1Char('>');
     }
     if (recipientsCc.size() != 0) {
         mime += QStringLiteral("\r\n");

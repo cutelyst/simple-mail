@@ -353,7 +353,7 @@ bool SmtpClient::sendMail(MimeMessage& email)
     try
     {
         // Send the MAIL command with the sender
-        sendMessage(QLatin1String("MAIL FROM: <") % email.getSender().getAddress() % QLatin1String(">"));
+        sendMessage(QLatin1String("MAIL FROM: <") % email.getSender().address() % QLatin1String(">"));
 
         waitForResponse();
 
@@ -365,7 +365,7 @@ bool SmtpClient::sendMail(MimeMessage& email)
         for (it = email.getRecipients().begin(), itEnd = email.getRecipients().end();
              it != itEnd; ++it)
         {
-            sendMessage(QLatin1String("RCPT TO: <") + (*it)->getAddress() % QLatin1Char('>'));
+            sendMessage(QLatin1String("RCPT TO: <") + (*it)->address() % QLatin1Char('>'));
             waitForResponse();
 
             if (responseCode != 250) return false;
@@ -375,7 +375,7 @@ bool SmtpClient::sendMail(MimeMessage& email)
         for (it = email.getRecipients(MimeMessage::Cc).begin(), itEnd = email.getRecipients(MimeMessage::Cc).end();
              it != itEnd; ++it)
         {
-            sendMessage(QLatin1String("RCPT TO: <") % (*it)->getAddress() % QLatin1Char('>'));
+            sendMessage(QLatin1String("RCPT TO: <") % (*it)->address() % QLatin1Char('>'));
             waitForResponse();
 
             if (responseCode != 250) return false;
@@ -385,7 +385,7 @@ bool SmtpClient::sendMail(MimeMessage& email)
         for (it = email.getRecipients(MimeMessage::Bcc).begin(), itEnd = email.getRecipients(MimeMessage::Bcc).end();
              it != itEnd; ++it)
         {
-            sendMessage(QLatin1String("RCPT TO: <") % (*it)->getAddress() % QLatin1Char('>'));
+            sendMessage(QLatin1String("RCPT TO: <") % (*it)->address() % QLatin1Char('>'));
             waitForResponse();
 
             if (responseCode != 250) return false;

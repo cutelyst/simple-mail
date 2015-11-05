@@ -1,5 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This file is part of SmtpClient for Qt.
 
@@ -16,45 +17,45 @@
   See the LICENSE file for more details.
 */
 
-#include "emailaddress.h"
+#include "emailaddress_p.h"
 
-/* [1] Constructors and Destructors */
-
-EmailAddress::EmailAddress(const QString & address, const QString & name)
+EmailAddress::EmailAddress() : d_ptr(new EmailAddressPrivate)
 {
-    this->address = address;
-    this->name = name;
+
+}
+
+EmailAddress::EmailAddress(const QString &address, const QString &name) : d_ptr(new EmailAddressPrivate)
+{
+    Q_D(EmailAddress);
+    d->address = address;
+    d->name = name;
 }
 
 EmailAddress::~EmailAddress()
 {
+    delete d_ptr;
 }
-
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
 
 void EmailAddress::setName(const QString & name)
 {
-    this->name = name;
-
+    Q_D(EmailAddress);
+    d->name = name;
 }
 
 void EmailAddress::setAddress(const QString & address)
 {
-    this->address = address;
+    Q_D(EmailAddress);
+    d->address = address;
 }
 
-const QString & EmailAddress::getName() const
+QString EmailAddress::name() const
 {
-    return name;
+    Q_D(const EmailAddress);
+    return d->name;
 }
 
-const QString & EmailAddress::getAddress() const
+QString EmailAddress::address() const
 {
-    return address;
+    Q_D(const EmailAddress);
+    return d->address;
 }
-
-/* [2] --- */
-

@@ -1,5 +1,6 @@
 set(simplemailqt_SRC
     emailaddress.cpp
+    emailaddress_p.h
     mimeattachment.cpp
     mimecontentformatter.cpp
     mimefile.cpp

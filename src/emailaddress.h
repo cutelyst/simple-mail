@@ -1,5 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This file is part of SmtpClient for Qt.
 
@@ -23,39 +24,24 @@
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT EmailAddress : public QObject
+class EmailAddressPrivate;
+class SMTP_EXPORT EmailAddress
 {
-    Q_OBJECT
+    Q_DECLARE_PRIVATE(EmailAddress)
 public:
-
-    /* [1] Constructors and Destructors */
-
     EmailAddress();
-    EmailAddress(const QString &address, const QString &name = QLatin1String(""));
+    EmailAddress(const QString &address, const QString &name);
+    virtual ~EmailAddress();
 
-    ~EmailAddress();
+    QString name() const;
+    void setName(const QString &name);
 
-    /* [1] --- */
-
-
-    /* [2] Getters and Setters */
-    void setName(const QString & name);
-    void setAddress(const QString & address);
-
-    const QString & getName() const;
-    const QString & getAddress() const;
-
-    /* [2] --- */
+    QString address() const;
+    void setAddress(const QString &address);
 
 
-private:
-
-    /* [3] Private members */
-
-    QString name;
-    QString address;
-
-    /* [3] --- */
+protected:
+    EmailAddressPrivate *d_ptr;
 };
 
 #endif // EMAILADDRESS_H
