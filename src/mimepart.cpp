@@ -33,13 +33,13 @@ MimePart::~MimePart()
     return;
 }
 
-void MimePart::setContent(const QByteArray & content)
+void MimePart::setContent(const QByteArray &content)
 {
     Q_D(MimePart);
     d->content = content;
 }
 
-void MimePart::setHeader(const QString & header)
+void MimePart::setHeader(const QString &header)
 {
     Q_D(MimePart);
     d->header = header;
@@ -51,61 +51,61 @@ void MimePart::addHeaderLine(const QString &line)
     d->header.append(line % QLatin1String("\r\n"));
 }
 
-const QString& MimePart::getHeader() const
+QString MimePart::header() const
 {
     Q_D(const MimePart);
     return d->header;
 }
 
-const QByteArray& MimePart::getContent() const
+QByteArray MimePart::content() const
 {
     Q_D(const MimePart);
     return d->content;
 }
 
-void MimePart::setContentId(const QString & cId)
+void MimePart::setContentId(const QString &cId)
 {
     Q_D(MimePart);
     d->cId = cId;
 }
 
-const QString & MimePart::getContentId() const
+QString MimePart::contentId() const
 {
     Q_D(const MimePart);
     return d->cId;
 }
 
-void MimePart::setContentName(const QString & cName)
+void MimePart::setContentName(const QString &name)
 {
     Q_D(MimePart);
-    d->cName = cName;
+    d->cName = name;
 }
 
-const QString & MimePart::getContentName() const
+QString MimePart::contentName() const
 {
     Q_D(const MimePart);
     return d->cName;
 }
 
-void MimePart::setContentType(const QString & cType)
+void MimePart::setContentType(const QString &cType)
 {
     Q_D(MimePart);
     d->cType = cType;
 }
 
-const QString & MimePart::getContentType() const
+QString MimePart::contentType() const
 {
     Q_D(const MimePart);
     return d->cType;
 }
 
-void MimePart::setCharset(const QString & charset)
+void MimePart::setCharset(const QString &charset)
 {
     Q_D(MimePart);
     d->cCharset = charset;
 }
 
-const QString & MimePart::getCharset() const
+QString MimePart::charset() const
 {
     Q_D(const MimePart);
     return d->cCharset;
@@ -117,16 +117,16 @@ void MimePart::setEncoding(Encoding enc)
     d->cEncoding = enc;
 }
 
-MimePart::Encoding MimePart::getEncoding() const
+MimePart::Encoding MimePart::encoding() const
 {
     Q_D(const MimePart);
     return d->cEncoding;
 }
 
-MimeContentFormatter& MimePart::getContentFormatter()
+MimeContentFormatter *MimePart::contentFormatter()
 {
     Q_D(MimePart);
-    return d->formatter;
+    return &d->formatter;
 }
 
 QString MimePart::toString()

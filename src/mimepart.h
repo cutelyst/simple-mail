@@ -41,30 +41,30 @@ public:
     MimePart();
     ~MimePart();
 
-    const QString& getHeader() const;
-    const QByteArray& getContent() const;
+    QString header() const;
+    QByteArray content() const;
 
-    void setContent(const QByteArray & content);
-    void setHeader(const QString & header);
+    void setContent(const QByteArray &content);
+    void setHeader(const QString &header);
 
     void addHeaderLine(const QString &line);
 
-    void setContentId(const QString & cId);
-    const QString & getContentId() const;
+    void setContentId(const QString &cId);
+    QString contentId() const;
 
-    void setContentName(const QString & cName);
-    const QString & getContentName() const;
+    void setContentName(const QString &name);
+    QString contentName() const;
 
-    void setContentType(const QString & cType);
-    const QString & getContentType() const;
+    void setContentType(const QString &cType);
+    QString contentType() const;
 
-    void setCharset(const QString & charset);
-    const QString & getCharset() const;
+    void setCharset(const QString &charset);
+    QString charset() const;
 
     void setEncoding(Encoding enc);
-    Encoding getEncoding() const;
+    Encoding encoding() const;
 
-    MimeContentFormatter& getContentFormatter();
+    MimeContentFormatter *contentFormatter();
 
     virtual QString toString();
 
