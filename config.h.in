@@ -1,0 +1,28 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+/* always defined to indicate that i18n is enabled */
+#define ENABLE_NLS 1
+
+/* Gettext Package */
+#define GETTEXT_PACKAGE "@GETTEXT_PACKAGE@"
+
+/* Paths */
+#define LOCALEDIR "@LOCALE_DIR@"
+#define PKGDATADIR "@PKGDATADIR@"
+#define PKGLIBDIR "@PKGLIBDIR@"
+#define PREFIXDIR "@PREFIXDIR@"
+#define DATADIR "@DATADIR@"
+#define LIBDIR "@LIBDIR@"
+#define BUILDDIR "@BUILDDIR@"
+
+/* Name of package */
+#define PACKAGE_NAME "cutelyst"
+
+/* Version number of package */
+#define VERSION "@VERSION@"
+
+/* Directory where the plugins are located */
+#define CUTELYST_PLUGINS_DIR "@CUTELYST_PLUGINS_DIR@"
+
+#endif /*CONFIG_H*/

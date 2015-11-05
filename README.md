@@ -1,7 +1,7 @@
-SMTP Client for Qt (C++) - Version 1.1
+SMTP library for Qt (C++) - Version 0.1
 =============================================
 
-The SmtpClient for Qt is small library writen for Qt 4 (C++ version) that allows application to send complex emails (plain text, html, attachments, inline files, etc.) using the Simple Mail Transfer Protocol (SMTP).
+The SimpleMail is small library writen for Qt 5 (C++11 version) that allows application to send complex emails (plain text, html, attachments, inline files, etc.) using the Simple Mail Transfer Protocol (SMTP).
 
 ##New in version 1.1:
 
@@ -84,11 +84,6 @@ int main(int argc, char *argv[])
 }
 ```
 
-For more examples see the [Wiki/Examples](https://github.com/bluetiger9/SmtpClient-for-Qt/wiki/Examples).
-
 ## License
 
-This project (all files including the demos/examples) is licensed under the GNU LGPL, version 2.1.
-
-
-**Copyright (c) 2011 - Tőkés Attila**
+This project (all files including the demos/examples) is licensed under the GNU LGPL, version 2.1+.

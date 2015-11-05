@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/include
+
+Name: simplemail-qt5
+Description: SimpleMail library for Qt5
+Version: @VERSION@
+Requires: QtCore
+Libs: -L${libdir} -lsimplemail-qt5
+Cflags: -I${includedir}/simplemail-qt5/
