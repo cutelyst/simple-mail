@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,10 +18,6 @@
 #include "mimeattachment.h"
 #include "mimepart_p.h"
 
-#include <QFileInfo>
-
-/* [1] Constructors and Destructors */
-
 MimeAttachment::MimeAttachment(QFile *file)
     : MimeFile(file)
 {
@@ -36,11 +31,6 @@ MimeAttachment::~MimeAttachment()
 {
 }
 
-/* [1] --- */
-
-
-/* [2] Protected methods */
-
 void MimeAttachment::prepare()
 {
     d_ptr->header.append(QStringLiteral("Content-disposition: attachment\r\n"));
@@ -48,5 +38,3 @@ void MimeAttachment::prepare()
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();
 }
-
-/* [2] --- */

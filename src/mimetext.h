@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -26,15 +25,14 @@
 class SMTP_EXPORT MimeText : public MimePart
 {
 public:
-    MimeText(const QString &text = QLatin1String(""));
+    MimeText(const QString &text = QString());
     ~MimeText();
 
-    void setText(const QString & text);
-
-    const QString & getText() const;
+    void setText(const QString &text);
+    QString text() const;
 
 protected:
-    QString text;
+    QString m_text;
 
     void prepare();
 

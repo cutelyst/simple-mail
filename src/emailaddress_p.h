@@ -25,11 +25,6 @@
 class EmailAddressPrivate : public QSharedData
 {
 public:
-    EmailAddressPrivate() { }
-    EmailAddressPrivate(const EmailAddressPrivate &other)
-            : QSharedData(other), name(other.name), address(other.address) { }
-    ~EmailAddressPrivate() { }
-
     QString name;
     QString address;
 };

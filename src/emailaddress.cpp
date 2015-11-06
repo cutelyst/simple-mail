@@ -2,8 +2,6 @@
   Copyright (c) 2011-2012 - Tőkés Attila
   Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
-  This file is part of SmtpClient for Qt.
-
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
@@ -43,6 +41,7 @@ EmailAddress::~EmailAddress()
 EmailAddress &EmailAddress::operator=(const EmailAddress &other)
 {
     d_ptr = other.d_ptr;
+    return *this;
 }
 
 void EmailAddress::setName(const QString & name)

@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -27,35 +26,15 @@ class SMTP_EXPORT MimeHtml : public MimeText
 {
     Q_OBJECT
 public:
-
-    /* [1] Constructors and Destructors */
-
-    MimeHtml(const QString &html = QLatin1String(""));
+    MimeHtml(const QString &html = QString());
     ~MimeHtml();
 
-    /* [1] --- */
+    void setHtml(const QString &html);
 
-
-    /* [2] Getters and Setters */
-
-    void setHtml(const QString & html);
-
-    const QString& getHtml() const;
-
-    /* [2] --- */
+    QString html() const;
 
 protected:
-
-    /* [3] Protected members */
-
-    /* [3] --- */
-
-
-    /* [4] Protected methods */
-
     virtual void prepare();
-
-    /* [4] --- */
 };
 
 #endif // MIMEHTML_H

@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -41,7 +40,6 @@ QString QuotedPrintable::encode(const QByteArray &input)
 
     return output;
 }
-
 
 QByteArray QuotedPrintable::decode(const QString &input)
 {

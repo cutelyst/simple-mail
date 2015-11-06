@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -29,9 +28,6 @@ class SMTP_EXPORT SmtpClient : public QObject
 {
     Q_OBJECT
 public:
-
-    /* [0] Enumerations */
-
     enum AuthMethod
     {
         AuthPlain,
@@ -55,19 +51,9 @@ public:
         TlsConnection       // STARTTLS
     };
 
-    /* [0] --- */
-
-
-    /* [1] Constructors and Destructors */
-
     SmtpClient(const QString &host = QLatin1String("localhost"), int port = 25, ConnectionType ct = TcpConnection);
 
     ~SmtpClient();
-
-    /* [1] --- */
-
-
-    /* [2] Getters and Setters */
 
     const QString& getHost() const;
     void setHost(const QString &host);
@@ -104,12 +90,6 @@ public:
 
     QTcpSocket* getSocket();
 
-
-    /* [2] --- */
-
-
-    /* [3] Public methods */
-
     bool connectToHost();
 
     bool login();
@@ -119,13 +99,7 @@ public:
 
     void quit();
 
-
-    /* [3] --- */
-
 protected:
-
-    /* [4] Protected members */
-
     QTcpSocket *socket = nullptr;
 
     QString host;
@@ -149,36 +123,17 @@ protected:
     class ResponseTimeoutException {};
     class SendMessageTimeoutException {};
 
-    /* [4] --- */
-
-
-    /* [5] Protected methods */
-
     void waitForResponse();
 
     void sendMessage(const QString &text);
 
-    /* [5] --- */
-
 protected Q_SLOTS:
-
-    /* [6] Protected slots */
-
     void socketStateChanged(QAbstractSocket::SocketState state);
     void socketError(QAbstractSocket::SocketError error);
     void socketReadyRead();
 
-    /* [6] --- */
-
-
 Q_SIGNALS:
-
-    /* [7] Signals */
-
     void smtpError(SmtpClient::SmtpError e);
-
-    /* [7] --- */
-
 };
 
 #endif // SMTPCLIENT_H

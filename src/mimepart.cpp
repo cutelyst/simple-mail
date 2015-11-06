@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,8 +18,6 @@
 #include "mimepart_p.h"
 #include "quotedprintable.h"
 
-/* [1] Constructors and Destructors */
-
 MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
     Q_D(MimePart);
@@ -30,7 +27,7 @@ MimePart::MimePart() : d_ptr(new MimePartPrivate)
 
 MimePart::~MimePart()
 {
-    return;
+
 }
 
 void MimePart::setContent(const QByteArray &content)

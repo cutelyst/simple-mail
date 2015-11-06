@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,7 +22,6 @@
 #include "quotedprintable.h"
 #include <typeinfo>
 
-/* [1] Constructors and Destructors */
 MimeMessage::MimeMessage(bool createAutoMimeContent) :
     d_ptr(new MimeMessagePrivate)
 {
@@ -154,8 +152,7 @@ const QList<MimePart*> & MimeMessage::getParts() const
     Q_D(const MimeMessage);
     if (typeid(*d->content) == typeid(MimeMultiPart)) {
         return ((MimeMultiPart*) d->content)->getParts();
-    }
-    else {
+    } else {
         QList<MimePart*> *res = new QList<MimePart*>();
         res->append(d->content);
         return *res;
@@ -246,5 +243,3 @@ QString MimeMessagePrivate::encode(MimePart::Encoding codec, const QString &data
         return QLatin1Char(' ') % data;
     }
 }
-
-/* [3] --- */

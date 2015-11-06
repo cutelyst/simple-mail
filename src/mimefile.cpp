@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,8 +20,6 @@
 
 #include <QFileInfo>
 
-/* [1] Constructors and Destructors */
-
 MimeFile::MimeFile(QFile *file)
 {
     this->file = file;
@@ -35,38 +32,23 @@ MimeFile::MimeFile(const QByteArray& stream, const QString& fileName)
 {
     d_ptr->cEncoding = Base64;
     d_ptr->cType = QStringLiteral("application/octet-stream");
-    this->file = nullptr;
     d_ptr->cName = fileName;
     d_ptr->content = stream;
 }
 
 MimeFile::~MimeFile()
 {
-  if (file)
     delete file;
 }
 
-/* [1] --- */
-
-
-/* [2] Getters and setters */
-
-/* [2] --- */
-
-
-/* [3] Protected methods */
-
 void MimeFile::prepare()
 {
-  if (this->file)
-  {
-    file->open(QIODevice::ReadOnly);
-    d_ptr->content = file->readAll();
-    file->close();
-  }
+    if (this->file) {
+        file->open(QIODevice::ReadOnly);
+        d_ptr->content = file->readAll();
+        file->close();
+    }
+
     /* !!! IMPORTANT !!!! */
     MimePart::prepare();
 }
-
-/* [3] --- */
-

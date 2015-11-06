@@ -19,40 +19,28 @@
 #include "mimehtml.h"
 #include "mimepart_p.h"
 
-/* [1] Constructors and Destructors */
-
 MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 {
     d_ptr->cType = QStringLiteral("text/html");
 }
 
-MimeHtml::~MimeHtml() {}
-
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-
-void MimeHtml::setHtml(const QString & html)
+MimeHtml::~MimeHtml()
 {
-    this->text = html;
+
 }
 
-const QString & MimeHtml::getHtml() const
+void MimeHtml::setHtml(const QString &html)
 {
-    return text;
+    this->m_text = html;
 }
 
-
-/* [2] --- */
-
-
-/* [3] Protected methods */
+QString MimeHtml::html() const
+{
+    return m_text;
+}
 
 void MimeHtml::prepare()
 {
     /* !!! IMPORTANT !!! */
     MimeText::prepare();
 }
-
-/* [3] --- */

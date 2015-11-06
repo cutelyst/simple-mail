@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -28,35 +27,14 @@ class SMTP_EXPORT MimeFile : public MimePart
 {
     Q_OBJECT
 public:
-
-    /* [1] Constructors and Destructors */
-
     MimeFile(const QByteArray& stream, const QString& fileName);
     MimeFile(QFile *f);
     ~MimeFile();
 
-    /* [1] --- */
-
-
-    /* [2] Getters and Setters */
-
-    /* [2] --- */
-
 protected:
-
-    /* [3] Protected members */
-
-    QFile* file;
-
-    /* [3] --- */
-
-
-    /* [4] Protected methods */
+    QFile* file = nullptr;
 
     virtual void prepare();
-
-    /* [4] --- */
-
 };
 
 #endif // MIMEFILE_H

@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,9 +20,6 @@
 #include <QFileInfo>
 #include <QByteArray>
 
-
-/* [1] Constructors and destructors */
-
 SmtpClient::SmtpClient(const QString & host, int port, ConnectionType connectionType)
 {
     setConnectionType(connectionType);
@@ -39,15 +35,10 @@ SmtpClient::SmtpClient(const QString & host, int port, ConnectionType connection
             this, SLOT(socketReadyRead()));
 }
 
-SmtpClient::~SmtpClient() {
-    if (socket)
-        delete socket;
+SmtpClient::~SmtpClient()
+{
+    delete socket;
 }
-
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
 
 void SmtpClient::setUser(const QString &user)
 {
@@ -173,11 +164,6 @@ void SmtpClient::setSendMessageTimeout(int msec)
 {
   sendMessageTimeout = msec;
 }
-
-/* [2] --- */
-
-
-/* [3] Public methods */
 
 bool SmtpClient::connectToHost()
 {
@@ -425,11 +411,6 @@ void SmtpClient::quit()
     sendMessage(QStringLiteral("QUIT"));
 }
 
-/* [3] --- */
-
-
-/* [4] Protected methods */
-
 void SmtpClient::waitForResponse()
 {
     do {
@@ -471,11 +452,6 @@ void SmtpClient::sendMessage(const QString &text)
     }
 }
 
-/* [4] --- */
-
-
-/* [5] Slots for the socket's signals */
-
 void SmtpClient::socketStateChanged(QAbstractSocket::SocketState /*state*/)
 {
 }
@@ -487,9 +463,3 @@ void SmtpClient::socketError(QAbstractSocket::SocketError /*socketError*/)
 void SmtpClient::socketReadyRead()
 {
 }
-
-/* [5] --- */
-
-
-
-
