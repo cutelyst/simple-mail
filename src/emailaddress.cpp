@@ -56,6 +56,11 @@ void EmailAddress::setAddress(const QString & address)
     d->address = address;
 }
 
+EmailAddressPrivate *EmailAddress::d_func()
+{
+    return d_ptr.data();
+}
+
 QString EmailAddress::name() const
 {
     Q_D(const EmailAddress);
