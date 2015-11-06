@@ -13,7 +13,8 @@ set(simplemailqt_SRC
     mimepart_p.h
     mimetext.cpp
     quotedprintable.cpp
-    smtpclient.cpp
+    sender.cpp
+    sender_p.h
     smtpexports.h
 )
 
@@ -29,7 +30,7 @@ set(simplemailqt_HEADERS
     mimepart.h
     mimetext.h
     quotedprintable.h
-    smtpclient.h
+    sender.h
     smtpexports.h
     SmtpMime
 )

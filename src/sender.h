@@ -15,8 +15,8 @@
   See the LICENSE file for more details.
 */
 
-#ifndef SMTPCLIENT_H
-#define SMTPCLIENT_H
+#ifndef SIMPLEMAIL_SENDER_H
+#define SIMPLEMAIL_SENDER_H
 
 #include <QObject>
 #include <QtNetwork/QSslSocket>
@@ -24,9 +24,11 @@
 #include "mimemessage.h"
 #include "smtpexports.h"
 
-class SMTP_EXPORT SmtpClient : public QObject
+class SenderPrivate;
+class SMTP_EXPORT Sender : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Sender)
 public:
     enum AuthMethod
     {
@@ -51,17 +53,17 @@ public:
         TlsConnection       // STARTTLS
     };
 
-    SmtpClient(const QString &host = QLatin1String("localhost"), int port = 25, ConnectionType ct = TcpConnection);
+    Sender(const QString &host = QLatin1String("localhost"), int port = 25, ConnectionType ct = TcpConnection);
 
-    ~SmtpClient();
+    ~Sender();
 
-    const QString& getHost() const;
+    QString getHost() const;
     void setHost(const QString &host);
 
     int getPort() const;
     void setPort(int port);
 
-    const QString& getName() const;
+    QString getName() const;
     void setName(const QString &name);
 
     ConnectionType getConnectionType() const;
@@ -73,10 +75,10 @@ public:
     const QString & getPassword() const;
     void setPassword(const QString &password);
 
-    SmtpClient::AuthMethod getAuthMethod() const;
+    AuthMethod getAuthMethod() const;
     void setAuthMethod(AuthMethod method);
 
-    const QString & getResponseText() const;
+    QString getResponseText() const;
     int getResponseCode() const;
 
     int getConnectionTimeout() const;
@@ -100,26 +102,6 @@ public:
     void quit();
 
 protected:
-    QTcpSocket *socket = nullptr;
-
-    QString host;
-    int port;
-    ConnectionType connectionType;
-    QString name = QLatin1String("localhost");
-
-    QString user;
-    QString password;
-    AuthMethod authMethod = AuthPlain;
-
-    int connectionTimeout = 5000;
-    int responseTimeout = 5000;
-    int sendMessageTimeout = 60000;
-    
-    
-    QString responseText;
-    int responseCode;
-
-
     class ResponseTimeoutException {};
     class SendMessageTimeoutException {};
 
@@ -133,7 +115,10 @@ protected Q_SLOTS:
     void socketReadyRead();
 
 Q_SIGNALS:
-    void smtpError(SmtpClient::SmtpError e);
+    void smtpError(SmtpError e);
+
+protected:
+    SenderPrivate *d_ptr;
 };
 
-#endif // SMTPCLIENT_H
+#endif // SIMPLEMAIL_SENDER_H

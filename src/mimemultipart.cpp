@@ -73,7 +73,7 @@ void MimeMultiPart::setMimeType(const MultiPartType type)
     d_ptr->cType = MULTI_PART_NAMES[type];
 }
 
-MimeMultiPart::MultiPartType MimeMultiPart::getMimeType() const
+MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const
 {
     return type;
 }

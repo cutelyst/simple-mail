@@ -41,7 +41,7 @@ public:
     ~MimeMultiPart();
 
     void setMimeType(const MultiPartType type);
-    MultiPartType getMimeType() const;
+    MultiPartType mimeType() const;
 
     const QList<MimePart*> & getParts() const;
 
