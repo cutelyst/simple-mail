@@ -40,18 +40,18 @@ public:
     MimeMessage(bool createAutoMimeConent = true);
     ~MimeMessage();
 
-    void setSender(EmailAddress* e);
-    void addRecipient(EmailAddress* rcpt, RecipientType type = To);
-    void addTo(EmailAddress* rcpt);
-    void addCc(EmailAddress* rcpt);
-    void addBcc(EmailAddress* rcpt);
-    void setSubject(const QString & subject);
+    void setSender(const EmailAddress &sender);
+    void addRecipient(const EmailAddress &rcpt, RecipientType type = To);
+    void addTo(const EmailAddress &rcpt);
+    void addCc(const EmailAddress &rcpt);
+    void addBcc(const EmailAddress &rcpt);
+    void setSubject(const QString &subject);
     void addPart(MimePart* part);
 
     void setHeaderEncoding(MimePart::Encoding);
 
     EmailAddress sender() const;
-    const QList<EmailAddress*> & getRecipients(RecipientType type = To) const;
+    QList<EmailAddress> getRecipients(RecipientType type = To) const;
     QString subject() const;
     const QList<MimePart*> & getParts() const;
 

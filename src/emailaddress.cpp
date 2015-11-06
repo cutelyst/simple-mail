@@ -24,6 +24,11 @@ EmailAddress::EmailAddress() : d_ptr(new EmailAddressPrivate)
 
 }
 
+EmailAddress::EmailAddress(const EmailAddress &other) : d_ptr(other.d_ptr)
+{
+
+}
+
 EmailAddress::EmailAddress(const QString &address, const QString &name) : d_ptr(new EmailAddressPrivate)
 {
     Q_D(EmailAddress);
@@ -33,7 +38,11 @@ EmailAddress::EmailAddress(const QString &address, const QString &name) : d_ptr(
 
 EmailAddress::~EmailAddress()
 {
-//    delete d_ptr;
+}
+
+EmailAddress &EmailAddress::operator=(const EmailAddress &other)
+{
+    d_ptr = other.d_ptr;
 }
 
 void EmailAddress::setName(const QString & name)

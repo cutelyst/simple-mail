@@ -27,11 +27,11 @@ class MimeMessagePrivate
 public:
     inline static QString encode(MimePart::Encoding codec, const QString &data);
 
-    QList<EmailAddress*> recipientsTo;
-    QList<EmailAddress*> recipientsCc;
-    QList<EmailAddress*> recipientsBcc;
+    QList<EmailAddress> recipientsTo;
+    QList<EmailAddress> recipientsCc;
+    QList<EmailAddress> recipientsBcc;
     QString subject;
-    EmailAddress *sender;
+    EmailAddress sender;
     MimePart *content = nullptr;
     MimePart::Encoding encoding = MimePart::_8Bit;
     bool autoMimeContentCreated;
