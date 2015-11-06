@@ -166,57 +166,13 @@ QString MimeMessage::toString()
 
     QString mime;
 
-    /* =========== MIME HEADER ============ */
+    // Headers
+    mime.append(MimeMessagePrivate::encode(QStringLiteral("From:"), QList<EmailAddress>() << d->sender, d->encoding));
 
-    /* ---------- Sender / From ----------- */
-    mime = QStringLiteral("From:");
-    if (!d->sender.name().isEmpty())
-    {
-        mime.append(MimeMessagePrivate::encode(d->encoding, d->sender.name()));
-    }
-    mime += QStringLiteral(" <") % d->sender.address() % QStringLiteral(">\r\n");
-    /* ---------------------------------- */
+    mime.append(MimeMessagePrivate::encode(QStringLiteral("To:"), d->recipientsTo, d->encoding));
 
+    mime.append(MimeMessagePrivate::encode(QStringLiteral("Cc:"), d->recipientsCc, d->encoding));
 
-    /* ------- Recipients / To ---------- */
-    mime.append(QStringLiteral("To:"));
-    QList<EmailAddress>::const_iterator it;  int i;
-    for (i = 0, it = d->recipientsTo.constBegin(); it != d->recipientsTo.constEnd(); ++it, ++i)
-    {
-        if (i != 0) {
-            mime.append(QLatin1Char(','));
-        }
-
-        if (!(*it).name().isEmpty())
-        {
-            mime.append(MimeMessagePrivate::encode(d->encoding, (*it).name()));
-        }
-        mime += QStringLiteral(" <") % (*it).address() % QLatin1Char('>');
-    }
-    mime += QStringLiteral("\r\n");
-    /* ---------------------------------- */
-
-    /* ------- Recipients / Cc ---------- */
-    if (d->recipientsCc.size() != 0) {
-        mime += QStringLiteral("Cc:");
-    }
-
-    for (i = 0, it = d->recipientsCc.constBegin(); it != d->recipientsCc.constEnd(); ++it, ++i) {
-        if (i != 0) {
-            mime.append(QLatin1Char(','));
-        }
-
-        if (!(*it).name().isEmpty()) {
-            mime.append(MimeMessagePrivate::encode(d->encoding, (*it).name()));
-        }
-        mime += QLatin1String(" <") % (*it).address() % QLatin1Char('>');
-    }
-    if (!d->recipientsCc.isEmpty()) {
-        mime += QStringLiteral("\r\n");
-    }
-    /* ---------------------------------- */
-
-    /* ------------ Subject ------------- */
     mime += QStringLiteral("Subject: ");
 
     // TODO subject on previous implementation didn't prepend
@@ -228,6 +184,32 @@ QString MimeMessage::toString()
     mime += QStringLiteral("MIME-Version: 1.0\r\n");
 
     mime += d->content->toString();
+    return mime;
+}
+
+QString MimeMessagePrivate::encode(const QString &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec)
+{
+    if (emails.isEmpty()) {
+        return QString();
+    }
+
+    QString mime = addressKind;
+    bool first = true;
+    Q_FOREACH (const EmailAddress &email, emails) {
+        if (!first) {
+            mime.append(QLatin1Char(','));
+        } else {
+            first = false;
+        }
+
+        const QString name = email.name();
+        if (!name.isEmpty()) {
+            mime.append(MimeMessagePrivate::encode(codec, name));
+        }
+        mime += QStringLiteral(" <") % email.address() % QLatin1Char('>');
+    }
+    mime += QStringLiteral("\r\n");
+
     return mime;
 }
 

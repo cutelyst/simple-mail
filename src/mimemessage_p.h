@@ -25,6 +25,7 @@
 class MimeMessagePrivate
 {
 public:
+    inline static QString encode(const QString &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec);
     inline static QString encode(MimePart::Encoding codec, const QString &data);
 
     QList<EmailAddress> recipientsTo;
