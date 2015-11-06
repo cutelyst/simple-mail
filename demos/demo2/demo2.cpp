@@ -14,7 +14,7 @@
   See the LICENSE file for more details.
 */
 
-#include <QtWidgets>
+#include <QtWidgets/QApplication>
 
 #include "sendemail.h"
 #include "../../src/SmtpMime"
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     SendEmail form (NULL);
 
-    form.setWindowTitle("SmtpClient for Qt - Demo 2");
+    form.setWindowTitle(QLatin1String("SmtpClient for Qt - Demo 2"));
 
     form.show();
 

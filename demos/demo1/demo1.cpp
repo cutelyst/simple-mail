@@ -12,32 +12,32 @@ int main(int argc, char *argv[])
     // First we need to create an SmtpClient object
     // We will use the Gmail's smtp server (smtp.gmail.com, port 465, ssl)
 
-    SmtpClient smtp("smtp.gmail.com", 465, SmtpClient::SslConnection);
+    Sender smtp(QLatin1String("smtp.gmail.com"), 465, Sender::SslConnection);
 
     // We need to set the username (your email address) and password
     // for smtp authentification.
 
-    smtp.setUser("your_email_address@host.com");
-    smtp.setPassword("your_password");
+    smtp.setUser(QLatin1String("your_email_address@host.com"));
+    smtp.setPassword(QLatin1String("your_password"));
 
     // Now we create a MimeMessage object. This is the email.
 
     MimeMessage message;
 
-    EmailAddress sender("your_email_address@host.com", "Your Name");
-    message.setSender(&sender);
+    EmailAddress sender(QLatin1String("your_email_address@host.com"), QLatin1String("Your Name"));
+    message.setSender(sender);
 
-    EmailAddress to("recipient@host.com", "Recipient's Name");
-    message.addRecipient(&to);
+    EmailAddress to(QLatin1String("recipient@host.com"), QLatin1String("Recipient's Name"));
+    message.addRecipient(to);
 
-    message.setSubject("SmtpClient for Qt - Demo");
+    message.setSubject(QLatin1String("SmtpClient for Qt - Demo"));
 
     // Now add some text to the email.
     // First we create a MimeText object.
 
     MimeText text;
 
-    text.setText("Hi,\nThis is a simple email message.\n");
+    text.setText(QLatin1String("Hi,\nThis is a simple email message.\n"));
 
     // Now add it to the mail
 

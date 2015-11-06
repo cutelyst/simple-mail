@@ -28,7 +28,7 @@ class SMTP_EXPORT EmailAddress
 public:
     EmailAddress();
     EmailAddress(const EmailAddress &other);
-    EmailAddress(const QString &address, const QString &name);
+    EmailAddress(const QString &address, const QString &name = QString());
     virtual ~EmailAddress();
 
     EmailAddress &operator=(const EmailAddress &other);

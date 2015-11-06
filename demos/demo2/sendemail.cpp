@@ -37,19 +37,16 @@ SendEmail::~SendEmail()
     delete ui;
 }
 
-EmailAddress* SendEmail::stringToEmail(const QString &str)
+EmailAddress SendEmail::stringToEmail(const QString &str)
 {
-    int p1 = str.indexOf("<");
-    int p2 = str.indexOf(">");
+    int p1 = str.indexOf(QLatin1String("<"));
+    int p2 = str.indexOf(QLatin1String(">"));
 
-    if (p1 == -1)
-    {
+    if (p1 == -1) {
         // no name, only email address
-        return new EmailAddress(str);
-    }
-    else
-    {
-        return new EmailAddress(str.mid(p1 + 1, p2 - p1 - 1), str.left(p1));
+        return EmailAddress(str);
+    } else {
+        return EmailAddress(str.mid(p1 + 1, p2 - p1 - 1), str.left(p1));
     }
 
 }
@@ -75,14 +72,14 @@ void SendEmail::on_sendEmail_clicked()
     QString user = ui->username->text();
     QString password = ui->password->text();
 
-    EmailAddress *sender = stringToEmail(ui->sender->text());
+    EmailAddress sender = stringToEmail(ui->sender->text());
 
-    QStringList rcptStringList = ui->recipients->text().split(';');
+    QStringList rcptStringList = ui->recipients->text().split(QLatin1Char(';'));
 
     QString subject = ui->subject->text();
     QString html = ui->texteditor->toHtml();
 
-    SmtpClient smtp (host, port, ssl ? SmtpClient::SslConnection : SmtpClient::TcpConnection);
+    Sender smtp(host, port, ssl ? Sender::SslConnection : Sender::TcpConnection);
 
     MimeMessage message;
 
@@ -104,26 +101,26 @@ void SendEmail::on_sendEmail_clicked()
 
     if (!smtp.connectToHost())
     {
-        errorMessage("Connection Failed");
+        errorMessage(QLatin1String("Connection Failed"));
         return;
     }
 
     if (auth)
         if (!smtp.login(user, password))
         {
-            errorMessage("Authentification Failed");
+            errorMessage(QLatin1String("Authentification Failed"));
             return;
         }
 
     if (!smtp.sendMail(message))
     {
-        errorMessage("Mail sending failed");
+        errorMessage(QLatin1String("Mail sending failed"));
         return;
     }
     else
     {
         QMessageBox okMessage (this);
-        okMessage.setText("The email was succesfully sent.");
+        okMessage.setText(QLatin1String("The email was succesfully sent."));
         okMessage.exec();
     }
 

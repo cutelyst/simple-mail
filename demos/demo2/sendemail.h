@@ -21,8 +21,6 @@
 
 #include "../../src/SmtpMime"
 
-
-
 namespace Ui {
     class SendEmail;
 }
@@ -35,9 +33,9 @@ public:
     explicit SendEmail(QWidget *parent = 0);
     ~SendEmail();
 
-    static EmailAddress * stringToEmail(const QString & str);
+    static EmailAddress stringToEmail(const QString &str);
 
-private slots:
+private Q_SLOTS:
     void on_addAttachment_clicked();
 
     void on_sendEmail_clicked();

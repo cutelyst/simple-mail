@@ -24,43 +24,43 @@ int main(int argc, char *argv[])
 
     // First create the SmtpClient object and set the user and the password.
 
-    SmtpClient smtp("smtp.gmail.com", 465, SmtpClient::SslConnection);
+    Sender smtp(QLatin1String("smtp.gmail.com"), 465, Sender::SslConnection);
 
-    smtp.setUser("your_email@host.com");
-    smtp.setPassword("your_password");
+    smtp.setUser(QLatin1String("your_email@host.com"));
+    smtp.setPassword(QLatin1String("your_password"));
 
     // Create a MimeMessage
 
     MimeMessage message;
 
-    EmailAddress sender("your_email_address@host.com", "Your Name");
-    message.setSender(&sender);
+    EmailAddress sender(QLatin1String("your_email_address@host.com"), QLatin1String("Your Name"));
+    message.setSender(sender);
 
-    EmailAddress to("recipient@host.com", "Recipient's Name");
-    message.addRecipient(&to);
+    EmailAddress to(QLatin1String("recipient@host.com"), QLatin1String("Recipient's Name"));
+    message.addRecipient(to);
 
-    message.setSubject("SmtpClient for Qt - Example 3 - Html email with images");
+    message.setSubject(QLatin1String("SmtpClient for Qt - Example 4 - Html email with images"));
 
     // Now we need to create a MimeHtml object for HTML content
     MimeHtml html;
 
-    html.setHtml("<h1> Hello! </h1>"
-                 "<h2> This is the first image </h2>"
-                 "<img src='cid:image1' />"
-                 "<h2> This is the second image </h2>"
-                 "<img src='cid:image2' />");
+    html.setHtml(QLatin1String("<h1> Hello! </h1>"
+                               "<h2> This is the first image </h2>"
+                               "<img src='cid:image1' />"
+                               "<h2> This is the second image </h2>"
+                               "<img src='cid:image2' />"));
 
 
     // Create a MimeInlineFile object for each image
-    MimeInlineFile image1 (new QFile("image1.jpg"));
+    MimeInlineFile image1 (new QFile(QLatin1String("image1.jpg")));
 
     // An unique content id must be setted
-    image1.setContentId("image1");
-    image1.setContentType("image/jpg");
+    image1.setContentId(QLatin1String("image1"));
+    image1.setContentType(QLatin1String("image/jpg"));
 
-    MimeInlineFile image2 (new QFile("image2.jpg"));
-    image2.setContentId("image2");
-    image2.setContentType("image/jpg");
+    MimeInlineFile image2 (new QFile(QLatin1String("image2.jpg")));
+    image2.setContentId(QLatin1String("image2"));
+    image2.setContentType(QLatin1String("image/jpg"));
 
     message.addPart(&html);
     message.addPart(&image1);

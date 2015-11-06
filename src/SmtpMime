@@ -19,7 +19,7 @@
 #ifndef SMTPMIME_H
 #define SMTPMIME_H
 
-#include "smtpclient.h"
+#include "sender.h"
 #include "mimepart.h"
 #include "mimehtml.h"
 #include "mimeattachment.h"

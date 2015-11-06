@@ -24,39 +24,39 @@ int main(int argc, char *argv[])
 
     // First create the SmtpClient object and set the user and the password.
 
-    SmtpClient smtp("smtp.gmail.com", 465, SmtpClient::SslConnection);
+    Sender smtp(QLatin1String("smtp.gmail.com"), 465, Sender::SslConnection);
 
-    smtp.setUser("your_email@host.com");
-    smtp.setPassword("your_password");
+    smtp.setUser(QLatin1String("your_email@host.com"));
+    smtp.setPassword(QLatin1String("your_password"));
 
     // Create a MimeMessage
 
     MimeMessage message;
 
-    EmailAddress sender("your_email_address@host.com", "Your Name");
-    message.setSender(&sender);
+    EmailAddress sender(QLatin1String("your_email_address@host.com"), QLatin1String("Your Name"));
+    message.setSender(sender);
 
-    EmailAddress to("recipient@host.com", "Recipient's Name");
-    message.addRecipient(&to);
+    EmailAddress to(QLatin1String("recipient@host.com"), QLatin1String("Recipient's Name"));
+    message.addRecipient(to);
 
-    message.setSubject("SmtpClient for Qt - Demo");
+    message.setSubject(QLatin1String("SmtpClient for Qt - Demo"));
 
     // Add some text
     MimeText text;
-    text.setText("Hi!\n This is an email with some attachments.");
+    text.setText(QLatin1String("Hi!\n This is an email with some attachments."));
     message.addPart(&text);
 
     // Now we create the attachment object
-    MimeAttachment attachment (new QFile("image1.jpg"));
+    MimeAttachment attachment(new QFile(QLatin1String("image1.jpg")));
 
     // the file type can be setted. (by default is application/octet-stream)
-    attachment.setContentType("image/jpg");
+    attachment.setContentType(QLatin1String("image/jpg"));
 
     // Now add it to message
     message.addPart(&attachment);
 
     // Add an another attachment
-    MimeAttachment document(new QFile("document.pdf"));
+    MimeAttachment document(new QFile(QLatin1String("document.pdf")));
     message.addPart(&document);
 
     // Now we can send the mail
@@ -77,5 +77,4 @@ int main(int argc, char *argv[])
     }
 
     smtp.quit();
-
 }
