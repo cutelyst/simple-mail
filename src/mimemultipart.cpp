@@ -62,7 +62,7 @@ void MimeMultiPart::prepare()
 
     QList<MimePart*>::iterator it;
 
-    d->content = "";
+    d->content = QByteArray();
     for (it = parts.begin(); it != parts.end(); it++) {
         d->content += "--" + d->cBoundary.toLatin1() + "\r\n";
         (*it)->prepare();

@@ -45,7 +45,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="host"/>
+       <widget class="QLineEdit" name="host">
+        <property name="text">
+         <string>localhost</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_2">
@@ -68,8 +72,14 @@
       </item>
       <item>
        <widget class="QSpinBox" name="port">
+        <property name="minimum">
+         <number>1</number>
+        </property>
         <property name="maximum">
          <number>99999</number>
+        </property>
+        <property name="value">
+         <number>25</number>
         </property>
        </widget>
       </item>

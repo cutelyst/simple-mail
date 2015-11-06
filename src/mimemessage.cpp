@@ -18,7 +18,6 @@ x
 
 #include "mimemessage_p.h"
 
-#include <QDateTime>
 #include <QtCore/QStringBuilder>
 #include "quotedprintable.h"
 #include <typeinfo>
@@ -173,17 +172,12 @@ QString MimeMessage::toString()
 
     mime.append(MimeMessagePrivate::encode(QStringLiteral("Cc:"), d->recipientsCc, d->encoding));
 
-    mime += QStringLiteral("Subject: ");
+    mime.append(QStringLiteral("Subject:") % MimeMessagePrivate::encode(d->encoding, d->subject));
 
-    // TODO subject on previous implementation didn't prepend
-    // an empty space at the beggining, maybe add a conditional
-    // subject bool to encode()?
-    mime.append(MimeMessagePrivate::encode(d->encoding, d->subject));
+    mime.append(QStringLiteral("\r\nMIME-Version: 1.0\r\n"));
 
-    mime += QStringLiteral("\r\n");
-    mime += QStringLiteral("MIME-Version: 1.0\r\n");
+    mime.append(d->content->toString());
 
-    mime += d->content->toString();
     return mime;
 }
 
