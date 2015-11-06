@@ -35,16 +35,34 @@ Sender::~Sender()
     delete d_ptr;
 }
 
+QString Sender::host() const
+{
+    Q_D(const Sender);
+    return d->host;
+}
+
 void Sender::setUser(const QString &user)
 {
     Q_D(Sender);
     d->user = user;
 }
 
+QString Sender::password() const
+{
+    Q_D(const Sender);
+    return d->password;
+}
+
 void Sender::setPassword(const QString &password)
 {
     Q_D(Sender);
     d->password = password;
+}
+
+Sender::AuthMethod Sender::authMethod() const
+{
+    Q_D(const Sender);
+    return d->authMethod;
 }
 
 void Sender::setAuthMethod(AuthMethod method)
@@ -59,10 +77,34 @@ void Sender::setHost(const QString &host)
     d->host = host;
 }
 
+int Sender::port() const
+{
+    Q_D(const Sender);
+    return d->port;
+}
+
 void Sender::setPort(int port)
 {
     Q_D(Sender);
     d->port = port;
+}
+
+QString Sender::name() const
+{
+    Q_D(const Sender);
+    return d->name;
+}
+
+void Sender::setName(const QString &name)
+{
+    Q_D(Sender);
+    d->name = name;
+}
+
+Sender::ConnectionType Sender::connectionType() const
+{
+    Q_D(const Sender);
+    return d->connectionType;
 }
 
 void Sender::setConnectionType(ConnectionType connectionType)
@@ -89,73 +131,31 @@ void Sender::setConnectionType(ConnectionType connectionType)
             this, SLOT(socketReadyRead()));
 }
 
-QString Sender::getHost() const
-{
-    Q_D(const Sender);
-    return d->host;
-}
-
-const QString& Sender::getUser() const
+QString Sender::user() const
 {
     Q_D(const Sender);
     return d->user;
 }
 
-const QString& Sender::getPassword() const
-{
-    Q_D(const Sender);
-    return d->password;
-}
-
-Sender::AuthMethod Sender::getAuthMethod() const
-{
-    Q_D(const Sender);
-    return d->authMethod;
-}
-
-int Sender::getPort() const
-{
-    Q_D(const Sender);
-    return d->port;
-}
-
-Sender::ConnectionType Sender::getConnectionType() const
-{
-    Q_D(const Sender);
-    return d->connectionType;
-}
-
-QString Sender::getName() const
-{
-    Q_D(const Sender);
-    return d->name;
-}
-
-void Sender::setName(const QString &name)
-{
-    Q_D(Sender);
-    d->name = name;
-}
-
-QString Sender::getResponseText() const
+QString Sender::responseText() const
 {
     Q_D(const Sender);
     return d->responseText;
 }
 
-int Sender::getResponseCode() const
+int Sender::responseCode() const
 {
     Q_D(const Sender);
     return d->responseCode;
 }
 
-QTcpSocket* Sender::getSocket()
+QTcpSocket* Sender::socket()
 {
     Q_D(const Sender);
     return d->socket;
 }
 
-int Sender::getConnectionTimeout() const
+int Sender::connectionTimeout() const
 {
     Q_D(const Sender);
     return d->connectionTimeout;
@@ -167,7 +167,7 @@ void Sender::setConnectionTimeout(int msec)
     d->connectionTimeout = msec;
 }
 
-int Sender::getResponseTimeout() const
+int Sender::responseTimeout() const
 {
     Q_D(const Sender);
     return d->responseTimeout;
@@ -178,7 +178,7 @@ void Sender::setResponseTimeout(int msec)
     Q_D(Sender);
     d->responseTimeout = msec;
 }
-int Sender::getSendMessageTimeout() const
+int Sender::sendMessageTimeout() const
 {
     Q_D(const Sender);
     return d->sendMessageTimeout;

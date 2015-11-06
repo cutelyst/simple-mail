@@ -57,40 +57,40 @@ public:
 
     ~Sender();
 
-    QString getHost() const;
+    QString host() const;
     void setHost(const QString &host);
 
-    int getPort() const;
+    int port() const;
     void setPort(int port);
 
-    QString getName() const;
+    QString name() const;
     void setName(const QString &name);
 
-    ConnectionType getConnectionType() const;
+    ConnectionType connectionType() const;
     void setConnectionType(ConnectionType ct);
 
-    const QString & getUser() const;
+    QString user() const;
     void setUser(const QString &user);
 
-    const QString & getPassword() const;
+    QString password() const;
     void setPassword(const QString &password);
 
-    AuthMethod getAuthMethod() const;
+    AuthMethod authMethod() const;
     void setAuthMethod(AuthMethod method);
 
-    QString getResponseText() const;
-    int getResponseCode() const;
+    QString responseText() const;
+    int responseCode() const;
 
-    int getConnectionTimeout() const;
+    int connectionTimeout() const;
     void setConnectionTimeout(int msec);
 
-    int getResponseTimeout() const;
+    int responseTimeout() const;
     void setResponseTimeout(int msec);
     
-    int getSendMessageTimeout() const;
+    int sendMessageTimeout() const;
     void setSendMessageTimeout(int msec);
 
-    QTcpSocket* getSocket();
+    QTcpSocket* socket();
 
     bool connectToHost();
 
