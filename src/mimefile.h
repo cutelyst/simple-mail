@@ -25,9 +25,8 @@
 
 class SMTP_EXPORT MimeFile : public MimePart
 {
-    Q_OBJECT
 public:
-    MimeFile(const QByteArray& stream, const QString& fileName);
+    MimeFile(const QByteArray &stream, const QString &fileName);
     MimeFile(QFile *f);
     ~MimeFile();
 

@@ -63,7 +63,7 @@ void MimeContentFormatter::setMaxLength(int l)
     max_length = l;
 }
 
-int MimeContentFormatter::getMaxLength() const
+int MimeContentFormatter::maxLength() const
 {
     return max_length;
 }

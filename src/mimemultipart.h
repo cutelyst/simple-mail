@@ -18,13 +18,14 @@
 #ifndef MIMEMULTIPART_H
 #define MIMEMULTIPART_H
 
+#include <QtCore/QList>
+
 #include "mimepart.h"
 
 #include "smtpexports.h"
 
 class SMTP_EXPORT MimeMultiPart : public MimePart
 {
-    Q_OBJECT
 public:
     enum MultiPartType {
         Mixed           = 0,            // RFC 2046, section 5.1.3

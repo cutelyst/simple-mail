@@ -18,15 +18,15 @@
 #ifndef MIMEPART_H
 #define MIMEPART_H
 
-#include <QObject>
+#include <QtCore/QMetaType>
+
 #include "mimecontentformatter.h"
 
 #include "smtpexports.h"
 
 class MimePartPrivate;
-class SMTP_EXPORT MimePart : public QObject
+class SMTP_EXPORT MimePart
 {
-    Q_OBJECT
     Q_DECLARE_PRIVATE(MimePart)
 public:
     enum Encoding {        
@@ -37,7 +37,7 @@ public:
     };
 
     MimePart();
-    ~MimePart();
+    virtual ~MimePart();
 
     QString header() const;
     QByteArray content() const;

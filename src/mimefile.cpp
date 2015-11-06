@@ -28,7 +28,7 @@ MimeFile::MimeFile(QFile *file)
     d_ptr->cEncoding = Base64;
 }
 
-MimeFile::MimeFile(const QByteArray& stream, const QString& fileName)
+MimeFile::MimeFile(const QByteArray &stream, const QString &fileName)
 {
     d_ptr->cEncoding = Base64;
     d_ptr->cType = QStringLiteral("application/octet-stream");

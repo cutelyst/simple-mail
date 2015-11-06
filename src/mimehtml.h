@@ -24,7 +24,6 @@
 
 class SMTP_EXPORT MimeHtml : public MimeText
 {
-    Q_OBJECT
 public:
     MimeHtml(const QString &html = QString());
     ~MimeHtml();

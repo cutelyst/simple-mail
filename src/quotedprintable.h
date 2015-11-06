@@ -18,14 +18,12 @@
 #ifndef QUOTEDPRINTABLE_H
 #define QUOTEDPRINTABLE_H
 
-#include <QObject>
 #include <QByteArray>
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT QuotedPrintable : public QObject
+class SMTP_EXPORT QuotedPrintable
 {
-    Q_OBJECT
 public:
     static QString encode(const QByteArray &input);
     static QByteArray decode(const QString &input);

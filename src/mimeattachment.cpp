@@ -22,7 +22,7 @@ MimeAttachment::MimeAttachment(QFile *file)
     : MimeFile(file)
 {
 }
-MimeAttachment::MimeAttachment(const QByteArray& stream, const QString& fileName): MimeFile(stream, fileName)
+MimeAttachment::MimeAttachment(const QByteArray &stream, const QString &fileName): MimeFile(stream, fileName)
 {
 
 }

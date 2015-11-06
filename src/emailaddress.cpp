@@ -44,13 +44,12 @@ EmailAddress &EmailAddress::operator=(const EmailAddress &other)
     return *this;
 }
 
-void EmailAddress::setName(const QString & name)
+void EmailAddress::setName(const QString &name)
 {
     Q_D(EmailAddress);
     d->name = name;
 }
-
-void EmailAddress::setAddress(const QString & address)
+void EmailAddress::setAddress(const QString &address)
 {
     Q_D(EmailAddress);
     d->address = address;
