@@ -383,12 +383,9 @@ bool Sender::sendMail(MimeMessage& email)
         }
 
         // Send RCPT command for each recipient
-        QList<EmailAddress>::const_iterator it, itEnd;
         // To (primary recipients)
-        for (it = email.getRecipients().constBegin(), itEnd = email.getRecipients().constEnd();
-             it != itEnd; ++it)
-        {
-            sendMessage(QLatin1String("RCPT TO: <") + (*it).address() % QLatin1Char('>'));
+        Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::To)) {
+            sendMessage(QLatin1String("RCPT TO: <") + rcpt.address() % QLatin1Char('>'));
             waitForResponse();
 
             if (d->responseCode != 250) {
@@ -397,10 +394,8 @@ bool Sender::sendMail(MimeMessage& email)
         }
 
         // Cc (carbon copy)
-        for (it = email.getRecipients(MimeMessage::Cc).constBegin(), itEnd = email.getRecipients(MimeMessage::Cc).constEnd();
-             it != itEnd; ++it)
-        {
-            sendMessage(QLatin1String("RCPT TO: <") % (*it).address() % QLatin1Char('>'));
+        Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::Cc)) {
+            sendMessage(QLatin1String("RCPT TO: <") + rcpt.address() % QLatin1Char('>'));
             waitForResponse();
 
             if (d->responseCode != 250) {
@@ -409,10 +404,8 @@ bool Sender::sendMail(MimeMessage& email)
         }
 
         // Bcc (blind carbon copy)
-        for (it = email.getRecipients(MimeMessage::Bcc).constBegin(), itEnd = email.getRecipients(MimeMessage::Bcc).constEnd();
-             it != itEnd; ++it)
-        {
-            sendMessage(QLatin1String("RCPT TO: <") % (*it).address() % QLatin1Char('>'));
+        Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::Bcc)) {
+            sendMessage(QLatin1String("RCPT TO: <") + rcpt.address() % QLatin1Char('>'));
             waitForResponse();
 
             if (d->responseCode != 250) {
