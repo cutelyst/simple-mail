@@ -33,44 +33,52 @@ const QString MULTI_PART_NAMES[] = {
 
 MimeMultiPart::MimeMultiPart(MultiPartType type)
 {
+    Q_D(MimePart);
     this->type = type;
-    d_ptr->cType = MULTI_PART_NAMES[type];
-    d_ptr->cEncoding = _8Bit;
+    d->cType = MULTI_PART_NAMES[type];
+    d->cEncoding = _8Bit;
 
-    d_ptr->cBoundary = QString::fromLatin1(QUuid::createUuid().toRfc4122().toHex());
+    d->cBoundary = QString::fromLatin1(QUuid::createUuid().toRfc4122().toHex());
 }
 
-MimeMultiPart::~MimeMultiPart() {
+MimeMultiPart::~MimeMultiPart()
+{
 
 }
 
-void MimeMultiPart::addPart(MimePart *part) {
+void MimeMultiPart::addPart(MimePart *part)
+{
     parts.append(part);
 }
 
-const QList<MimePart*> & MimeMultiPart::getParts() const {
+const QList<MimePart*> & MimeMultiPart::getParts() const
+{
     return parts;
 }
 
-void MimeMultiPart::prepare() {
+void MimeMultiPart::prepare()
+{
+    Q_D(MimePart);
+
     QList<MimePart*>::iterator it;
 
-    d_ptr->content = "";
+    d->content = "";
     for (it = parts.begin(); it != parts.end(); it++) {
-        d_ptr->content += "--" + d_ptr->cBoundary.toLatin1() + "\r\n";
+        d->content += "--" + d->cBoundary.toLatin1() + "\r\n";
         (*it)->prepare();
-        d_ptr->content += (*it)->toString().toUtf8();
+        d->content += (*it)->toString().toUtf8();
     };
 
-    d_ptr->content += "--" + d_ptr->cBoundary.toLatin1() + "--\r\n";
+    d->content += "--" + d->cBoundary.toLatin1() + "--\r\n";
 
     MimePart::prepare();
 }
 
 void MimeMultiPart::setMimeType(const MultiPartType type)
 {
+    Q_D(MimePart);
+    d->cType = MULTI_PART_NAMES[type];
     this->type = type;
-    d_ptr->cType = MULTI_PART_NAMES[type];
 }
 
 MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const

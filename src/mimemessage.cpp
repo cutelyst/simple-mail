@@ -2,6 +2,7 @@
   Copyright (c) 2011-2012 - Tőkés Attila
   Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
+x
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
@@ -177,7 +178,7 @@ QString MimeMessage::toString()
     /* ---------------------------------- */
 
 
-    /* ------- Recipients / To ---------- */    
+    /* ------- Recipients / To ---------- */
     mime.append(QStringLiteral("To:"));
     QList<EmailAddress>::const_iterator it;  int i;
     for (i = 0, it = d->recipientsTo.constBegin(); it != d->recipientsTo.constEnd(); ++it, ++i)

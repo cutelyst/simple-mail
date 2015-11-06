@@ -21,7 +21,8 @@
 
 MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 {
-    d_ptr->cType = QStringLiteral("text/html");
+    Q_D(MimePart);
+    d->cType = QStringLiteral("text/html");
 }
 
 MimeHtml::~MimeHtml()

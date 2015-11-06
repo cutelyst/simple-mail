@@ -22,7 +22,7 @@
 
 #include "mimepart.h"
 
-class MimePartPrivate
+class MimePartPrivate : public QSharedData
 {
 public:
     QString header;

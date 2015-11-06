@@ -38,7 +38,7 @@ public:
     };
 
     MimeMultiPart(const MultiPartType type = Related);
-    ~MimeMultiPart();
+    virtual ~MimeMultiPart();
 
     void setMimeType(const MultiPartType type);
     MultiPartType mimeType() const;

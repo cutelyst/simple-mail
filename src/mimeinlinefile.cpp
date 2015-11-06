@@ -29,8 +29,9 @@ MimeInlineFile::~MimeInlineFile()
 }
 
 void MimeInlineFile::prepare()
-{       
-    d_ptr->header.append(QStringLiteral("Content-Disposition: inline\r\n"));
+{
+    Q_D(MimePart);
+    d->header.append(QStringLiteral("Content-Disposition: inline\r\n"));
 
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();

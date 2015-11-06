@@ -18,7 +18,7 @@
 #ifndef MIMEPART_H
 #define MIMEPART_H
 
-#include <QtCore/QMetaType>
+#include <QtCore/QSharedDataPointer>
 
 #include "mimecontentformatter.h"
 
@@ -27,7 +27,6 @@
 class MimePartPrivate;
 class SMTP_EXPORT MimePart
 {
-    Q_DECLARE_PRIVATE(MimePart)
 public:
     enum Encoding {        
         _7Bit,
@@ -37,7 +36,10 @@ public:
     };
 
     MimePart();
+    MimePart(const MimePart &other);
     virtual ~MimePart();
+
+    MimePart &operator=(const MimePart &other);
 
     QString header() const;
     QByteArray content() const;
@@ -69,7 +71,14 @@ public:
     virtual void prepare();
 
 protected:
-    MimePartPrivate *d_ptr;
+    QSharedDataPointer<MimePartPrivate> d_ptr;
+
+    // Q_DECLARE_PRIVATE equivalent for shared data pointers
+    MimePartPrivate* d_func();
+    inline const MimePartPrivate* d_func() const
+    {
+        return d_ptr.constData();
+    }
 };
 
 #endif // MIMEPART_H

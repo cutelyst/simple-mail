@@ -25,6 +25,11 @@ MimePart::MimePart() : d_ptr(new MimePartPrivate)
     d->prepared = false;
 }
 
+MimePart::MimePart(const MimePart &other)
+{
+
+}
+
 MimePart::~MimePart()
 {
 
@@ -213,4 +218,9 @@ void MimePart::prepare()
 
     d->prepared = true;
     d->mimeString = mimeString;
+}
+
+MimePartPrivate *MimePart::d_func()
+{
+    return d_ptr.data();
 }

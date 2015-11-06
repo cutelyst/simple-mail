@@ -21,10 +21,11 @@
 
 MimeText::MimeText(const QString &txt)
 {
+    Q_D(MimePart);
     this->m_text = txt;
-    d_ptr->cType = QStringLiteral("text/plain");
-    d_ptr->cCharset = QStringLiteral("utf-8");
-    d_ptr->cEncoding = _8Bit;
+    d->cType = QStringLiteral("text/plain");
+    d->cCharset = QStringLiteral("utf-8");
+    d->cEncoding = _8Bit;
 }
 
 MimeText::~MimeText()
@@ -44,7 +45,8 @@ QString MimeText::text() const
 
 void MimeText::prepare()
 {
-    d_ptr->content = m_text.toUtf8();
+    Q_D(MimePart);
+    d->content = m_text.toUtf8();
 
     /* !!! IMPORTANT !!! */
     MimePart::prepare();

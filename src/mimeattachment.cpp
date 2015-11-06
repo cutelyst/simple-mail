@@ -22,6 +22,7 @@ MimeAttachment::MimeAttachment(QFile *file)
     : MimeFile(file)
 {
 }
+
 MimeAttachment::MimeAttachment(const QByteArray &stream, const QString &fileName): MimeFile(stream, fileName)
 {
 
@@ -33,7 +34,8 @@ MimeAttachment::~MimeAttachment()
 
 void MimeAttachment::prepare()
 {
-    d_ptr->header.append(QStringLiteral("Content-disposition: attachment\r\n"));
+    Q_D(MimePart);
+    d->header.append(QStringLiteral("Content-disposition: attachment\r\n"));
 
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();
