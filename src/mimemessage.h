@@ -52,7 +52,7 @@ public:
     EmailAddress sender() const;
     QList<EmailAddress> getRecipients(RecipientType type = To) const;
     QString subject() const;
-    QList<MimePart *> getParts() const;
+    QList<MimePart *> parts() const;
 
     MimePart& getContent();
     void setContent(MimePart *content);

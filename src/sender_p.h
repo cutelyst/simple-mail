@@ -41,7 +41,7 @@ public:
     int sendMessageTimeout = 60000;
 
 
-    QString responseText;
+    QByteArray responseText;
     int responseCode;
 };
 

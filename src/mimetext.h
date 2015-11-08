@@ -32,10 +32,7 @@ public:
     QString text() const;
 
 protected:
-    QString m_text;
-
-    void prepare();
-
+    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMETEXT_H

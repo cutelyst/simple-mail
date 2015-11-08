@@ -147,11 +147,11 @@ QString MimeMessage::subject() const
     return d->subject;
 }
 
-QList<MimePart*> MimeMessage::getParts() const
+QList<MimePart*> MimeMessage::parts() const
 {
     Q_D(const MimeMessage);
     if (typeid(*d->content) == typeid(MimeMultiPart)) {
-        return ((MimeMultiPart*) d->content)->getParts();
+        return ((MimeMultiPart*) d->content)->parts();
     } else {
         QList<MimePart*> *res = new QList<MimePart*>();
         res->append(d->content);

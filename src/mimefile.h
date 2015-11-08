@@ -31,9 +31,7 @@ public:
     ~MimeFile();
 
 protected:
-    QFile* file = nullptr;
-
-    virtual void prepare();
+    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMEFILE_H

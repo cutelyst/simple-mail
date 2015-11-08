@@ -16,13 +16,12 @@
   See the LICENSE file for more details.
 */
 
-#include "mimetext.h"
-#include "mimepart_p.h"
+#include "mimetext_p.h"
 
-MimeText::MimeText(const QString &txt)
+MimeText::MimeText(const QString &txt) : MimePart(new MimeTextPrivate)
 {
     Q_D(MimePart);
-    this->m_text = txt;
+    static_cast<MimeTextPrivate*>(d)->text = txt;
     d->cType = QStringLiteral("text/plain");
     d->cCharset = QStringLiteral("utf-8");
     d->cEncoding = _8Bit;
@@ -35,18 +34,20 @@ MimeText::~MimeText()
 
 void MimeText::setText(const QString &text)
 {
-    this->m_text = text;
+    Q_D(MimePart);
+    static_cast<MimeTextPrivate*>(d)->text = text;
 }
 
 QString MimeText::text() const
 {
-    return m_text;
+    Q_D(const MimePart);
+    return static_cast<const MimeTextPrivate*>(d)->text;
 }
 
 void MimeText::prepare()
 {
     Q_D(MimePart);
-    d->content = m_text.toUtf8();
+    d->content = static_cast<MimeTextPrivate*>(d)-> text.toUtf8();
 
     /* !!! IMPORTANT !!! */
     MimePart::prepare();

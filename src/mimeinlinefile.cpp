@@ -18,21 +18,13 @@
 #include "mimeinlinefile.h"
 #include "mimepart_p.h"
 
-MimeInlineFile::MimeInlineFile(QFile *f)
-    : MimeFile(f)
+MimeInlineFile::MimeInlineFile(QFile *f) : MimeFile(f)
 {
+    Q_D(MimePart);
+    d->header.append(QStringLiteral("Content-Disposition: inline\r\n"));
 }
 
 MimeInlineFile::~MimeInlineFile()
 {
 
-}
-
-void MimeInlineFile::prepare()
-{
-    Q_D(MimePart);
-    d->header.append(QStringLiteral("Content-Disposition: inline\r\n"));
-
-    /* !!! IMPORTANT !!! */
-    MimeFile::prepare();
 }

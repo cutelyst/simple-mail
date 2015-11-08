@@ -33,7 +33,7 @@ public:
     ~MimeAttachment();
 
 protected:
-    virtual void prepare();
+    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMEATTACHMENT_H

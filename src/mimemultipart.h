@@ -43,11 +43,11 @@ public:
     void setMimeType(const MultiPartType type);
     MultiPartType mimeType() const;
 
-    QList<MimePart *> getParts() const;
-
+    QList<MimePart *> parts() const;
     void addPart(MimePart *part);
 
-    virtual void prepare();
+protected:
+    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMEMULTIPART_H

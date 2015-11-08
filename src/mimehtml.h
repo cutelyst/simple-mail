@@ -29,11 +29,10 @@ public:
     ~MimeHtml();
 
     void setHtml(const QString &html);
-
     QString html() const;
 
 protected:
-    virtual void prepare();
+    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMEHTML_H

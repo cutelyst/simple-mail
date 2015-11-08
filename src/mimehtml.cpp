@@ -17,7 +17,7 @@
 */
 
 #include "mimehtml.h"
-#include "mimepart_p.h"
+#include "mimetext_p.h"
 
 MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 {
@@ -32,12 +32,14 @@ MimeHtml::~MimeHtml()
 
 void MimeHtml::setHtml(const QString &html)
 {
-    this->m_text = html;
+    Q_D(MimePart);
+    static_cast<MimeTextPrivate*>(d)->text = html;
 }
 
 QString MimeHtml::html() const
 {
-    return m_text;
+    Q_D(const MimePart);
+    return static_cast<const MimeTextPrivate*>(d)->text;
 }
 
 void MimeHtml::prepare()

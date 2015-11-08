@@ -27,9 +27,6 @@ class SMTP_EXPORT MimeInlineFile : public MimeFile
 public:
     MimeInlineFile(QFile *f);
     ~MimeInlineFile();
-
-protected:
-    virtual void prepare();
 };
 
 #endif // MIMEINLINEFILE_H

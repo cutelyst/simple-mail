@@ -137,7 +137,7 @@ QString Sender::user() const
     return d->user;
 }
 
-QString Sender::responseText() const
+QByteArray Sender::responseText() const
 {
     Q_D(const Sender);
     return d->responseText;
@@ -147,12 +147,6 @@ int Sender::responseCode() const
 {
     Q_D(const Sender);
     return d->responseCode;
-}
-
-QTcpSocket* Sender::socket()
-{
-    Q_D(const Sender);
-    return d->socket;
 }
 
 int Sender::connectionTimeout() const
@@ -230,7 +224,7 @@ bool Sender::connectToHost()
 
         // Send a EHLO/HELO message to the server
         // The client's first command must be EHLO/HELO
-        sendMessage(QLatin1String("EHLO ") % d->name);
+        sendMessage("EHLO " + d->name.toLatin1());
 
         // Wait for the server's response
         waitForResponse();
@@ -243,7 +237,7 @@ bool Sender::connectToHost()
 
         if (d->connectionType == TlsConnection) {
             // send a request to start TLS handshake
-            sendMessage(QStringLiteral("STARTTLS"));
+            sendMessage(QByteArrayLiteral("STARTTLS"));
 
             // Wait for the server's response
             waitForResponse();
@@ -267,7 +261,7 @@ bool Sender::connectToHost()
             }
 
             // Send ELHO one more time
-            sendMessage(QLatin1String("EHLO ") % d->name);
+            sendMessage(QByteArrayLiteral("EHLO ") + d->name.toLatin1());
 
             // Wait for the server's response
             waitForResponse();
@@ -306,7 +300,7 @@ bool Sender::login(const QString &user, const QString &password, AuthMethod meth
         {
             // Sending command: AUTH PLAIN base64('\0' + username + '\0' + password)
             QString userpass = QLatin1Char('\0') % user % QLatin1Char('\0') % password;
-            sendMessage(QLatin1String("AUTH PLAIN ") % QString::fromLatin1(userpass.toLatin1().toBase64()));
+            sendMessage(QByteArrayLiteral("AUTH PLAIN ") + userpass.toLatin1().toBase64());
 
             // Wait for the server's response
             waitForResponse();
@@ -320,7 +314,7 @@ bool Sender::login(const QString &user, const QString &password, AuthMethod meth
         else if (method == AuthLogin)
         {
             // Sending command: AUTH LOGIN
-            sendMessage(QStringLiteral("AUTH LOGIN"));
+            sendMessage(QByteArrayLiteral("AUTH LOGIN"));
 
             // Wait for 334 response code
             waitForResponse();
@@ -330,7 +324,7 @@ bool Sender::login(const QString &user, const QString &password, AuthMethod meth
             }
 
             // Send the username in base64
-            sendMessage(QString::fromLatin1(user.toLatin1().toBase64()));
+            sendMessage(user.toLatin1().toBase64());
 
             // Wait for 334
             waitForResponse();
@@ -340,7 +334,7 @@ bool Sender::login(const QString &user, const QString &password, AuthMethod meth
             }
 
             // Send the password in base64
-            sendMessage(QString::fromLatin1(password.toUtf8().toBase64()));
+            sendMessage(password.toUtf8().toBase64());
 
             // Wait for the server's responce
             waitForResponse();
@@ -368,13 +362,13 @@ bool Sender::login(const QString &user, const QString &password, AuthMethod meth
     return true;
 }
 
-bool Sender::sendMail(MimeMessage& email)
+bool Sender::sendMail(MimeMessage &email)
 {
     Q_D(Sender);
     try
     {
         // Send the MAIL command with the sender
-        sendMessage(QLatin1String("MAIL FROM: <") % email.sender().address() % QLatin1String(">"));
+        sendMessage("MAIL FROM: <" + email.sender().address().toLatin1() + '>');
 
         waitForResponse();
 
@@ -385,7 +379,7 @@ bool Sender::sendMail(MimeMessage& email)
         // Send RCPT command for each recipient
         // To (primary recipients)
         Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::To)) {
-            sendMessage(QLatin1String("RCPT TO: <") + rcpt.address() % QLatin1Char('>'));
+            sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
             waitForResponse();
 
             if (d->responseCode != 250) {
@@ -395,7 +389,7 @@ bool Sender::sendMail(MimeMessage& email)
 
         // Cc (carbon copy)
         Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::Cc)) {
-            sendMessage(QLatin1String("RCPT TO: <") + rcpt.address() % QLatin1Char('>'));
+            sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
             waitForResponse();
 
             if (d->responseCode != 250) {
@@ -405,7 +399,7 @@ bool Sender::sendMail(MimeMessage& email)
 
         // Bcc (blind carbon copy)
         Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::Bcc)) {
-            sendMessage(QLatin1String("RCPT TO: <") + rcpt.address() % QLatin1Char('>'));
+            sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
             waitForResponse();
 
             if (d->responseCode != 250) {
@@ -414,17 +408,17 @@ bool Sender::sendMail(MimeMessage& email)
         }
 
         // Send DATA command
-        sendMessage(QStringLiteral("DATA"));
+        sendMessage(QByteArrayLiteral("DATA"));
         waitForResponse();
 
         if (d->responseCode != 354) {
             return false;
         }
 
-        sendMessage(email.toString());
+        sendMessage(email.toString().toUtf8());
 
         // Send \r\n.\r\n to end the mail data
-        sendMessage(QStringLiteral("."));
+        sendMessage(QByteArrayLiteral("."));
 
         waitForResponse();
 
@@ -446,7 +440,7 @@ bool Sender::sendMail(MimeMessage& email)
 
 void Sender::quit()
 {
-    sendMessage(QStringLiteral("QUIT"));
+    sendMessage(QByteArrayLiteral("QUIT"));
 }
 
 void Sender::waitForResponse()
@@ -461,7 +455,7 @@ void Sender::waitForResponse()
 
         while (d->socket->canReadLine()) {
             // Save the server's response
-            d->responseText = QString::fromLatin1(d->socket->readLine());
+            d->responseText = d->socket->readLine();
 
             // Extract the respose code from the server's responce (first 3 digits)
             d->responseCode = d->responseText.left(3).toInt();
@@ -474,17 +468,18 @@ void Sender::waitForResponse()
                 Q_EMIT smtpError(ClientError);
             }
 
-            if (d->responseText[3] == QLatin1Char(' ')) {
+            if (d->responseText[3] == ' ') {
                 return;
             }
         }
     } while (true);
 }
 
-void Sender::sendMessage(const QString &text)
+void Sender::sendMessage(const QByteArray &data)
 {
     Q_D(Sender);
-    d->socket->write(text.toUtf8() + "\r\n");
+    d->socket->write(data);
+    d->socket->write("\r\n", 2);
     if (!d->socket->waitForBytesWritten(d->sendMessageTimeout)) {
         Q_EMIT smtpError(SendDataTimeoutError);
         throw SendMessageTimeoutException();

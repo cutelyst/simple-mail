@@ -17,31 +17,17 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef MIMEPART_P_H
-#define MIMEPART_P_H
+#ifndef MIMETEXT_P_H
+#define MIMETEXT_P_H
 
-#include "mimepart.h"
+#include "mimetext.h"
+#include "mimepart_p.h"
 
-class QFile;
-class MimePartPrivate : public QSharedData
+class MimeTextPrivate : public MimePartPrivate
 {
 public:
-    QString header;
-    QByteArray content;
-    QFile *contentFile = nullptr;
-
-    QString cId;
-    QString cName;
-    QString cType;
-    QString cCharset;
-    QString cBoundary;
-
-    QString mimeString;
-
-    MimeContentFormatter formatter;
-    MimePart::Encoding cEncoding;
-    bool prepared;
+    QString text;
 };
 
-#endif // MIMEPART_P_H
+#endif // MIMETEXT_P_H
 

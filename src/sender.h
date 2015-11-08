@@ -54,8 +54,7 @@ public:
     };
 
     Sender(const QString &host = QLatin1String("localhost"), int port = 25, ConnectionType ct = TcpConnection);
-
-    ~Sender();
+    virtual ~Sender();
 
     QString host() const;
     void setHost(const QString &host);
@@ -78,7 +77,7 @@ public:
     AuthMethod authMethod() const;
     void setAuthMethod(AuthMethod method);
 
-    QString responseText() const;
+    QByteArray responseText() const;
     int responseCode() const;
 
     int connectionTimeout() const;
@@ -90,14 +89,12 @@ public:
     int sendMessageTimeout() const;
     void setSendMessageTimeout(int msec);
 
-    QTcpSocket* socket();
-
     bool connectToHost();
 
     bool login();
     bool login(const QString &user, const QString &password, AuthMethod method = AuthLogin);
 
-    bool sendMail(MimeMessage& email);
+    bool sendMail(MimeMessage &email);
 
     void quit();
 
@@ -107,7 +104,7 @@ protected:
 
     void waitForResponse();
 
-    void sendMessage(const QString &text);
+    void sendMessage(const QByteArray &data);
 
 protected Q_SLOTS:
     void socketStateChanged(QAbstractSocket::SocketState state);
