@@ -57,7 +57,7 @@ public:
     MimePart& getContent();
     void setContent(MimePart *content);
 
-    virtual QString toString();
+    virtual QByteArray data();
 
 protected:
     MimeMessagePrivate *d_ptr;

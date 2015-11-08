@@ -62,11 +62,11 @@ void MimeMultiPart::prepare()
     auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
     d->content = QByteArray();
     Q_FOREACH (MimePart *part, parts) {
-        d->content += "--" + d->cBoundary.toLatin1() + "\r\n";
+        d->content.append("--" + d->cBoundary.toLatin1() + "\r\n");
         part->prepare();
-        d->content += part->toString().toUtf8();
+        d->content.append(part->data());
     }
-    d->content += "--" + d->cBoundary.toLatin1() + "--\r\n";
+    d->content.append("--" + d->cBoundary.toLatin1() + "--\r\n");
 
     MimePart::prepare();
 }

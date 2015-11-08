@@ -159,64 +159,64 @@ QList<MimePart*> MimeMessage::parts() const
     }
 }
 
-QString MimeMessage::toString()
+QByteArray MimeMessage::data()
 {
     Q_D(const MimeMessage);
 
-    QString mime;
+    QByteArray mime;
 
     // Headers
-    mime.append(MimeMessagePrivate::encode(QStringLiteral("From:"), QList<EmailAddress>() << d->sender, d->encoding));
+    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("From:"), QList<EmailAddress>() << d->sender, d->encoding));
 
-    mime.append(MimeMessagePrivate::encode(QStringLiteral("To:"), d->recipientsTo, d->encoding));
+    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("To:"), d->recipientsTo, d->encoding));
 
-    mime.append(MimeMessagePrivate::encode(QStringLiteral("Cc:"), d->recipientsCc, d->encoding));
+    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("Cc:"), d->recipientsCc, d->encoding));
 
-    mime.append(QStringLiteral("Subject:") % MimeMessagePrivate::encode(d->encoding, d->subject));
+    mime.append(QByteArrayLiteral("Subject:") + MimeMessagePrivate::encodeData(d->encoding, d->subject));
 
-    mime.append(QStringLiteral("\r\nMIME-Version: 1.0\r\n"));
+    mime.append(QByteArrayLiteral("\r\nMIME-Version: 1.0\r\n"));
 
-    mime.append(d->content->toString());
+    mime.append(d->content->data());
 
     return mime;
 }
 
-QString MimeMessagePrivate::encode(const QString &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec)
+QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec)
 {
     if (emails.isEmpty()) {
-        return QString();
+        return QByteArray();
     }
 
-    QString mime = addressKind;
+    QByteArray mime = addressKind;
     bool first = true;
     Q_FOREACH (const EmailAddress &email, emails) {
         if (!first) {
-            mime.append(QLatin1Char(','));
+            mime.append(',');
         } else {
             first = false;
         }
 
         const QString name = email.name();
         if (!name.isEmpty()) {
-            mime.append(MimeMessagePrivate::encode(codec, name));
+            mime.append(MimeMessagePrivate::encodeData(codec, name));
         }
-        mime += QStringLiteral(" <") % email.address() % QLatin1Char('>');
+        mime.append(" <" + email.address().toLatin1() + '>');
     }
-    mime += QStringLiteral("\r\n");
+    mime.append(QByteArrayLiteral("\r\n"));
 
     return mime;
 }
 
-QString MimeMessagePrivate::encode(MimePart::Encoding codec, const QString &data)
+QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QString &data)
 {
     switch (codec) {
     case MimePart::Base64:
-        return QLatin1String(" =?utf-8?B?") % QString::fromLatin1(data.toLatin1().toBase64()) % QLatin1String("?=");
+        return " =?utf-8?B?" + data.toUtf8().toBase64() + "?=";
     case MimePart::QuotedPrintable:
-        return QLatin1String(" =?utf-8?Q?") % QuotedPrintable::encode(data.toLatin1())
-                .replace(QLatin1Char(' '), QLatin1String("_"))
-                .replace(QLatin1Char(':'), QLatin1String("=3A")) % QLatin1String("?=");
+        return " =?utf-8?Q?" + QuotedPrintable::encode(data.toUtf8())
+                .replace(' ', "_")
+                .replace(':', "=3A") + "?=";
     default:
-        return QLatin1Char(' ') % data;
+        return ' ' + data.toLatin1();
     }
 }

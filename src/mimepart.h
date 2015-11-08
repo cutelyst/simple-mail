@@ -66,7 +66,7 @@ public:
 
     MimeContentFormatter *contentFormatter();
 
-    virtual QString toString();
+    virtual QByteArray data();
 
     virtual void prepare();
 

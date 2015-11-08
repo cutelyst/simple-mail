@@ -415,7 +415,7 @@ bool Sender::sendMail(MimeMessage &email)
             return false;
         }
 
-        sendMessage(email.toString().toUtf8());
+        sendMessage(email.data());
 
         // Send \r\n.\r\n to end the mail data
         sendMessage(QByteArrayLiteral("."));

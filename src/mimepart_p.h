@@ -36,7 +36,7 @@ public:
     QString cCharset;
     QString cBoundary;
 
-    QString mimeString;
+    QByteArray mimeString;
 
     MimeContentFormatter formatter;
     MimePart::Encoding cEncoding;

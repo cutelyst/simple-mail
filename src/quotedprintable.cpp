@@ -17,9 +17,9 @@
 
 #include "quotedprintable.h"
 
-QString QuotedPrintable::encode(const QByteArray &input)
+QByteArray QuotedPrintable::encode(const QByteArray &input)
 {
-    QString output;
+    QByteArray output;
 
     char byte;
     const char hex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -29,12 +29,12 @@ QString QuotedPrintable::encode(const QByteArray &input)
 
         if ((byte == 0x20) || ((byte >= 33) && (byte <= 126) && (byte != 61))) {
             // TODO check if QLatin1Char if fine here
-            output.append(QLatin1Char(byte));
+            output.append(byte);
         } else {
             // TODO check if QLatin1Char if fine here
-            output.append(QLatin1Char('='));
-            output.append(QLatin1Char(hex[((byte >> 4) & 0x0F)]));
-            output.append(QLatin1Char(hex[(byte & 0x0F)]));
+            output.append('=');
+            output.append(hex[((byte >> 4) & 0x0F)]);
+            output.append(hex[(byte & 0x0F)]);
         }
     }
 

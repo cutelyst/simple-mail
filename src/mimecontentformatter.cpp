@@ -24,29 +24,29 @@ MimeContentFormatter::MimeContentFormatter(int max_length) :
 
 }
 
-QString MimeContentFormatter::format(const QString &content, bool quotedPrintable) const {
+QByteArray MimeContentFormatter::format(const QByteArray &content, bool quotedPrintable) const
+{
 
-    QString out;
+    QByteArray out;
 
     int chars = 0;
     for (int i = 0; i < content.length() ; ++i) {
         chars++;
         if (!quotedPrintable) {
             if (chars > max_length) {
-                    out.append(QStringLiteral("\r\n"));
-                    chars = 1;
+                out.append(QByteArrayLiteral("\r\n"));
+                chars = 1;
             }
-        }
-        else {
-            if (content[i] == QLatin1Char('\n')) {       // new line
+        } else {
+            if (content[i] == '\n') {       // new line
                 out.append(content[i]);
                 chars = 0;
                 continue;
             }
 
             if ((chars > max_length - 1)
-                || ((content[i] == QLatin1Char('=')) && (chars > max_length - 3) )) {
-                out.append(QStringLiteral("=\r\n"));
+                    || ((content[i] == '=') && (chars > max_length - 3) )) {
+                out.append(QByteArrayLiteral("=\r\n"));
                 chars = 1;
             }
 
