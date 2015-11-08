@@ -220,6 +220,11 @@ void MimePart::prepare()
     d->mimeString = mimeString;
 }
 
+MimePart::MimePart(MimePartPrivate *d) : d_ptr(d)
+{
+
+}
+
 MimePartPrivate *MimePart::d_func()
 {
     return d_ptr.data();

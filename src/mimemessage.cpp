@@ -147,7 +147,7 @@ QString MimeMessage::subject() const
     return d->subject;
 }
 
-const QList<MimePart*> & MimeMessage::getParts() const
+QList<MimePart*> MimeMessage::getParts() const
 {
     Q_D(const MimeMessage);
     if (typeid(*d->content) == typeid(MimeMultiPart)) {

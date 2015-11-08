@@ -71,6 +71,8 @@ public:
     virtual void prepare();
 
 protected:
+    MimePart(MimePartPrivate *d);
+
     QSharedDataPointer<MimePartPrivate> d_ptr;
 
     // Q_DECLARE_PRIVATE equivalent for shared data pointers

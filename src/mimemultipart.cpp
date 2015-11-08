@@ -15,9 +15,7 @@
   See the LICENSE file for more details.
 */
 
-#include "mimemultipart.h"
-#include "mimepart_p.h"
-
+#include "mimemultipart_p.h"
 #include <QTime>
 #include <QUuid>
 
@@ -31,10 +29,10 @@ const QString MULTI_PART_NAMES[] = {
     QStringLiteral("multipart/encrypted")      //    Encrypted
 };
 
-MimeMultiPart::MimeMultiPart(MultiPartType type)
+MimeMultiPart::MimeMultiPart(MultiPartType type) : MimePart(new MimeMultiPartPrivate)
 {
     Q_D(MimePart);
-    this->type = type;
+    static_cast<MimeMultiPartPrivate*>(d)->type = type;
     d->cType = MULTI_PART_NAMES[type];
     d->cEncoding = _8Bit;
 
@@ -48,27 +46,26 @@ MimeMultiPart::~MimeMultiPart()
 
 void MimeMultiPart::addPart(MimePart *part)
 {
-    parts.append(part);
+    Q_D(MimePart);
+    static_cast<MimeMultiPartPrivate*>(d)->parts.append(part);
 }
 
-const QList<MimePart*> & MimeMultiPart::getParts() const
+QList<MimePart*> MimeMultiPart::getParts() const
 {
-    return parts;
+    Q_D(const MimePart);
+    return static_cast<const MimeMultiPartPrivate*>(d)->parts;
 }
 
 void MimeMultiPart::prepare()
 {
     Q_D(MimePart);
-
-    QList<MimePart*>::iterator it;
-
+    auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
     d->content = QByteArray();
-    for (it = parts.begin(); it != parts.end(); it++) {
+    Q_FOREACH (MimePart *part, parts) {
         d->content += "--" + d->cBoundary.toLatin1() + "\r\n";
-        (*it)->prepare();
-        d->content += (*it)->toString().toUtf8();
-    };
-
+        part->prepare();
+        d->content += part->toString().toUtf8();
+    }
     d->content += "--" + d->cBoundary.toLatin1() + "--\r\n";
 
     MimePart::prepare();
@@ -78,10 +75,11 @@ void MimeMultiPart::setMimeType(const MultiPartType type)
 {
     Q_D(MimePart);
     d->cType = MULTI_PART_NAMES[type];
-    this->type = type;
+    static_cast<MimeMultiPartPrivate*>(d)->type = type;
 }
 
 MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const
 {
-    return type;
+    Q_D(const MimePart);
+    return static_cast<const MimeMultiPartPrivate*>(d)->type;
 }
