@@ -22,7 +22,7 @@
 MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 {
     Q_D(MimePart);
-    d->cType = QStringLiteral("text/html");
+    d->cType = QByteArrayLiteral("text/html");
 }
 
 MimeHtml::~MimeHtml()

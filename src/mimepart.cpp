@@ -41,19 +41,19 @@ void MimePart::setContent(const QByteArray &content)
     d->content = content;
 }
 
-void MimePart::setHeader(const QString &header)
+void MimePart::setHeader(const QByteArray &header)
 {
     Q_D(MimePart);
     d->header = header;
 }
 
-void MimePart::addHeaderLine(const QString &line)
+void MimePart::addHeaderLine(const QByteArray &line)
 {
     Q_D(MimePart);
-    d->header.append(line % QLatin1String("\r\n"));
+    d->header.append(line + "\r\n");
 }
 
-QString MimePart::header() const
+QByteArray MimePart::header() const
 {
     Q_D(const MimePart);
     return d->header;
@@ -65,49 +65,49 @@ QByteArray MimePart::content() const
     return d->content;
 }
 
-void MimePart::setContentId(const QString &cId)
+void MimePart::setContentId(const QByteArray &cId)
 {
     Q_D(MimePart);
     d->cId = cId;
 }
 
-QString MimePart::contentId() const
+QByteArray MimePart::contentId() const
 {
     Q_D(const MimePart);
     return d->cId;
 }
 
-void MimePart::setContentName(const QString &name)
+void MimePart::setContentName(const QByteArray &name)
 {
     Q_D(MimePart);
     d->cName = name;
 }
 
-QString MimePart::contentName() const
+QByteArray MimePart::contentName() const
 {
     Q_D(const MimePart);
     return d->cName;
 }
 
-void MimePart::setContentType(const QString &cType)
+void MimePart::setContentType(const QByteArray &cType)
 {
     Q_D(MimePart);
     d->cType = cType;
 }
 
-QString MimePart::contentType() const
+QByteArray MimePart::contentType() const
 {
     Q_D(const MimePart);
     return d->cType;
 }
 
-void MimePart::setCharset(const QString &charset)
+void MimePart::setCharset(const QByteArray &charset)
 {
     Q_D(MimePart);
     d->cCharset = charset;
 }
 
-QString MimePart::charset() const
+QByteArray MimePart::charset() const
 {
     Q_D(const MimePart);
     return d->cCharset;
@@ -151,18 +151,18 @@ void MimePart::prepare()
     /* === Header Prepare === */
 
     /* Content-Type */
-    mimeString.append("Content-Type: " + d->cType.toLatin1());
+    mimeString.append("Content-Type: " + d->cType);
 
     if (!d->cName.isEmpty()) {
-        mimeString.append("; name=\"" + d->cName.toLatin1() + "\"");
+        mimeString.append("; name=\"" + d->cName + "\"");
     }
 
     if (!d->cCharset.isEmpty()) {
-        mimeString.append("; charset=" + d->cCharset.toLatin1());
+        mimeString.append("; charset=" + d->cCharset);
     }
 
     if (!d->cBoundary.isEmpty()) {
-        mimeString.append("; boundary=" + d->cBoundary.toLatin1());
+        mimeString.append("; boundary=" + d->cBoundary);
     }
 
     mimeString.append("\r\n");
@@ -186,11 +186,11 @@ void MimePart::prepare()
 
     // Content-Id
     if (!d->cId.isNull()) {
-        mimeString.append("Content-ID: <" + d->cId.toLatin1() + ">\r\n");
+        mimeString.append("Content-ID: <" + d->cId + ">\r\n");
     }
 
     // Addition header lines
-    mimeString.append(d->header.toLatin1() + "\r\n");
+    mimeString.append(d->header + "\r\n");
 
     /* === End of Header Prepare === */
 

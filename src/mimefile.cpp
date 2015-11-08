@@ -24,8 +24,8 @@ MimeFile::MimeFile(QFile *file)
 {
     Q_D(MimePart);
     d->contentFile = file;
-    d->cType = QStringLiteral("application/octet-stream");
-    d->cName = QFileInfo(*file).fileName();
+    d->cType = QByteArrayLiteral("application/octet-stream");
+    d->cName = QFileInfo(*file).fileName().toLatin1();
     d->cEncoding = Base64;
 }
 
@@ -33,8 +33,8 @@ MimeFile::MimeFile(const QByteArray &stream, const QString &fileName)
 {
     Q_D(MimePart);
     d->cEncoding = Base64;
-    d->cType = QStringLiteral("application/octet-stream");
-    d->cName = fileName;
+    d->cType = QByteArrayLiteral("application/octet-stream");
+    d->cName = fileName.toLatin1();
     d->content = stream;
 }
 

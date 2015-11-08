@@ -35,7 +35,7 @@ MimeAttachment::~MimeAttachment()
 void MimeAttachment::prepare()
 {
     Q_D(MimePart);
-    d->header.append(QStringLiteral("Content-disposition: attachment\r\n"));
+    d->header.append(QByteArrayLiteral("Content-disposition: attachment\r\n"));
 
     /* !!! IMPORTANT !!! */
     MimeFile::prepare();

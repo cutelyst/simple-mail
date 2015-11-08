@@ -41,25 +41,25 @@ public:
 
     MimePart &operator=(const MimePart &other);
 
-    QString header() const;
+    QByteArray header() const;
     QByteArray content() const;
 
     void setContent(const QByteArray &content);
-    void setHeader(const QString &header);
+    void setHeader(const QByteArray &header);
 
-    void addHeaderLine(const QString &line);
+    void addHeaderLine(const QByteArray &line);
 
-    void setContentId(const QString &cId);
-    QString contentId() const;
+    void setContentId(const QByteArray &cId);
+    QByteArray contentId() const;
 
-    void setContentName(const QString &name);
-    QString contentName() const;
+    void setContentName(const QByteArray &name);
+    QByteArray contentName() const;
 
-    void setContentType(const QString &cType);
-    QString contentType() const;
+    void setContentType(const QByteArray &cType);
+    QByteArray contentType() const;
 
-    void setCharset(const QString &charset);
-    QString charset() const;
+    void setCharset(const QByteArray &charset);
+    QByteArray charset() const;
 
     void setEncoding(Encoding enc);
     Encoding encoding() const;

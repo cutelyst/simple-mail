@@ -19,14 +19,14 @@
 #include <QTime>
 #include <QUuid>
 
-const QString MULTI_PART_NAMES[] = {
-    QStringLiteral("multipart/mixed"),         //    Mixed
-    QStringLiteral("multipart/digest"),        //    Digest
-    QStringLiteral("multipart/alternative"),   //    Alternative
-    QStringLiteral("multipart/related"),       //    Related
-    QStringLiteral("multipart/report"),        //    Report
-    QStringLiteral("multipart/signed"),        //    Signed
-    QStringLiteral("multipart/encrypted")      //    Encrypted
+const QByteArray MULTI_PART_NAMES[] = {
+    QByteArrayLiteral("multipart/mixed"),         //    Mixed
+    QByteArrayLiteral("multipart/digest"),        //    Digest
+    QByteArrayLiteral("multipart/alternative"),   //    Alternative
+    QByteArrayLiteral("multipart/related"),       //    Related
+    QByteArrayLiteral("multipart/report"),        //    Report
+    QByteArrayLiteral("multipart/signed"),        //    Signed
+    QByteArrayLiteral("multipart/encrypted")      //    Encrypted
 };
 
 MimeMultiPart::MimeMultiPart(MultiPartType type) : MimePart(new MimeMultiPartPrivate)
@@ -36,7 +36,7 @@ MimeMultiPart::MimeMultiPart(MultiPartType type) : MimePart(new MimeMultiPartPri
     d->cType = MULTI_PART_NAMES[type];
     d->cEncoding = _8Bit;
 
-    d->cBoundary = QString::fromLatin1(QUuid::createUuid().toRfc4122().toHex());
+    d->cBoundary = QUuid::createUuid().toRfc4122().toHex();
 }
 
 MimeMultiPart::~MimeMultiPart()
@@ -62,11 +62,11 @@ void MimeMultiPart::prepare()
     auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
     d->content = QByteArray();
     Q_FOREACH (MimePart *part, parts) {
-        d->content.append("--" + d->cBoundary.toLatin1() + "\r\n");
+        d->content.append("--" + d->cBoundary + "\r\n");
         part->prepare();
         d->content.append(part->data());
     }
-    d->content.append("--" + d->cBoundary.toLatin1() + "--\r\n");
+    d->content.append("--" + d->cBoundary + "--\r\n");
 
     MimePart::prepare();
 }

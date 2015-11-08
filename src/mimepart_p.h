@@ -26,15 +26,15 @@ class QFile;
 class MimePartPrivate : public QSharedData
 {
 public:
-    QString header;
+    QByteArray header;
     QByteArray content;
     QFile *contentFile = nullptr;
 
-    QString cId;
-    QString cName;
-    QString cType;
-    QString cCharset;
-    QString cBoundary;
+    QByteArray cId;
+    QByteArray cName;
+    QByteArray cType;
+    QByteArray cCharset;
+    QByteArray cBoundary;
 
     QByteArray mimeString;
 
