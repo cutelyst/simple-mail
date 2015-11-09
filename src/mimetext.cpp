@@ -22,8 +22,8 @@ MimeText::MimeText(const QString &txt)
 {
     Q_D(MimePart);
     d->contentType = QByteArrayLiteral("text/plain");
-    d->contentCharset = QByteArrayLiteral("utf-8");
-    d->contentEncoding = _8Bit;
+    d->contentCharset = QByteArrayLiteral("UTF-8");
+    d->contentEncoding = QuotedPrintable;
     setData(txt);
 }
 

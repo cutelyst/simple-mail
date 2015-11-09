@@ -285,6 +285,11 @@ MimePartPrivate *MimePart::d_func()
     return d_ptr.data();
 }
 
+MimePartPrivate::~MimePartPrivate()
+{
+    delete contentDevice;
+}
+
 bool MimePartPrivate::writeRaw(QIODevice *input, QIODevice *out)
 {
     char block[4096];
