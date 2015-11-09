@@ -61,7 +61,7 @@ void MimeMessage::setContent(MimePart *content)
     d->content = content;
 }
 
-bool MimeMessage::writeData(QIODevice *device)
+bool MimeMessage::write(QIODevice *device)
 {
     Q_D(const MimeMessage);
 

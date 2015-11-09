@@ -56,37 +56,107 @@ public:
     Sender(const QString &host = QLatin1String("localhost"), int port = 25, ConnectionType ct = TcpConnection);
     virtual ~Sender();
 
+    /**
+     * Returns the hostname of the SMTP server
+     */
     QString host() const;
+
+    /**
+     * Defines the hostname of the SMTP server
+     */
     void setHost(const QString &host);
 
+    /**
+     * Returns the port of the SMTP server
+     */
     int port() const;
+
+    /**
+     * Defines the port of the SMTP server
+     */
     void setPort(int port);
 
     QString name() const;
     void setName(const QString &name);
 
+    /**
+     * Returns the connection type of the SMTP server
+     */
     ConnectionType connectionType() const;
+
+    /**
+     * Defines the connection type of the SMTP server
+     */
     void setConnectionType(ConnectionType ct);
 
+    /**
+     * Returns the username that will authenticate on the SMTP server
+     */
     QString user() const;
+
+    /**
+     * Defines the username that will authenticate on the SMTP server
+     */
     void setUser(const QString &user);
 
+    /**
+     * Returns the password that will authenticate on the SMTP server
+     */
     QString password() const;
+
+    /**
+     * Defines the password that will authenticate on the SMTP server
+     */
     void setPassword(const QString &password);
 
+    /**
+     * Returns the authenticaion method of the SMTP server
+     */
     AuthMethod authMethod() const;
+
+    /**
+     * Defines the authenticaion method of the SMTP server
+     */
     void setAuthMethod(AuthMethod method);
 
+    /**
+     * Returns the response text the SMTP server last returned
+     */
     QByteArray responseText() const;
+
+    /**
+     * Returns the response code the SMTP server last returned
+     */
     int responseCode() const;
 
+    /**
+     * Returns the connection timeout when connecting to the SMTP server
+     */
     int connectionTimeout() const;
+
+    /**
+     * Defines the connection timeout when connecting to the SMTP server
+     */
     void setConnectionTimeout(int msec);
 
+    /**
+     * Returns the response timeout when waiting for a message to be processed by the SMTP server
+     */
     int responseTimeout() const;
+
+    /**
+     * Defines the response timeout when waiting for a message to be processed by the SMTP server
+     */
     void setResponseTimeout(int msec);
     
+    /**
+     * Returns the timeout when waiting for a message data to be sent to the SMTP server
+     */
     int sendMessageTimeout() const;
+
+    /**
+     * Defines the timeout when waiting for a message data to be sent to the SMTP server
+     */
     void setSendMessageTimeout(int msec);
 
     bool connectToHost();

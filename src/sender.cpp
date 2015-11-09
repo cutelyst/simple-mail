@@ -415,7 +415,7 @@ bool Sender::sendMail(MimeMessage &email)
             return false;
         }
 
-        if (!email.writeData(d->socket)) {
+        if (!email.write(d->socket)) {
             return false;
         }
 
