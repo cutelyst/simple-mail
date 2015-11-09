@@ -87,7 +87,7 @@ void SendEmail::on_sendEmail_clicked()
     message.setSubject(subject);
 
     for (int i = 0; i < rcptStringList.size(); ++i)
-         message.addRecipient(stringToEmail(rcptStringList.at(i)));
+         message.addTo(stringToEmail(rcptStringList.at(i)));
 
     MimeHtml content;
     content.setHtml(html);

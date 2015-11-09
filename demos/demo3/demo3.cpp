@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     message.setSender(sender);
 
     EmailAddress to(QLatin1String("recipient@host.com"), QLatin1String("Recipient's Name"));
-    message.addRecipient(to);
+    message.addTo(to);
 
     message.setSubject(QLatin1String("SmtpClient for Qt - Demo"));
 

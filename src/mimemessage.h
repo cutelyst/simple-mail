@@ -30,27 +30,29 @@ class SMTP_EXPORT MimeMessage
 {
     Q_DECLARE_PRIVATE(MimeMessage)
 public:
-    enum RecipientType {
-        To,                 // primary
-        Cc,                 // carbon copy
-        Bcc                 // blind carbon copy
-    };
-
     MimeMessage(bool createAutoMimeConent = true);
-    ~MimeMessage();
+    virtual ~MimeMessage();
 
     void setSender(const EmailAddress &sender);
-    void addRecipient(const EmailAddress &rcpt, RecipientType type = To);
+    EmailAddress sender() const;
+
+    void setToRecipients(const QList<EmailAddress> &toList);
+    QList<EmailAddress> toRecipients() const;
     void addTo(const EmailAddress &rcpt);
+
+    void setCcRecipients(const QList<EmailAddress> &ccList);
+    QList<EmailAddress> ccRecipients() const;
     void addCc(const EmailAddress &rcpt);
+
+    void setBccRecipients(const QList<EmailAddress> &bccList);
+    QList<EmailAddress> bccRecipients() const;
     void addBcc(const EmailAddress &rcpt);
+
     void setSubject(const QString &subject);
     void addPart(MimePart* part);
 
     void setHeaderEncoding(MimePart::Encoding);
 
-    EmailAddress sender() const;
-    QList<EmailAddress> getRecipients(RecipientType type = To) const;
     QString subject() const;
     QList<MimePart *> parts() const;
 

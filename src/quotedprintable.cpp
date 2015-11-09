@@ -17,7 +17,7 @@
 
 #include "quotedprintable.h"
 
-QByteArray QuotedPrintable::encode(const QByteArray &input)
+QByteArray QuotedPrintable::encode(const QByteArray &input, int *printable, int *encoded)
 {
     QByteArray output;
 
@@ -27,14 +27,28 @@ QByteArray QuotedPrintable::encode(const QByteArray &input)
     for (int i = 0; i < input.length() ; ++i) {
         byte = input[i];
 
-        if ((byte == 0x20) || ((byte >= 33) && (byte <= 126) && (byte != 61))) {
-            // TODO check if QLatin1Char if fine here
+        if (byte == ' ') {
+            output.append('_');
+            if (encoded) {
+                ++(*encoded);
+            }
+        } else if (byte == ':') {
+            output.append("=3A");
+            if (encoded) {
+                ++(*encoded);
+            }
+        } else if ((byte >= 33) && (byte <= 126) && (byte != 61)) {
             output.append(byte);
+            if (printable) {
+                ++(*printable);
+            }
         } else {
-            // TODO check if QLatin1Char if fine here
             output.append('=');
             output.append(hex[((byte >> 4) & 0x0F)]);
             output.append(hex[(byte & 0x0F)]);
+            if (encoded) {
+                ++(*encoded);
+            }
         }
     }
 

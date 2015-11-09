@@ -39,8 +39,8 @@ public:
     QByteArray mimeString;
 
     MimeContentFormatter formatter;
-    MimePart::Encoding cEncoding;
-    bool prepared;
+    MimePart::Encoding cEncoding = MimePart::_7Bit;
+    bool prepared = false;
 };
 
 #endif // MIMEPART_P_H

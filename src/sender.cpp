@@ -378,7 +378,7 @@ bool Sender::sendMail(MimeMessage &email)
 
         // Send RCPT command for each recipient
         // To (primary recipients)
-        Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::To)) {
+        Q_FOREACH (const EmailAddress &rcpt, email.toRecipients()) {
             sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
             waitForResponse();
 
@@ -388,7 +388,7 @@ bool Sender::sendMail(MimeMessage &email)
         }
 
         // Cc (carbon copy)
-        Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::Cc)) {
+        Q_FOREACH (const EmailAddress &rcpt, email.ccRecipients()) {
             sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
             waitForResponse();
 
@@ -398,7 +398,7 @@ bool Sender::sendMail(MimeMessage &email)
         }
 
         // Bcc (blind carbon copy)
-        Q_FOREACH (const EmailAddress &rcpt, email.getRecipients(MimeMessage::Bcc)) {
+        Q_FOREACH (const EmailAddress &rcpt, email.bccRecipients()) {
             sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
             waitForResponse();
 

@@ -19,6 +19,7 @@ x
 #include "mimemessage_p.h"
 
 #include <QtCore/QStringBuilder>
+#include <QtCore/QDebug>
 #include "quotedprintable.h"
 #include <typeinfo>
 
@@ -66,20 +67,16 @@ void MimeMessage::setSender(const EmailAddress &sender)
     d->sender = sender;
 }
 
-void MimeMessage::addRecipient(const EmailAddress &rcpt, RecipientType type)
+void MimeMessage::setToRecipients(const QList<EmailAddress> &toList)
 {
     Q_D(MimeMessage);
-    switch (type) {
-    case To:
-        d->recipientsTo.append(rcpt);
-        break;
-    case Cc:
-        d->recipientsCc.append(rcpt);
-        break;
-    case Bcc:
-        d->recipientsBcc.append(rcpt);
-        break;
-    }
+    d->recipientsTo = toList;
+}
+
+QList<EmailAddress> MimeMessage::toRecipients() const
+{
+    Q_D(const MimeMessage);
+    return d->recipientsTo;
 }
 
 void MimeMessage::addTo(const EmailAddress &rcpt)
@@ -88,10 +85,34 @@ void MimeMessage::addTo(const EmailAddress &rcpt)
     d->recipientsTo.append(rcpt);
 }
 
+void MimeMessage::setCcRecipients(const QList<EmailAddress> &ccList)
+{
+    Q_D(MimeMessage);
+    d->recipientsCc = ccList;
+}
+
 void MimeMessage::addCc(const EmailAddress &rcpt)
 {
     Q_D(MimeMessage);
     d->recipientsCc.append(rcpt);
+}
+
+QList<EmailAddress> MimeMessage::ccRecipients() const
+{
+    Q_D(const MimeMessage);
+    return d->recipientsCc;
+}
+
+void MimeMessage::setBccRecipients(const QList<EmailAddress> &bccList)
+{
+    Q_D(MimeMessage);
+    d->recipientsBcc = bccList;
+}
+
+QList<EmailAddress> MimeMessage::bccRecipients() const
+{
+    Q_D(const MimeMessage);
+    return d->recipientsBcc;
 }
 
 void MimeMessage::addBcc(const EmailAddress &rcpt)
@@ -126,21 +147,6 @@ EmailAddress MimeMessage::sender() const
     return d->sender;
 }
 
-QList<EmailAddress> MimeMessage::getRecipients(MimeMessage::RecipientType type) const
-{
-    Q_D(const MimeMessage);
-    switch (type)
-    {
-    default:
-    case To:
-        return d->recipientsTo;
-    case Cc:
-        return d->recipientsCc;
-    case Bcc:
-        return d->recipientsBcc;
-    }
-}
-
 QString MimeMessage::subject() const
 {
     Q_D(const MimeMessage);
@@ -166,13 +172,13 @@ QByteArray MimeMessage::data()
     QByteArray mime;
 
     // Headers
-    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("From:"), QList<EmailAddress>() << d->sender, d->encoding));
+    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("From: "), QList<EmailAddress>() << d->sender, d->encoding));
 
-    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("To:"), d->recipientsTo, d->encoding));
+    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("To: "), d->recipientsTo, d->encoding));
 
-    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("Cc:"), d->recipientsCc, d->encoding));
+    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("Cc: "), d->recipientsCc, d->encoding));
 
-    mime.append(QByteArrayLiteral("Subject:") + MimeMessagePrivate::encodeData(d->encoding, d->subject));
+    mime.append(QByteArrayLiteral("Subject: ") + MimeMessagePrivate::encodeData(d->encoding, d->subject, true));
 
     mime.append(QByteArrayLiteral("\r\nMIME-Version: 1.0\r\n"));
 
@@ -198,25 +204,44 @@ QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList
 
         const QString name = email.name();
         if (!name.isEmpty()) {
-            mime.append(MimeMessagePrivate::encodeData(codec, name));
+            mime.append(MimeMessagePrivate::encodeData(codec, name, true));
+            mime.append(" <" + email.address().toLatin1() + '>');
+        } else {
+            mime.append('<' + email.address().toLatin1() + '>');
         }
-        mime.append(" <" + email.address().toLatin1() + '>');
     }
     mime.append(QByteArrayLiteral("\r\n"));
 
     return mime;
 }
 
-QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QString &data)
+QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QString &data, bool autoencoding)
 {
-    switch (codec) {
-    case MimePart::Base64:
-        return " =?utf-8?B?" + data.toUtf8().toBase64() + "?=";
-    case MimePart::QuotedPrintable:
-        return " =?utf-8?Q?" + QuotedPrintable::encode(data.toUtf8())
-                .replace(' ', "_")
-                .replace(':', "=3A") + "?=";
-    default:
-        return ' ' + data.toLatin1();
+    const QString simpleData = data.simplified();
+    const QByteArray simple = simpleData.toUtf8();
+    if (autoencoding) {
+        int printable = 0;
+        int encoded = 0;
+        const QByteArray result = QuotedPrintable::encode(simple, &printable, &encoded);
+        if (result == simpleData.toLatin1()) {
+            return result;
+        } else {
+            int sum = printable + encoded;
+            if (sum != 0 && ((double) printable/sum) >= 0.8) {
+                return " =?utf-8?Q?" + result + "?=";
+            } else {
+                return " =?utf-8?B?" + data.toUtf8().toBase64() + "?=";
+            }
+            qDebug() << data << result << printable << encoded << sum << ((double) printable/sum) << (encoded/sum);
+        }
+    } else {
+        switch (codec) {
+        case MimePart::Base64:
+            return " =?utf-8?B?" + simple.toBase64() + "?=";
+        case MimePart::QuotedPrintable:
+            return " =?utf-8?Q?" + QuotedPrintable::encode(simple) + "?=";
+        default:
+            return ' ' + data.toLatin1();
+        }
     }
 }

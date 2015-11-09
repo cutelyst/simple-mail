@@ -20,9 +20,6 @@
 
 MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
-    Q_D(MimePart);
-    d->cEncoding = _7Bit;
-    d->prepared = false;
 }
 
 MimePart::MimePart(const MimePart &other)

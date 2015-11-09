@@ -25,11 +25,8 @@
 class SMTP_EXPORT QuotedPrintable
 {
 public:
-    static QByteArray encode(const QByteArray &input);
+    static QByteArray encode(const QByteArray &input, int *printable = 0, int *encoded = 0);
     static QByteArray decode(const QString &input);
-
-private:
-    QuotedPrintable();
 };
 
 #endif // QUOTEDPRINTABLE_H
