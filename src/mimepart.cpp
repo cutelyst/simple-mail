@@ -76,61 +76,61 @@ QByteArray MimePart::content() const
 void MimePart::setContentId(const QByteArray &cId)
 {
     Q_D(MimePart);
-    d->cId = cId;
+    d->contentId = cId;
 }
 
 QByteArray MimePart::contentId() const
 {
     Q_D(const MimePart);
-    return d->cId;
+    return d->contentId;
 }
 
-void MimePart::setContentName(const QByteArray &name)
+void MimePart::setContentName(const QByteArray &contentName)
 {
     Q_D(MimePart);
-    d->cName = name;
+    d->contentName = contentName;
 }
 
 QByteArray MimePart::contentName() const
 {
     Q_D(const MimePart);
-    return d->cName;
+    return d->contentName;
 }
 
-void MimePart::setContentType(const QByteArray &cType)
+void MimePart::setContentType(const QByteArray &contentType)
 {
     Q_D(MimePart);
-    d->cType = cType;
+    d->contentType = contentType;
 }
 
 QByteArray MimePart::contentType() const
 {
     Q_D(const MimePart);
-    return d->cType;
+    return d->contentType;
 }
 
 void MimePart::setCharset(const QByteArray &charset)
 {
     Q_D(MimePart);
-    d->cCharset = charset;
+    d->contentCharset = charset;
 }
 
 QByteArray MimePart::charset() const
 {
     Q_D(const MimePart);
-    return d->cCharset;
+    return d->contentCharset;
 }
 
 void MimePart::setEncoding(Encoding enc)
 {
     Q_D(MimePart);
-    d->cEncoding = enc;
+    d->contentEncoding = enc;
 }
 
 MimePart::Encoding MimePart::encoding() const
 {
     Q_D(const MimePart);
-    return d->cEncoding;
+    return d->contentEncoding;
 }
 
 void MimePart::setData(const QString &data)
@@ -143,7 +143,7 @@ void MimePart::setData(const QString &data)
     d->contentDevice = new QBuffer;
     d->contentDevice->open(QBuffer::ReadWrite);
 
-    switch (d->cEncoding) {
+    switch (d->contentEncoding) {
     case _7Bit:
         d->contentDevice->write(data.toLatin1());
         break;
@@ -168,7 +168,7 @@ QString MimePart::data() const
     }
 
     QString ret;
-    switch (d->cEncoding) {
+    switch (d->contentEncoding) {
     case _7Bit:
         ret = QString::fromLatin1(d->contentDevice->readAll());
     case _8Bit:
@@ -194,20 +194,20 @@ bool MimePart::write(QIODevice *device)
     QByteArray headers;
 
     // Content-Type
-    headers.append("Content-Type: " + d->cType);
-    if (!d->cName.isEmpty()) {
-        headers.append("; name=\"" + d->cName);
+    headers.append("Content-Type: " + d->contentType);
+    if (!d->contentName.isEmpty()) {
+        headers.append("; name=\"" + d->contentName);
     }
-    if (!d->cCharset.isEmpty()) {
-        headers.append("; charset=" + d->cCharset);
+    if (!d->contentCharset.isEmpty()) {
+        headers.append("; charset=" + d->contentCharset);
     }
-    if (!d->cBoundary.isEmpty()) {
-        headers.append("; boundary=" + d->cBoundary);
+    if (!d->contentBoundary.isEmpty()) {
+        headers.append("; boundary=" + d->contentBoundary);
     }
     headers.append("\r\n");
 
     // Content-Transfer-Encoding
-    switch (d->cEncoding) {
+    switch (d->contentEncoding) {
     case _7Bit:
         headers.append("Content-Transfer-Encoding: 7bit\r\n");
         break;
@@ -223,8 +223,8 @@ bool MimePart::write(QIODevice *device)
     }
 
     // Content-Id
-    if (!d->cId.isNull()) {
-        headers.append("Content-ID: <" + d->cId + ">\r\n");
+    if (!d->contentId.isNull()) {
+        headers.append("Content-ID: <" + d->contentId + ">\r\n");
     }
 
     // Addition header lines

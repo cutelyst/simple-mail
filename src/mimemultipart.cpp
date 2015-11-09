@@ -34,10 +34,10 @@ MimeMultiPart::MimeMultiPart(MultiPartType type) : MimePart(new MimeMultiPartPri
 {
     Q_D(MimePart);
     static_cast<MimeMultiPartPrivate*>(d)->type = type;
-    d->cType = MULTI_PART_NAMES[type];
-    d->cEncoding = _8Bit;
+    d->contentType = MULTI_PART_NAMES[type];
+    d->contentEncoding = _8Bit;
 
-    d->cBoundary = QUuid::createUuid().toRfc4122().toHex();
+    d->contentBoundary = QUuid::createUuid().toRfc4122().toHex();
 }
 
 MimeMultiPart::~MimeMultiPart()
@@ -63,12 +63,12 @@ bool MimeMultiPart::writeData(QIODevice *device)
 
     auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
     Q_FOREACH (MimePart *part, parts) {
-        device->write("--" + d->cBoundary + "\r\n");
+        device->write("--" + d->contentBoundary + "\r\n");
         if (!part->write(device)) {
             return false;
         }
     }
-    device->write("--" + d->cBoundary + "--\r\n");
+    device->write("--" + d->contentBoundary + "--\r\n");
 
     return true;
 }
@@ -76,7 +76,7 @@ bool MimeMultiPart::writeData(QIODevice *device)
 void MimeMultiPart::setMimeType(const MultiPartType type)
 {
     Q_D(MimePart);
-    d->cType = MULTI_PART_NAMES[type];
+    d->contentType = MULTI_PART_NAMES[type];
     static_cast<MimeMultiPartPrivate*>(d)->type = type;
 }
 

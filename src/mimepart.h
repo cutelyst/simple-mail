@@ -53,10 +53,10 @@ public:
     void setContentId(const QByteArray &cId);
     QByteArray contentId() const;
 
-    void setContentName(const QByteArray &name);
+    void setContentName(const QByteArray &contentName);
     QByteArray contentName() const;
 
-    void setContentType(const QByteArray &cType);
+    void setContentType(const QByteArray &contentType);
     QByteArray contentType() const;
 
     void setCharset(const QByteArray &charset);

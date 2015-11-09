@@ -24,17 +24,17 @@ MimeFile::MimeFile(QFile *file)
 {
     Q_D(MimePart);
     d->contentDevice = file;
-    d->cType = QByteArrayLiteral("application/octet-stream");
-    d->cName = file->fileName().toLatin1();
-    d->cEncoding = Base64;
+    d->contentType = QByteArrayLiteral("application/octet-stream");
+    d->contentName = file->fileName().toLatin1();
+    d->contentEncoding = Base64;
 }
 
 MimeFile::MimeFile(const QByteArray &stream, const QString &fileName)
 {
     Q_D(MimePart);
-    d->cEncoding = Base64;
-    d->cType = QByteArrayLiteral("application/octet-stream");
-    d->cName = fileName.toLatin1();
+    d->contentEncoding = Base64;
+    d->contentType = QByteArrayLiteral("application/octet-stream");
+    d->contentName = fileName.toLatin1();
     setContent(stream);
 }
 

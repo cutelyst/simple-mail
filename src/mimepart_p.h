@@ -29,14 +29,14 @@ public:
     QByteArray header;
     QIODevice *contentDevice = nullptr;
 
-    QByteArray cId;
-    QByteArray cName;
-    QByteArray cType;
-    QByteArray cCharset;
-    QByteArray cBoundary;
+    QByteArray contentId;
+    QByteArray contentName;
+    QByteArray contentType;
+    QByteArray contentCharset;
+    QByteArray contentBoundary;
 
     MimeContentFormatter formatter;
-    MimePart::Encoding cEncoding = MimePart::_7Bit;
+    MimePart::Encoding contentEncoding = MimePart::_7Bit;
 };
 
 #endif // MIMEPART_P_H

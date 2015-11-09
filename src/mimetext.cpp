@@ -21,9 +21,9 @@
 MimeText::MimeText(const QString &txt)
 {
     Q_D(MimePart);
-    d->cType = QByteArrayLiteral("text/plain");
-    d->cCharset = QByteArrayLiteral("utf-8");
-    d->cEncoding = _8Bit;
+    d->contentType = QByteArrayLiteral("text/plain");
+    d->contentCharset = QByteArrayLiteral("utf-8");
+    d->contentEncoding = _8Bit;
     setData(txt);
 }
 
