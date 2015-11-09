@@ -29,13 +29,13 @@ QByteArray QuotedPrintable::encode(const QByteArray &input, int *printable, int 
 
         if (byte == ' ') {
             output.append('_');
-            if (encoded) {
-                ++(*encoded);
+            if (printable) {
+                ++(*printable);
             }
         } else if (byte == ':') {
             output.append("=3A");
-            if (encoded) {
-                ++(*encoded);
+            if (printable) {
+                ++(*printable);
             }
         } else if ((byte >= 33) && (byte <= 126) && (byte != 61)) {
             output.append(byte);

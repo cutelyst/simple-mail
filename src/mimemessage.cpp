@@ -220,19 +220,19 @@ QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QStrin
     const QString simpleData = data.simplified();
     const QByteArray simple = simpleData.toUtf8();
     if (autoencoding) {
+        if (simpleData.toLatin1() == simple) {
+            return simple;
+        }
+
         int printable = 0;
         int encoded = 0;
         const QByteArray result = QuotedPrintable::encode(simple, &printable, &encoded);
-        if (result == simpleData.toLatin1()) {
-            return result;
+        int sum = printable + encoded;
+        qDebug() << data << result << printable << encoded << sum << ((double) printable/sum) << (encoded/sum);
+        if (sum != 0 && ((double) printable/sum) >= 0.8) {
+            return " =?utf-8?Q?" + result + "?=";
         } else {
-            int sum = printable + encoded;
-            if (sum != 0 && ((double) printable/sum) >= 0.8) {
-                return " =?utf-8?Q?" + result + "?=";
-            } else {
-                return " =?utf-8?B?" + data.toUtf8().toBase64() + "?=";
-            }
-            qDebug() << data << result << printable << encoded << sum << ((double) printable/sum) << (encoded/sum);
+            return " =?utf-8?B?" + data.toUtf8().toBase64() + "?=";
         }
     } else {
         switch (codec) {
