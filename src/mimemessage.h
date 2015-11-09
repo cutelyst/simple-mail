@@ -25,6 +25,7 @@
 
 #include "smtpexports.h"
 
+class QIODevice;
 class MimeMessagePrivate;
 class SMTP_EXPORT MimeMessage
 {
@@ -59,7 +60,7 @@ public:
     MimePart& getContent();
     void setContent(MimePart *content);
 
-    virtual QByteArray data();
+    virtual bool writeData(QIODevice *device);
 
 protected:
     MimeMessagePrivate *d_ptr;

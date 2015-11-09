@@ -39,8 +39,8 @@ MimeMessage::~MimeMessage()
     Q_D(MimeMessage);
 
     if (d->autoMimeContentCreated) {
-      d->autoMimeContentCreated = false;
-      delete (d->content);
+        d->autoMimeContentCreated = false;
+        delete (d->content);
     }
     delete d_ptr;
 }
@@ -59,6 +59,45 @@ void MimeMessage::setContent(MimePart *content)
       delete (d->content);
     }
     d->content = content;
+}
+
+bool MimeMessage::writeData(QIODevice *device)
+{
+    Q_D(const MimeMessage);
+
+    // Headers
+    QByteArray data;
+
+    data = MimeMessagePrivate::encode(QByteArrayLiteral("From: "), QList<EmailAddress>() << d->sender, d->encoding);
+    if (device->write(data) != data.size()) {
+        return false;
+    }
+
+    data = MimeMessagePrivate::encode(QByteArrayLiteral("To: "), d->recipientsTo, d->encoding);
+    if (device->write(data) != data.size()) {
+        return false;
+    }
+
+    data = MimeMessagePrivate::encode(QByteArrayLiteral("Cc: "), d->recipientsCc, d->encoding);
+    if (device->write(data) != data.size()) {
+        return false;
+    }
+
+    data = QByteArrayLiteral("Subject: ") + MimeMessagePrivate::encodeData(d->encoding, d->subject, true);
+    if (device->write(data) != data.size()) {
+        return false;
+    }
+
+    data = QByteArrayLiteral("\r\nMIME-Version: 1.0\r\n");
+    if (device->write(data) != data.size()) {
+        return false;
+    }
+
+    if (!d->content->write(device)) {
+        return false;
+    }
+
+    return true;
 }
 
 void MimeMessage::setSender(const EmailAddress &sender)
@@ -163,28 +202,6 @@ QList<MimePart*> MimeMessage::parts() const
         res->append(d->content);
         return *res;
     }
-}
-
-QByteArray MimeMessage::data()
-{
-    Q_D(const MimeMessage);
-
-    QByteArray mime;
-
-    // Headers
-    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("From: "), QList<EmailAddress>() << d->sender, d->encoding));
-
-    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("To: "), d->recipientsTo, d->encoding));
-
-    mime.append(MimeMessagePrivate::encode(QByteArrayLiteral("Cc: "), d->recipientsCc, d->encoding));
-
-    mime.append(QByteArrayLiteral("Subject: ") + MimeMessagePrivate::encodeData(d->encoding, d->subject, true));
-
-    mime.append(QByteArrayLiteral("\r\nMIME-Version: 1.0\r\n"));
-
-    mime.append(d->content->data());
-
-    return mime;
 }
 
 QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec)

@@ -18,14 +18,14 @@
 #include "mimefile.h"
 #include "mimepart_p.h"
 
-#include <QFileInfo>
+#include <QtCore/QBuffer>
 
 MimeFile::MimeFile(QFile *file)
 {
     Q_D(MimePart);
-    d->contentFile = file;
+    d->contentDevice = file;
     d->cType = QByteArrayLiteral("application/octet-stream");
-    d->cName = QFileInfo(*file).fileName().toLatin1();
+    d->cName = file->fileName().toLatin1();
     d->cEncoding = Base64;
 }
 
@@ -35,23 +35,9 @@ MimeFile::MimeFile(const QByteArray &stream, const QString &fileName)
     d->cEncoding = Base64;
     d->cType = QByteArrayLiteral("application/octet-stream");
     d->cName = fileName.toLatin1();
-    d->content = stream;
+    setContent(stream);
 }
 
 MimeFile::~MimeFile()
 {
-}
-
-void MimeFile::prepare()
-{
-    Q_D(MimePart);
-
-    if (d->contentFile) {
-        d->contentFile->open(QIODevice::ReadOnly);
-        d->content = d->contentFile->readAll();
-        d->contentFile->close();
-    }
-
-    /* !!! IMPORTANT !!!! */
-    MimePart::prepare();
 }

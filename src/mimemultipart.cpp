@@ -16,8 +16,9 @@
 */
 
 #include "mimemultipart_p.h"
-#include <QTime>
-#include <QUuid>
+
+#include <QtCore/QUuid>
+#include <QtCore/QIODevice>
 
 const QByteArray MULTI_PART_NAMES[] = {
     QByteArrayLiteral("multipart/mixed"),         //    Mixed
@@ -56,19 +57,20 @@ QList<MimePart*> MimeMultiPart::parts() const
     return static_cast<const MimeMultiPartPrivate*>(d)->parts;
 }
 
-void MimeMultiPart::prepare()
+bool MimeMultiPart::writeData(QIODevice *device)
 {
     Q_D(MimePart);
-    auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
-    d->content = QByteArray();
-    Q_FOREACH (MimePart *part, parts) {
-        d->content.append("--" + d->cBoundary + "\r\n");
-        part->prepare();
-        d->content.append(part->data());
-    }
-    d->content.append("--" + d->cBoundary + "--\r\n");
 
-    MimePart::prepare();
+    auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
+    Q_FOREACH (MimePart *part, parts) {
+        device->write("--" + d->cBoundary + "\r\n");
+        if (!part->write(device)) {
+            return false;
+        }
+    }
+    device->write("--" + d->cBoundary + "--\r\n");
+
+    return true;
 }
 
 void MimeMultiPart::setMimeType(const MultiPartType type)

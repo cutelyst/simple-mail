@@ -415,10 +415,12 @@ bool Sender::sendMail(MimeMessage &email)
             return false;
         }
 
-        sendMessage(email.data());
+        if (!email.writeData(d->socket)) {
+            return false;
+        }
 
         // Send \r\n.\r\n to end the mail data
-        sendMessage(QByteArrayLiteral("."));
+        sendMessage(QByteArrayLiteral("\r\n."));
 
         waitForResponse();
 

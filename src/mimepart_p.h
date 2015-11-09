@@ -27,8 +27,7 @@ class MimePartPrivate : public QSharedData
 {
 public:
     QByteArray header;
-    QByteArray content;
-    QFile *contentFile = nullptr;
+    QIODevice *contentDevice = nullptr;
 
     QByteArray cId;
     QByteArray cName;
@@ -36,11 +35,8 @@ public:
     QByteArray cCharset;
     QByteArray cBoundary;
 
-    QByteArray mimeString;
-
     MimeContentFormatter formatter;
     MimePart::Encoding cEncoding = MimePart::_7Bit;
-    bool prepared = false;
 };
 
 #endif // MIMEPART_P_H

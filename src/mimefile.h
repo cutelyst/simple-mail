@@ -29,9 +29,6 @@ public:
     MimeFile(const QByteArray &stream, const QString &fileName);
     MimeFile(QFile *f);
     ~MimeFile();
-
-protected:
-    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMEFILE_H

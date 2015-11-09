@@ -47,7 +47,7 @@ public:
     void addPart(MimePart *part);
 
 protected:
-    virtual void prepare() Q_DECL_OVERRIDE;
+    virtual bool writeData(QIODevice *device) Q_DECL_FINAL;
 };
 
 #endif // MIMEMULTIPART_H

@@ -30,9 +30,6 @@ public:
 
     void setText(const QString &text);
     QString text() const;
-
-protected:
-    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMETEXT_H

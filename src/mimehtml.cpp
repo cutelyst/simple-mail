@@ -32,18 +32,10 @@ MimeHtml::~MimeHtml()
 
 void MimeHtml::setHtml(const QString &html)
 {
-    Q_D(MimePart);
-    static_cast<MimeTextPrivate*>(d)->text = html;
+    setText(html);
 }
 
 QString MimeHtml::html() const
 {
-    Q_D(const MimePart);
-    return static_cast<const MimeTextPrivate*>(d)->text;
-}
-
-void MimeHtml::prepare()
-{
-    /* !!! IMPORTANT !!! */
-    MimeText::prepare();
+    return text();
 }

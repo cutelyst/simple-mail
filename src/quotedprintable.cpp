@@ -55,23 +55,19 @@ QByteArray QuotedPrintable::encode(const QByteArray &input, int *printable, int 
     return output;
 }
 
-QByteArray QuotedPrintable::decode(const QString &input)
+QByteArray QuotedPrintable::decode(const QByteArray &input)
 {
     //                    0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  A   B   C   D   E   F
     const int hexVal[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13, 14, 15};
 
     QByteArray output;
 
-    for (int i = 0; i < input.length(); ++i)
-    {
-        if (input.at(i).toLatin1() == '=')
-        {
-            output.append((hexVal[input.at(i + 1).toLatin1() - '0'] << 4) + hexVal[input.at(i + 2).toLatin1() - '0']);
+    for (int i = 0; i < input.length(); ++i) {
+        if (input.at(i) == '=') {
+            output.append((hexVal[input.at(i + 1) - '0'] << 4) + hexVal[input.at(i + 2) - '0']);
             i += 2;
-        }
-        else
-        {
-            output.append(input.at(i).toLatin1());
+        } else {
+            output.append(input.at(i));
         }
     }
 

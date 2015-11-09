@@ -18,6 +18,9 @@
 #include "mimepart_p.h"
 #include "quotedprintable.h"
 
+#include <QtCore/QIODevice>
+#include <QtCore/QBuffer>
+
 MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
 }
@@ -35,7 +38,12 @@ MimePart::~MimePart()
 void MimePart::setContent(const QByteArray &content)
 {
     Q_D(MimePart);
-    d->content = content;
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
+    d->contentDevice->write(content);
 }
 
 void MimePart::setHeader(const QByteArray &header)
@@ -59,7 +67,10 @@ QByteArray MimePart::header() const
 QByteArray MimePart::content() const
 {
     Q_D(const MimePart);
-    return d->content;
+    if (d->contentDevice) {
+        return d->contentDevice->readAll();
+    }
+    return QByteArray();
 }
 
 void MimePart::setContentId(const QByteArray &cId)
@@ -122,100 +133,150 @@ MimePart::Encoding MimePart::encoding() const
     return d->cEncoding;
 }
 
+void MimePart::setData(const QString &data)
+{
+    Q_D(MimePart);
+
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
+
+    switch (d->cEncoding) {
+    case _7Bit:
+        d->contentDevice->write(data.toLatin1());
+        break;
+    case _8Bit:
+        d->contentDevice->write(data.toUtf8());
+        break;
+    case Base64:
+        d->contentDevice->write(d->formatter.format(data.toUtf8().toBase64()));
+        break;
+    case QuotedPrintable:
+        d->contentDevice->write(d->formatter.format(QuotedPrintable::encode(data.toUtf8()), true));
+        break;
+    }
+}
+
+QString MimePart::data() const
+{
+    Q_D(const MimePart);
+
+    if (!d->contentDevice || !d->contentDevice->seek(0)) {
+        return QString();
+    }
+
+    QString ret;
+    switch (d->cEncoding) {
+    case _7Bit:
+        ret = QString::fromLatin1(d->contentDevice->readAll());
+    case _8Bit:
+        ret = QString::fromUtf8(d->contentDevice->readAll());
+    case Base64:
+        ret = QString::fromUtf8(QByteArray::fromBase64(d->contentDevice->readAll()));
+    case QuotedPrintable:
+        ret = QString::fromUtf8(QuotedPrintable::decode(d->contentDevice->readAll()));
+    }
+    return ret;
+}
+
 MimeContentFormatter *MimePart::contentFormatter()
 {
     Q_D(MimePart);
     return &d->formatter;
 }
 
-QByteArray MimePart::data()
+bool MimePart::write(QIODevice *device)
 {
-    Q_D(MimePart);
+    Q_D(const MimePart);
 
-    if (!d->prepared) {
-        prepare();
-    }
+    QByteArray headers;
 
-    return d->mimeString;
-}
-
-void MimePart::prepare()
-{
-    Q_D(MimePart);
-
-    QByteArray mimeString;
-
-    /* === Header Prepare === */
-
-    /* Content-Type */
-    mimeString.append("Content-Type: " + d->cType);
-
+    // Content-Type
+    headers.append("Content-Type: " + d->cType);
     if (!d->cName.isEmpty()) {
-        mimeString.append("; name=\"" + d->cName + "\"");
+        headers.append("; name=\"" + d->cName);
     }
-
     if (!d->cCharset.isEmpty()) {
-        mimeString.append("; charset=" + d->cCharset);
+        headers.append("; charset=" + d->cCharset);
     }
-
     if (!d->cBoundary.isEmpty()) {
-        mimeString.append("; boundary=" + d->cBoundary);
+        headers.append("; boundary=" + d->cBoundary);
     }
-
-    mimeString.append("\r\n");
+    headers.append("\r\n");
 
     // Content-Transfer-Encoding
-    switch (d->cEncoding)
-    {
+    switch (d->cEncoding) {
     case _7Bit:
-        mimeString.append("Content-Transfer-Encoding: 7bit\r\n");
+        headers.append("Content-Transfer-Encoding: 7bit\r\n");
         break;
     case _8Bit:
-        mimeString.append("Content-Transfer-Encoding: 8bit\r\n");
+        headers.append("Content-Transfer-Encoding: 8bit\r\n");
         break;
     case Base64:
-        mimeString.append("Content-Transfer-Encoding: base64\r\n");
+        headers.append("Content-Transfer-Encoding: base64\r\n");
         break;
     case QuotedPrintable:
-        mimeString.append("Content-Transfer-Encoding: quoted-printable\r\n");
+        headers.append("Content-Transfer-Encoding: quoted-printable\r\n");
         break;
     }
 
     // Content-Id
     if (!d->cId.isNull()) {
-        mimeString.append("Content-ID: <" + d->cId + ">\r\n");
+        headers.append("Content-ID: <" + d->cId + ">\r\n");
     }
 
     // Addition header lines
-    mimeString.append(d->header + "\r\n");
+    headers.append(d->header + "\r\n");
 
-    /* === End of Header Prepare === */
-
-    /* === Content === */
-    switch (d->cEncoding) {
-    case _7Bit:
-        mimeString.append(d->content);
-        break;
-    case _8Bit:
-        mimeString.append(d->content);
-        break;
-    case Base64:
-        mimeString.append(d->formatter.format(d->content.toBase64()));
-        break;
-    case QuotedPrintable:
-        mimeString.append(d->formatter.format(QuotedPrintable::encode(d->content), true));
-        break;
+    // Write headers
+    if (device->write(headers) != headers.size()) {
+        return false;
     }
-    mimeString.append("\r\n");
 
-    // === End of Content ===
-    d->prepared = true;
-    d->mimeString = mimeString;
+    // Write content data
+    return writeData(device);
 }
 
 MimePart::MimePart(MimePartPrivate *d) : d_ptr(d)
 {
 
+}
+
+bool MimePart::writeData(QIODevice *device)
+{
+    Q_D(MimePart);
+
+    /* === Content === */
+    QIODevice *input = d->contentDevice;
+    if (!input->isOpen()) {
+        if (!input->open(QIODevice::ReadOnly)) {
+            return false;
+        }
+    } else if (!input->seek(0)) {
+        return false;
+    }
+
+    char block[4096];
+    qint64 totalRead = 0;
+    while (!input->atEnd()) {
+        qint64 in = input->read(block, sizeof(block));
+        if (in <= 0) {
+            break;
+        }
+
+        totalRead += in;
+        if (in != device->write(block, in)) {
+            return true;
+        }
+    }
+
+    if (device->write("\r\n", 2) != 2) {
+        return false;
+    }
+
+    return true;
 }
 
 MimePartPrivate *MimePart::d_func()

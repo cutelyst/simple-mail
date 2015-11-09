@@ -18,9 +18,10 @@
 #include "mimeattachment.h"
 #include "mimepart_p.h"
 
-MimeAttachment::MimeAttachment(QFile *file)
-    : MimeFile(file)
+MimeAttachment::MimeAttachment(QFile *file) : MimeFile(file)
 {
+    Q_D(MimePart);
+    d->header.append(QByteArrayLiteral("Content-disposition: attachment\r\n"));
 }
 
 MimeAttachment::MimeAttachment(const QByteArray &stream, const QString &fileName): MimeFile(stream, fileName)
@@ -30,13 +31,5 @@ MimeAttachment::MimeAttachment(const QByteArray &stream, const QString &fileName
 
 MimeAttachment::~MimeAttachment()
 {
-}
 
-void MimeAttachment::prepare()
-{
-    Q_D(MimePart);
-    d->header.append(QByteArrayLiteral("Content-disposition: attachment\r\n"));
-
-    /* !!! IMPORTANT !!! */
-    MimeFile::prepare();
 }

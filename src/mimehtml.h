@@ -30,9 +30,6 @@ public:
 
     void setHtml(const QString &html);
     QString html() const;
-
-protected:
-    virtual void prepare() Q_DECL_OVERRIDE;
 };
 
 #endif // MIMEHTML_H

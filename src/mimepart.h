@@ -24,6 +24,7 @@
 
 #include "smtpexports.h"
 
+class QIODevice;
 class MimePartPrivate;
 class SMTP_EXPORT MimePart
 {
@@ -64,14 +65,16 @@ public:
     void setEncoding(Encoding enc);
     Encoding encoding() const;
 
+    void setData(const QString &data);
+    QString data() const;
+
     MimeContentFormatter *contentFormatter();
 
-    virtual QByteArray data();
-
-    virtual void prepare();
+    bool write(QIODevice *device);
 
 protected:
     MimePart(MimePartPrivate *d);
+    virtual bool writeData(QIODevice *device);
 
     QSharedDataPointer<MimePartPrivate> d_ptr;
 

@@ -18,13 +18,13 @@
 
 #include "mimetext_p.h"
 
-MimeText::MimeText(const QString &txt) : MimePart(new MimeTextPrivate)
+MimeText::MimeText(const QString &txt)
 {
     Q_D(MimePart);
-    static_cast<MimeTextPrivate*>(d)->text = txt;
     d->cType = QByteArrayLiteral("text/plain");
     d->cCharset = QByteArrayLiteral("utf-8");
     d->cEncoding = _8Bit;
+    setData(txt);
 }
 
 MimeText::~MimeText()
@@ -34,21 +34,10 @@ MimeText::~MimeText()
 
 void MimeText::setText(const QString &text)
 {
-    Q_D(MimePart);
-    static_cast<MimeTextPrivate*>(d)->text = text;
+    setData(text);
 }
 
 QString MimeText::text() const
 {
-    Q_D(const MimePart);
-    return static_cast<const MimeTextPrivate*>(d)->text;
-}
-
-void MimeText::prepare()
-{
-    Q_D(MimePart);
-    d->content = static_cast<MimeTextPrivate*>(d)-> text.toUtf8();
-
-    /* !!! IMPORTANT !!! */
-    MimePart::prepare();
+    return data();
 }
