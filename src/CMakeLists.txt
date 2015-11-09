@@ -50,8 +50,8 @@ add_library(SimpleMailQt5::Core ALIAS simplemail-qt5)
 set_property(TARGET simplemail-qt5 PROPERTY EXPORT_NAME Core)
 
 set_target_properties(simplemail-qt5 PROPERTIES
-    VERSION ${CUTELYST_VERSION}
-    SOVERSION ${CUTELYST_API_LEVEL}
+    VERSION ${SIMPLEMAIL_VERSION}
+    SOVERSION ${SIMPLEMAIL_API_LEVEL}
 )
 target_link_libraries(simplemail-qt5
     Qt5::Core
