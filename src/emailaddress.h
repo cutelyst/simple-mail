@@ -18,7 +18,7 @@
 #ifndef EMAILADDRESS_H
 #define EMAILADDRESS_H
 
-#include <QSharedDataPointer>
+#include <QtCore/QSharedDataPointer>
 
 #include "smtpexports.h"
 

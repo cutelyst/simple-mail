@@ -148,13 +148,9 @@ void MimePart::setData(const QString &data)
         d->contentDevice->write(data.toLatin1());
         break;
     case _8Bit:
-        d->contentDevice->write(data.toUtf8());
-        break;
     case Base64:
-        d->contentDevice->write(d->formatter.format(data.toUtf8().toBase64()));
-        break;
     case QuotedPrintable:
-        d->contentDevice->write(d->formatter.format(QuotedPrintable::encode(data.toUtf8()), true));
+        d->contentDevice->write(data.toUtf8());
         break;
     }
 }
@@ -258,18 +254,23 @@ bool MimePart::writeData(QIODevice *device)
         return false;
     }
 
-    char block[4096];
-    qint64 totalRead = 0;
-    while (!input->atEnd()) {
-        qint64 in = input->read(block, sizeof(block));
-        if (in <= 0) {
-            break;
+    switch (d->contentEncoding) {
+    case MimePart::_7Bit:
+    case MimePart::_8Bit:
+        if (!d->writeRaw(input, device)) {
+            return false;
         }
-
-        totalRead += in;
-        if (in != device->write(block, in)) {
-            return true;
+        break;
+    case MimePart::Base64:
+        if (!d->writeBase64(input, device)) {
+            return false;
         }
+        break;
+    case MimePart::QuotedPrintable:
+        if (!d->writeQuotedPrintable(input, device)) {
+            return false;
+        }
+        break;
     }
 
     if (device->write("\r\n", 2) != 2) {
@@ -282,4 +283,64 @@ bool MimePart::writeData(QIODevice *device)
 MimePartPrivate *MimePart::d_func()
 {
     return d_ptr.data();
+}
+
+bool MimePartPrivate::writeRaw(QIODevice *input, QIODevice *out)
+{
+    char block[4096];
+    qint64 totalRead = 0;
+    while (!input->atEnd()) {
+        qint64 in = input->read(block, sizeof(block));
+        if (in <= 0) {
+            break;
+        }
+
+        totalRead += in;
+        if (in != out->write(block, in)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool MimePartPrivate::writeBase64(QIODevice *input, QIODevice *out)
+{
+    char block[6000]; // Must be powers of 6
+    qint64 totalRead = 0;
+    int chars = 0;
+    while (!input->atEnd()) {
+        qint64 in = input->read(block, sizeof(block));
+        if (in <= 0) {
+            break;
+        }
+
+        totalRead += in;
+        QByteArray encoded = QByteArray(block, in).toBase64(QByteArray::Base64Encoding | QByteArray::OmitTrailingEquals);
+        encoded = formatter.format(encoded, chars);
+        if (encoded.size() != out->write(encoded)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool MimePartPrivate::writeQuotedPrintable(QIODevice *input, QIODevice *out)
+{
+    char block[4096];
+    qint64 totalRead = 0;
+    int chars = 0;
+    while (!input->atEnd()) {
+        qint64 in = input->read(block, sizeof(block));
+        if (in <= 0) {
+            break;
+        }
+
+        totalRead += in;
+        QByteArray encoded = QuotedPrintable::encode(QByteArray(block, in));
+        encoded = formatter.formatQuotedPrintable(encoded, chars);
+        if (encoded.size() != out->write(encoded)) {
+            return false;
+        }
+    }
+    return true;
 }

@@ -30,7 +30,8 @@ public:
     void setMaxLength(int l);
     int maxLength() const;
 
-    QByteArray format(const QByteArray &content, bool quotedPrintable = false) const;
+    QByteArray format(const QByteArray &content, int &chars) const;
+    QByteArray formatQuotedPrintable(const QByteArray &content, int &chars) const;
 
 protected:
     int max_length;

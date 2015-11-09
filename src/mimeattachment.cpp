@@ -18,15 +18,19 @@
 #include "mimeattachment.h"
 #include "mimepart_p.h"
 
+#include <QtCore/QFileInfo>
+
 MimeAttachment::MimeAttachment(QFile *file) : MimeFile(file)
 {
     Q_D(MimePart);
-    d->header.append(QByteArrayLiteral("Content-disposition: attachment\r\n"));
+    const QString filename = QFileInfo(*file).fileName();
+    d->header.append("Content-Disposition: attachment; filename=\"" + filename.toLatin1() + "\"\r\n");
 }
 
 MimeAttachment::MimeAttachment(const QByteArray &stream, const QString &fileName): MimeFile(stream, fileName)
 {
-
+    Q_D(MimePart);
+    d->header.append("Content-Disposition: attachment; filename=\"" + fileName.toLatin1() + "\"\r\n");
 }
 
 MimeAttachment::~MimeAttachment()

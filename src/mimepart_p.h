@@ -26,6 +26,10 @@ class QFile;
 class MimePartPrivate : public QSharedData
 {
 public:
+    bool writeRaw(QIODevice *input, QIODevice *out);
+    bool writeBase64(QIODevice *input, QIODevice *out);
+    bool writeQuotedPrintable(QIODevice *input, QIODevice *out);
+
     QByteArray header;
     QIODevice *contentDevice = nullptr;
 
