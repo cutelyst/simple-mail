@@ -87,3 +87,8 @@ MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const
     Q_D(const MimePart);
     return static_cast<const MimeMultiPartPrivate*>(d)->type;
 }
+
+MimeMultiPartPrivate::~MimeMultiPartPrivate()
+{
+    qDeleteAll(parts);
+}
