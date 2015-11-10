@@ -21,11 +21,12 @@
 #include "mimepart.h"
 #include "mimemultipart.h"
 #include "emailaddress.h"
-#include <QList>
 
 #include "smtpexports.h"
 
 class QIODevice;
+namespace SimpleMail {
+
 class MimeMessagePrivate;
 class SMTP_EXPORT MimeMessage
 {
@@ -65,5 +66,7 @@ public:
 protected:
     MimeMessagePrivate *d_ptr;
 };
+
+}
 
 #endif // MIMEMESSAGE_H

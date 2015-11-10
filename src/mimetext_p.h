@@ -23,11 +23,16 @@
 #include "mimetext.h"
 #include "mimepart_p.h"
 
+namespace SimpleMail {
+
+// TODO remove this?
 class MimeTextPrivate : public MimePartPrivate
 {
 public:
     QString text;
 };
+
+}
 
 #endif // MIMETEXT_P_H
 

@@ -23,6 +23,8 @@
 #include "mimepart.h"
 
 class QFile;
+namespace SimpleMail {
+
 class MimePartPrivate : public QSharedData
 {
 public:
@@ -43,6 +45,8 @@ public:
     MimeContentFormatter formatter;
     MimePart::Encoding contentEncoding = MimePart::_7Bit;
 };
+
+}
 
 #endif // MIMEPART_P_H
 

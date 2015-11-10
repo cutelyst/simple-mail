@@ -25,6 +25,8 @@ namespace Ui {
     class SendEmail;
 }
 
+using namespace SimpleMail;
+
 class SendEmail : public QWidget
 {
     Q_OBJECT

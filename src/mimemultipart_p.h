@@ -23,12 +23,16 @@
 #include "mimemultipart.h"
 #include "mimepart_p.h"
 
+namespace SimpleMail {
+
 class MimeMultiPartPrivate : public MimePartPrivate
 {
 public:
     QList<MimePart*> parts;
     MimeMultiPart::MultiPartType type;
 };
+
+}
 
 #endif // MIMEMULTIPART_P_H
 

@@ -23,6 +23,8 @@ x
 #include "quotedprintable.h"
 #include <typeinfo>
 
+using namespace SimpleMail;
+
 MimeMessage::MimeMessage(bool createAutoMimeContent) :
     d_ptr(new MimeMessagePrivate)
 {

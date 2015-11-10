@@ -22,11 +22,15 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT QuotedPrintable
 {
 public:
     static QByteArray encode(const QByteArray &input, int *printable = 0, int *encoded = 0);
     static QByteArray decode(const QByteArray &input);
 };
+
+}
 
 #endif // QUOTEDPRINTABLE_H

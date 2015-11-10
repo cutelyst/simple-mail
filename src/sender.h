@@ -24,6 +24,8 @@
 #include "mimemessage.h"
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SenderPrivate;
 class SMTP_EXPORT Sender : public QObject
 {
@@ -188,5 +190,7 @@ Q_SIGNALS:
 protected:
     SenderPrivate *d_ptr;
 };
+
+}
 
 #endif // SIMPLEMAIL_SENDER_H

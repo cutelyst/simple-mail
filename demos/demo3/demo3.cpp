@@ -18,6 +18,8 @@
 
 #include "../../src/SmtpMime"
 
+using namespace SimpleMail;
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);

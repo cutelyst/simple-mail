@@ -22,12 +22,16 @@
 
 #include "emailaddress.h"
 
+namespace SimpleMail {
+
 class EmailAddressPrivate : public QSharedData
 {
 public:
     QString name;
     QString address;
 };
+
+}
 
 #endif // EMAILADDRESS_P_H
 

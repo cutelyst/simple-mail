@@ -24,6 +24,8 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeMultiPart : public MimePart
 {
 public:
@@ -49,5 +51,7 @@ public:
 protected:
     virtual bool writeData(QIODevice *device) Q_DECL_FINAL;
 };
+
+}
 
 #endif // MIMEMULTIPART_H

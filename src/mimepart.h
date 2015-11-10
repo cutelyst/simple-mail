@@ -25,6 +25,8 @@
 #include "smtpexports.h"
 
 class QIODevice;
+namespace SimpleMail {
+
 class MimePartPrivate;
 class SMTP_EXPORT MimePart
 {
@@ -85,5 +87,7 @@ protected:
         return d_ptr.constData();
     }
 };
+
+}
 
 #endif // MIMEPART_H

@@ -22,6 +22,8 @@
 #ifndef MIMEMESSAGE_P_H
 #define MIMEMESSAGE_P_H
 
+namespace SimpleMail {
+
 class MimeMessagePrivate
 {
 public:
@@ -37,6 +39,8 @@ public:
     MimePart::Encoding encoding = MimePart::_8Bit;
     bool autoMimeContentCreated;
 };
+
+}
 
 #endif // MIMEMESSAGE_P_H
 

@@ -22,11 +22,15 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeInlineFile : public MimeFile
 {
 public:
     MimeInlineFile(QFile *f);
     ~MimeInlineFile();
 };
+
+}
 
 #endif // MIMEINLINEFILE_H

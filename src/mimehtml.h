@@ -22,6 +22,8 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeHtml : public MimeText
 {
 public:
@@ -31,5 +33,7 @@ public:
     void setHtml(const QString &html);
     QString html() const;
 };
+
+}
 
 #endif // MIMEHTML_H

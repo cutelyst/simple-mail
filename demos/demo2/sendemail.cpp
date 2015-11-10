@@ -24,6 +24,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace SimpleMail;
 
 SendEmail::SendEmail(QWidget *parent) :
     QWidget(parent),

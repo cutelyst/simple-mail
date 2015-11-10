@@ -22,6 +22,8 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class EmailAddressPrivate;
 class SMTP_EXPORT EmailAddress
 {
@@ -50,5 +52,7 @@ private:
         return d_ptr.constData();
     }
 };
+
+}
 
 #endif // EMAILADDRESS_H

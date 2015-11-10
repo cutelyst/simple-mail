@@ -22,6 +22,8 @@
 
 #include "sender.h"
 
+namespace SimpleMail {
+
 class SenderPrivate
 {
 public:
@@ -44,5 +46,7 @@ public:
     QByteArray responseText;
     int responseCode;
 };
+
+}
 
 #endif // SENDER_P_H

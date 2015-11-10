@@ -20,6 +20,8 @@
 
 #include <QtCore/QFileInfo>
 
+using namespace SimpleMail;
+
 MimeAttachment::MimeAttachment(QFile *file) : MimeFile(file)
 {
     Q_D(MimePart);

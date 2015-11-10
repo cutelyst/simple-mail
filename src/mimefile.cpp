@@ -22,6 +22,8 @@
 #include <QtCore/QMimeDatabase>
 #include <QtCore/QFileInfo>
 
+using namespace SimpleMail;
+
 MimeFile::MimeFile(QFile *file)
 {
     Q_D(MimePart);

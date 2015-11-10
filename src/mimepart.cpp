@@ -21,6 +21,8 @@
 #include <QtCore/QIODevice>
 #include <QtCore/QBuffer>
 
+using namespace SimpleMail;
+
 MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
 }

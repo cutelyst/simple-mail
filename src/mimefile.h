@@ -23,6 +23,8 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeFile : public MimePart
 {
 public:
@@ -30,5 +32,7 @@ public:
     MimeFile(QFile *f);
     ~MimeFile();
 };
+
+}
 
 #endif // MIMEFILE_H

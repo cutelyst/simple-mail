@@ -17,8 +17,7 @@
 
 #include "sender_p.h"
 
-#include <QFileInfo>
-#include <QByteArray>
+using namespace SimpleMail;
 
 Sender::Sender(QObject *parent) : QObject(parent)
   , d_ptr(new SenderPrivate)

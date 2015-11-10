@@ -17,6 +17,8 @@
 
 #include "quotedprintable.h"
 
+using namespace SimpleMail;
+
 QByteArray QuotedPrintable::encode(const QByteArray &input, int *printable, int *encoded)
 {
     QByteArray output;

@@ -20,6 +20,8 @@
 #include <QtCore/QUuid>
 #include <QtCore/QIODevice>
 
+using namespace SimpleMail;
+
 const QByteArray MULTI_PART_NAMES[] = {
     QByteArrayLiteral("multipart/mixed"),         //    Mixed
     QByteArrayLiteral("multipart/digest"),        //    Digest

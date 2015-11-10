@@ -18,6 +18,8 @@
 
 #include "mimetext_p.h"
 
+using namespace SimpleMail;
+
 MimeText::MimeText(const QString &txt)
 {
     Q_D(MimePart);

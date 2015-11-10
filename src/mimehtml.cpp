@@ -19,6 +19,8 @@
 #include "mimehtml.h"
 #include "mimetext_p.h"
 
+using namespace SimpleMail;
+
 MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 {
     Q_D(MimePart);

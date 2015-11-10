@@ -18,6 +18,8 @@
 #include "mimeinlinefile.h"
 #include "mimepart_p.h"
 
+using namespace SimpleMail;
+
 MimeInlineFile::MimeInlineFile(QFile *f) : MimeFile(f)
 {
     Q_D(MimePart);

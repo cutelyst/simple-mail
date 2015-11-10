@@ -22,6 +22,8 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeContentFormatter
 {
 public:
@@ -36,5 +38,7 @@ public:
 protected:
     int max_length;
 };
+
+}
 
 #endif // MIMECONTENTFORMATTER_H

@@ -17,6 +17,8 @@
 
 #include "emailaddress_p.h"
 
+using namespace SimpleMail;
+
 EmailAddress::EmailAddress() : d_ptr(new EmailAddressPrivate)
 {
 

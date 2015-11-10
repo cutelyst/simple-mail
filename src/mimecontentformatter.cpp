@@ -18,6 +18,8 @@
 
 #include "mimecontentformatter.h"
 
+using namespace SimpleMail;
+
 MimeContentFormatter::MimeContentFormatter(int max_length) :
     max_length(max_length)
 {

@@ -24,6 +24,8 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeAttachment : public MimeFile
 {
 public:
@@ -31,5 +33,7 @@ public:
     MimeAttachment(const QByteArray &stream, const QString &fileName);
     virtual ~MimeAttachment();
 };
+
+}
 
 #endif // MIMEATTACHMENT_H
