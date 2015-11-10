@@ -27,8 +27,8 @@ class SenderPrivate
 public:
     QTcpSocket *socket = nullptr;
 
-    QString host;
-    int port;
+    QString host = QLatin1String("localhost");
+    int port = 25;
     Sender::ConnectionType connectionType;
     QString name = QLatin1String("localhost");
 

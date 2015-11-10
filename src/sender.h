@@ -53,7 +53,8 @@ public:
         TlsConnection       // STARTTLS
     };
 
-    Sender(const QString &host = QLatin1String("localhost"), int port = 25, ConnectionType ct = TcpConnection);
+    explicit Sender(QObject *parent = 0);
+    Sender(const QString &host, int port, ConnectionType ct, QObject *parent = 0);
     virtual ~Sender();
 
     /**

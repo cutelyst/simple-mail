@@ -20,7 +20,14 @@
 #include <QFileInfo>
 #include <QByteArray>
 
-Sender::Sender(const QString &host, int port, ConnectionType connectionType) : d_ptr(new SenderPrivate)
+Sender::Sender(QObject *parent) : QObject(parent)
+  , d_ptr(new SenderPrivate)
+{
+    setConnectionType(TcpConnection);
+}
+
+Sender::Sender(const QString &host, int port, ConnectionType connectionType, QObject *parent) : QObject(parent)
+  , d_ptr(new SenderPrivate)
 {
     Q_D(Sender);
 
