@@ -79,7 +79,14 @@ public:
      */
     void setPort(int port);
 
+    /**
+     * Defines the client's name. This name is sent by the EHLO command.
+     */
     QString name() const;
+
+    /**
+     * Defines the client's name. This name is sent by the EHLO command.
+     */
     void setName(const QString &name);
 
     /**
