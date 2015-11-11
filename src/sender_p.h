@@ -22,6 +22,8 @@
 
 #include "sender.h"
 
+#include <QtNetwork/QHostInfo>
+
 namespace SimpleMail {
 
 class SenderPrivate
@@ -32,7 +34,7 @@ public:
     QString host = QLatin1String("localhost");
     int port = 25;
     Sender::ConnectionType connectionType;
-    QString name = QLatin1String("localhost");
+    QString name = QHostInfo::localHostName();
 
     QString user;
     QString password;

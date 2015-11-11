@@ -81,11 +81,13 @@ public:
 
     /**
      * Defines the client's name. This name is sent by the EHLO command.
+     * Defaults to the local host name
      */
     QString name() const;
 
     /**
      * Defines the client's name. This name is sent by the EHLO command.
+     * Defaults to the local host name
      */
     void setName(const QString &name);
 
