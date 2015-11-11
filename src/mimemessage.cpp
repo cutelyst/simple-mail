@@ -244,7 +244,7 @@ QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QStrin
 
         int printable = 0;
         int encoded = 0;
-        const QByteArray result = QuotedPrintable::encode(simple, &printable, &encoded);
+        const QByteArray result = QuotedPrintable::encode(simple, true, &printable, &encoded);
         int sum = printable + encoded;
         qDebug() << data << result << printable << encoded << sum << ((double) printable/sum) << (encoded/sum);
         if (sum != 0 && ((double) printable/sum) >= 0.8) {
@@ -257,7 +257,7 @@ QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QStrin
         case MimePart::Base64:
             return " =?utf-8?B?" + simple.toBase64() + "?=";
         case MimePart::QuotedPrintable:
-            return " =?utf-8?Q?" + QuotedPrintable::encode(simple) + "?=";
+            return " =?utf-8?Q?" + QuotedPrintable::encode(simple, true) + "?=";
         default:
             return ' ' + data.toLatin1();
         }

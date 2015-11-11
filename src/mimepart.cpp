@@ -343,7 +343,7 @@ bool MimePartPrivate::writeQuotedPrintable(QIODevice *input, QIODevice *out)
         }
 
         totalRead += in;
-        QByteArray encoded = QuotedPrintable::encode(QByteArray(block, in));
+        QByteArray encoded = QuotedPrintable::encode(QByteArray(block, in), false);
         encoded = formatter.formatQuotedPrintable(encoded, chars);
         if (encoded.size() != out->write(encoded)) {
             return false;
