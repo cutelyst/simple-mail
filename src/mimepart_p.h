@@ -29,6 +29,7 @@ class MimePartPrivate : public QSharedData
 {
 public:
     virtual ~MimePartPrivate();
+
     bool writeRaw(QIODevice *input, QIODevice *out);
     bool writeBase64(QIODevice *input, QIODevice *out);
     bool writeQuotedPrintable(QIODevice *input, QIODevice *out);

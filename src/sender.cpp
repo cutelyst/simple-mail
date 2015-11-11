@@ -17,6 +17,10 @@
 
 #include "sender_p.h"
 
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(SIMPLEMAIL_SENDER, "simplemail.sender")
+
 using namespace SimpleMail;
 
 Sender::Sender(QObject *parent) : QObject(parent)
@@ -50,6 +54,9 @@ QString Sender::host() const
 void Sender::setUser(const QString &user)
 {
     Q_D(Sender);
+    if (d->authMethod == Sender::AuthNone) {
+        d->authMethod = Sender::AuthPlain;
+    }
     d->user = user;
 }
 
@@ -62,6 +69,9 @@ QString Sender::password() const
 void Sender::setPassword(const QString &password)
 {
     Q_D(Sender);
+    if (d->authMethod == Sender::AuthNone) {
+        d->authMethod = Sender::AuthPlain;
+    }
     d->password = password;
 }
 
@@ -189,309 +199,22 @@ void Sender::setSendMessageTimeout(int msec)
     d->sendMessageTimeout = msec;
 }
 
-bool Sender::connectToHost()
-{
-    Q_D(Sender);
-    switch (d->connectionType) {
-    case TlsConnection:
-    case TcpConnection:
-        d->socket->connectToHost(d->host, d->port);
-        break;
-    case SslConnection:
-    {
-        QSslSocket *sslSock = qobject_cast<QSslSocket*>(d->socket);
-        if (sslSock) {
-            sslSock->connectToHostEncrypted(d->host, d->port);
-        } else {
-            return false;
-        }
-    }
-        break;
-    }
-
-    // Tries to connect to server
-    if (!d->socket->waitForConnected(d->connectionTimeout)) {
-        Q_EMIT smtpError(ConnectionTimeoutError);
-        return false;
-    }
-
-    try
-    {
-        // Wait for the server's response
-        waitForResponse();
-
-        // If the response code is not 220 (Service ready)
-        // means that is something wrong with the server
-        if (d->responseCode != 220)
-        {
-            Q_EMIT smtpError(ServerError);
-            return false;
-        }
-
-        // Send a EHLO/HELO message to the server
-        // The client's first command must be EHLO/HELO
-        sendMessage("EHLO " + d->name.toLatin1());
-
-        // Wait for the server's response
-        waitForResponse();
-
-        // The response code needs to be 250.
-        if (d->responseCode != 250) {
-            Q_EMIT smtpError(ServerError);
-            return false;
-        }
-
-        if (d->connectionType == TlsConnection) {
-            // send a request to start TLS handshake
-            sendMessage(QByteArrayLiteral("STARTTLS"));
-
-            // Wait for the server's response
-            waitForResponse();
-
-            // The response code needs to be 220.
-            if (d->responseCode != 220) {
-                Q_EMIT smtpError(ServerError);
-                return false;
-            };
-
-            // TODO check if Tls creates a QSslSocket instance
-            QSslSocket *sslSock = qobject_cast<QSslSocket*>(d->socket);
-            if (sslSock) {
-                sslSock->startClientEncryption();
-            }
-
-            if (sslSock && !sslSock->waitForEncrypted(d->connectionTimeout)) {
-                qDebug() << sslSock->errorString();
-                Q_EMIT smtpError(ConnectionTimeoutError);
-                return false;
-            }
-
-            // Send ELHO one more time
-            sendMessage(QByteArrayLiteral("EHLO ") + d->name.toLatin1());
-
-            // Wait for the server's response
-            waitForResponse();
-
-            // The response code needs to be 250.
-            if (d->responseCode != 250) {
-                Q_EMIT smtpError(ServerError);
-                return false;
-            }
-        }
-    }
-    catch (ResponseTimeoutException)
-    {
-        return false;
-    }
-    catch (SendMessageTimeoutException)
-    {
-        return false;
-    }
-
-    // If no errors occured the function returns true.
-    return true;
-}
-
-bool Sender::login()
-{
-    Q_D(const Sender);
-    return login(d->user, d->password, d->authMethod);
-}
-
-bool Sender::login(const QString &user, const QString &password, AuthMethod method)
-{
-    Q_D(Sender);
-    try {
-        if (method == AuthPlain)
-        {
-            // Sending command: AUTH PLAIN base64('\0' + username + '\0' + password)
-            QString userpass = QLatin1Char('\0') % user % QLatin1Char('\0') % password;
-            sendMessage(QByteArrayLiteral("AUTH PLAIN ") + userpass.toLatin1().toBase64());
-
-            // Wait for the server's response
-            waitForResponse();
-
-            // If the response is not 235 then the authentication was faild
-            if (d->responseCode != 235) {
-                Q_EMIT smtpError(AuthenticationFailedError);
-                return false;
-            }
-        }
-        else if (method == AuthLogin)
-        {
-            // Sending command: AUTH LOGIN
-            sendMessage(QByteArrayLiteral("AUTH LOGIN"));
-
-            // Wait for 334 response code
-            waitForResponse();
-            if (d->responseCode != 334) {
-                Q_EMIT smtpError(AuthenticationFailedError);
-                return false;
-            }
-
-            // Send the username in base64
-            sendMessage(user.toLatin1().toBase64());
-
-            // Wait for 334
-            waitForResponse();
-            if (d->responseCode != 334) {
-                Q_EMIT smtpError(AuthenticationFailedError);
-                return false;
-            }
-
-            // Send the password in base64
-            sendMessage(password.toUtf8().toBase64());
-
-            // Wait for the server's responce
-            waitForResponse();
-
-            // If the response is not 235 then the authentication was faild
-            if (d->responseCode != 235) {
-                Q_EMIT smtpError(AuthenticationFailedError);
-                return false;
-            }
-        }
-    }
-    catch (ResponseTimeoutException)
-    {
-        // Responce Timeout exceeded
-        Q_EMIT smtpError(AuthenticationFailedError);
-        return false;
-    }
-    catch (SendMessageTimeoutException)
-    {
-        // Send Timeout exceeded
-        Q_EMIT smtpError(AuthenticationFailedError);
-        return false;
-    }
-
-    return true;
-}
-
 bool Sender::sendMail(MimeMessage &email)
 {
     Q_D(Sender);
-    try
-    {
-        // Send the MAIL command with the sender
-        sendMessage("MAIL FROM: <" + email.sender().address().toLatin1() + '>');
+    return d->sendMail(email);
+}
 
-        waitForResponse();
-
-        if (d->responseCode != 250) {
-            return false;
-        }
-
-        // Send RCPT command for each recipient
-        // To (primary recipients)
-        Q_FOREACH (const EmailAddress &rcpt, email.toRecipients()) {
-            sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
-            waitForResponse();
-
-            if (d->responseCode != 250) {
-                return false;
-            }
-        }
-
-        // Cc (carbon copy)
-        Q_FOREACH (const EmailAddress &rcpt, email.ccRecipients()) {
-            sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
-            waitForResponse();
-
-            if (d->responseCode != 250) {
-                return false;
-            }
-        }
-
-        // Bcc (blind carbon copy)
-        Q_FOREACH (const EmailAddress &rcpt, email.bccRecipients()) {
-            sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
-            waitForResponse();
-
-            if (d->responseCode != 250) {
-                return false;
-            }
-        }
-
-        // Send DATA command
-        sendMessage(QByteArrayLiteral("DATA"));
-        waitForResponse();
-
-        if (d->responseCode != 354) {
-            return false;
-        }
-
-        if (!email.write(d->socket)) {
-            return false;
-        }
-
-        // Send \r\n.\r\n to end the mail data
-        sendMessage(QByteArrayLiteral("\r\n."));
-
-        waitForResponse();
-
-        if (d->responseCode != 250) {
-            return false;
-        }
-    }
-    catch (ResponseTimeoutException)
-    {
-        return false;
-    }
-    catch (SendMessageTimeoutException)
-    {
-        return false;
-    }
-
-    return true;
+QString Sender::lastError() const
+{
+    Q_D(const Sender);
+    return d->lastError;
 }
 
 void Sender::quit()
 {
-    sendMessage(QByteArrayLiteral("QUIT"));
-}
-
-void Sender::waitForResponse()
-{
     Q_D(Sender);
-
-    do {
-        if (!d->socket->waitForReadyRead(d->responseTimeout)) {
-            Q_EMIT smtpError(ResponseTimeoutError);
-            throw ResponseTimeoutException();
-        }
-
-        while (d->socket->canReadLine()) {
-            // Save the server's response
-            d->responseText = d->socket->readLine();
-
-            // Extract the respose code from the server's responce (first 3 digits)
-            d->responseCode = d->responseText.left(3).toInt();
-
-            if (d->responseCode / 100 == 4) {
-                Q_EMIT smtpError(ServerError);
-            }
-
-            if (d->responseCode / 100 == 5) {
-                Q_EMIT smtpError(ClientError);
-            }
-
-            if (d->responseText[3] == ' ') {
-                return;
-            }
-        }
-    } while (true);
-}
-
-void Sender::sendMessage(const QByteArray &data)
-{
-    Q_D(Sender);
-    d->socket->write(data);
-    d->socket->write("\r\n", 2);
-    if (!d->socket->waitForBytesWritten(d->sendMessageTimeout)) {
-        Q_EMIT smtpError(SendDataTimeoutError);
-        throw SendMessageTimeoutException();
-    }
+    d->sendMessage(QByteArrayLiteral("QUIT"));
 }
 
 void Sender::socketStateChanged(QAbstractSocket::SocketState /*state*/)
@@ -504,4 +227,299 @@ void Sender::socketError(QAbstractSocket::SocketError /*socketError*/)
 
 void Sender::socketReadyRead()
 {
+}
+
+bool SenderPrivate::sendMail(MimeMessage &email)
+{
+    Q_Q(Sender);
+
+    if (!processState()) {
+        return false;
+    }
+
+    qCDebug(SIMPLEMAIL_SENDER) << "Sending MAIL command";
+    // Send the MAIL command with the sender
+    sendMessage("MAIL FROM: <" + email.sender().address().toLatin1() + '>');
+    if (!waitForResponse(250)) {
+        return false;
+    }
+
+    qCDebug(SIMPLEMAIL_SENDER) << "Sending RCPT TO command";
+    // Send RCPT command for each recipient
+    // To (primary recipients)
+    Q_FOREACH (const EmailAddress &rcpt, email.toRecipients()) {
+        sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
+
+        if (!waitForResponse(250)) {
+            return false;
+        }
+    }
+
+    // Cc (carbon copy)
+    Q_FOREACH (const EmailAddress &rcpt, email.ccRecipients()) {
+        sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
+
+        if (!waitForResponse(250)) {
+            return false;
+        }
+    }
+
+    // Bcc (blind carbon copy)
+    Q_FOREACH (const EmailAddress &rcpt, email.bccRecipients()) {
+        sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
+
+        if (!waitForResponse(250)) {
+            return false;
+        }
+    }
+
+    qCDebug(SIMPLEMAIL_SENDER) << "Sending DATA command";
+    // Send DATA command
+    sendMessage(QByteArrayLiteral("DATA"));
+
+    if (!waitForResponse(354)) {
+        return false;
+    }
+
+    qCDebug(SIMPLEMAIL_SENDER) << "Sending email";
+    if (!email.write(socket)) {
+        return false;
+    }
+
+    // Send \r\n.\r\n to end the mail data
+    sendMessage(QByteArrayLiteral("\r\n."));
+    if (!waitForResponse(250)) {
+        return false;
+    }
+    qCDebug(SIMPLEMAIL_SENDER) << "Mail sent";
+
+    return true;
+}
+
+void SenderPrivate::sendMessage(const QByteArray &data)
+{
+    Q_Q(Sender);
+    socket->write(data);
+    socket->write("\r\n", 2);
+    if (!socket->waitForBytesWritten(sendMessageTimeout)) {
+        Q_EMIT q->smtpError(Sender::SendDataTimeoutError);
+    }
+}
+
+bool SenderPrivate::connectToHost()
+{
+    Q_Q(Sender);
+
+    QSslSocket *sslSock = nullptr;
+    switch (connectionType) {
+    case Sender::TlsConnection:
+    case Sender::TcpConnection:
+        qCDebug(SIMPLEMAIL_SENDER) << "Connecting to host" << host << port;
+        socket->connectToHost(host, port);
+        break;
+    case Sender::SslConnection:
+    {
+        sslSock = qobject_cast<QSslSocket*>(socket);
+        if (sslSock) {
+            qCDebug(SIMPLEMAIL_SENDER) << "Connecting to host encrypted" << host << port;
+            sslSock->connectToHostEncrypted(host, port);
+        } else {
+            return false;
+        }
+    }
+        break;
+    }
+
+    // Tries to connect to server
+    if (!socket->waitForConnected(connectionTimeout)) {
+        lastError = socket->errorString();
+        qCDebug(SIMPLEMAIL_SENDER) << "Connection failed" << socket->errorString();
+        Q_EMIT q->smtpError(Sender::ConnectionTimeoutError);
+        return false;
+    }
+
+    // If the response code is not 220 (Service ready)
+    // means that is something wrong with the server
+    if (!waitForResponse(220)) {
+        Q_EMIT q->smtpError(Sender::ServerError);
+        return false;
+    }
+
+    qCDebug(SIMPLEMAIL_SENDER) << "Sending EHLO" << name;
+    // Send a EHLO/HELO message to the server
+    // The client's first command must be EHLO/HELO
+    sendMessage("EHLO " + name.toLatin1());
+
+    // The response code needs to be 250.
+    if (!waitForResponse(250)) {
+        Q_EMIT q->smtpError(Sender::ServerError);
+        return false;
+    }
+    qCDebug(SIMPLEMAIL_SENDER) << "Sent hello";
+
+    if (connectionType == Sender::TlsConnection) {
+        qCDebug(SIMPLEMAIL_SENDER) << "Sending STARTTLS";
+
+        // send a request to start TLS handshake
+        sendMessage(QByteArrayLiteral("STARTTLS"));
+
+        // The response code needs to be 220.
+        if (!waitForResponse(220)) {
+            Q_EMIT q->smtpError(Sender::ServerError);
+            return false;
+        };
+
+        if (sslSock) {
+            qCDebug(SIMPLEMAIL_SENDER) << "Starting client encryption";
+            sslSock->startClientEncryption();
+
+            if (!sslSock->waitForEncrypted(connectionTimeout)) {
+                qCDebug(SIMPLEMAIL_SENDER) << "Failed to encrypt connection" << sslSock->errorString();
+                Q_EMIT q->smtpError(Sender::ConnectionTimeoutError);
+                return false;
+            }
+        }
+
+        qCDebug(SIMPLEMAIL_SENDER) << "Sending second EHLO" << name;
+        // Send ELHO one more time
+        sendMessage(QByteArrayLiteral("EHLO ") + name.toLatin1());
+
+        // The response code needs to be 250.
+        if (!waitForResponse(250)) {
+            Q_EMIT q->smtpError(Sender::ServerError);
+            return false;
+        }
+    }
+
+    state = SenderPrivate::Connected;
+
+    // If no errors occured the function returns true.
+    return true;
+
+}
+
+bool SenderPrivate::login()
+{
+    Q_Q(Sender);
+
+    if (authMethod == Sender::AuthPlain) {
+        qCDebug(SIMPLEMAIL_SENDER) << "Sending authentication plain";
+
+        // Sending command: AUTH PLAIN base64('\0' + username + '\0' + password)
+        QString userpass = QLatin1Char('\0') % user % QLatin1Char('\0') % password;
+        sendMessage(QByteArrayLiteral("AUTH PLAIN ") + userpass.toLatin1().toBase64());
+
+        // If the response is not 235 then the authentication was faild
+        if (!waitForResponse(235)) {
+            Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
+            return false;
+        }
+    } else if (authMethod == Sender::AuthLogin) {
+        // Sending command: AUTH LOGIN
+        qCDebug(SIMPLEMAIL_SENDER) << "Sending authentication login";
+        sendMessage(QByteArrayLiteral("AUTH LOGIN"));
+
+        // Wait for 334 response code
+        if (!waitForResponse(334)) {
+            Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
+            return false;
+        }
+
+        // Send the username in base64
+        qCDebug(SIMPLEMAIL_SENDER) << "Sending authentication user" << user;
+        sendMessage(user.toLatin1().toBase64());
+
+        // Wait for 334
+        if (!waitForResponse(334)) {
+            Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
+            return false;
+        }
+
+        // Send the password in base64
+        qCDebug(SIMPLEMAIL_SENDER) << "Sending authentication password";
+        sendMessage(password.toUtf8().toBase64());
+
+        // If the response is not 235 then the authentication was faild
+        if (!waitForResponse(235)) {
+            Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
+            return false;
+        }
+    }
+
+    state = SenderPrivate::Ready;
+
+    return true;
+}
+
+bool SenderPrivate::waitForResponse(int expectedCode)
+{
+    Q_Q(Sender);
+
+    do {
+        if (!socket->waitForReadyRead(responseTimeout)) {
+            lastError = QObject::tr("Response timed out");
+            qCDebug(SIMPLEMAIL_SENDER) << "Response timed out";
+            Q_EMIT q->smtpError(Sender::ResponseTimeoutError);
+            return false;
+        }
+
+        while (socket->canReadLine()) {
+            // Save the server's response
+            responseText = socket->readLine().trimmed();
+            qCDebug(SIMPLEMAIL_SENDER) << "Got response" << responseText;
+
+            // Extract the respose code from the server's responce (first 3 digits)
+            responseCode = responseText.left(3).toInt();
+
+            if (responseCode / 100 == 4) {
+                lastError = QString::fromLatin1(responseText);
+                Q_EMIT q->smtpError(Sender::ServerError);
+            }
+
+            if (responseCode / 100 == 5) {
+                lastError = QString::fromLatin1(responseText);
+                Q_EMIT q->smtpError(Sender::ClientError);
+            }
+
+            if (responseText[3] == ' ') {
+                if (responseCode != expectedCode) {
+                    lastError = QString::fromLatin1(responseText);
+                    qCDebug(SIMPLEMAIL_SENDER) << "Unexpected server response" << lastError << expectedCode;
+                    return false;
+                }
+                return true;
+            }
+        }
+    } while (true);
+
+    return false;
+}
+
+bool SenderPrivate::processState()
+{
+    while (state != SenderPrivate::Ready) {
+        qCDebug(SIMPLEMAIL_SENDER) << "Processing state" << state;
+        switch (state) {
+        case SenderPrivate::Disconnected:
+            if (!connectToHost()) {
+                state = SenderPrivate::Error;
+                return false;
+            }
+            break;
+        case SenderPrivate::Connected:
+            if (!login()) {
+                state = SenderPrivate::Error;
+                return false;
+            }
+            break;
+        case SenderPrivate::Error:
+            // try again
+            state = SenderPrivate::Disconnected;
+            socket->disconnect();
+            break;
+        case SenderPrivate::Ready:
+            break;
+        }
+    }
+    return true;
 }

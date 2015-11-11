@@ -38,12 +38,6 @@ MimeMessage::MimeMessage(bool createAutoMimeContent) :
 
 MimeMessage::~MimeMessage()
 {
-    Q_D(MimeMessage);
-
-    if (d->autoMimeContentCreated) {
-        d->autoMimeContentCreated = false;
-        delete (d->content);
-    }
     delete d_ptr;
 }
 
@@ -58,7 +52,7 @@ void MimeMessage::setContent(MimePart *content)
     Q_D(MimeMessage);
     if (d->autoMimeContentCreated) {
       d->autoMimeContentCreated = false;
-      delete (d->content);
+      delete d->content;
     }
     d->content = content;
 }
@@ -204,6 +198,11 @@ QList<MimePart*> MimeMessage::parts() const
         res->append(d->content);
         return *res;
     }
+}
+
+MimeMessagePrivate::~MimeMessagePrivate()
+{
+    delete content;
 }
 
 QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec)

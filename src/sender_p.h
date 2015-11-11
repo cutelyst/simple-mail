@@ -28,8 +28,26 @@ namespace SimpleMail {
 
 class SenderPrivate
 {
+    Q_DECLARE_PUBLIC(Sender)
 public:
+    enum State {
+        Error,
+        Disconnected,
+        Connected,
+        Ready
+    };
+
+    bool sendMail(MimeMessage &email);
+    inline void sendMessage(const QByteArray &data);
+    bool connectToHost();
+    bool login();
+    bool waitForResponse(int expectedCode);
+    bool processState();
+
+    State state = State::Disconnected;
+    Sender *q_ptr;
     QTcpSocket *socket = nullptr;
+    QString lastError;
 
     QString host = QLatin1String("localhost");
     int port = 25;
@@ -38,7 +56,7 @@ public:
 
     QString user;
     QString password;
-    Sender::AuthMethod authMethod = Sender::AuthPlain;
+    Sender::AuthMethod authMethod = Sender::AuthNone;
 
     int connectionTimeout = 5000;
     int responseTimeout = 5000;

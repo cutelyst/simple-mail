@@ -46,19 +46,8 @@ int main(int argc, char *argv[])
     message.addPart(&text);
 
     // Now we can send the mail
-
-    if (!smtp.connectToHost()) {
-        qDebug() << "Failed to connect to host!" << endl;
-        return -1;
-    }
-
-    if (!smtp.login()) {
-        qDebug() << "Failed to login!" << endl;
-        return -2;
-    }
-
     if (!smtp.sendMail(message)) {
-        qDebug() << "Failed to send mail!" << endl;
+        qDebug() << "Failed to send mail!" << smtp.lastError();
         return -3;
     }
 

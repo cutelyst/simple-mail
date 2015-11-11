@@ -69,7 +69,6 @@ void SendEmail::on_sendEmail_clicked()
     QString host = ui->host->text();
     int port = ui->port->value();
     bool ssl = ui->ssl->isChecked();
-    bool auth = ui->auth->isChecked();
     QString user = ui->username->text();
     QString password = ui->password->text();
 
@@ -81,6 +80,10 @@ void SendEmail::on_sendEmail_clicked()
     QString html = ui->texteditor->toHtml();
 
     Sender smtp(host, port, ssl ? Sender::SslConnection : Sender::TcpConnection);
+    if (!user.isEmpty()) {
+        smtp.setUser(user);
+        smtp.setPassword(password);
+    }
 
     MimeMessage message;
 
@@ -100,26 +103,10 @@ void SendEmail::on_sendEmail_clicked()
         message.addPart(new MimeAttachment(new QFile(ui->attachments->item(i)->text())));
     }
 
-    if (!smtp.connectToHost())
-    {
-        errorMessage(QLatin1String("Connection Failed"));
+    if (!smtp.sendMail(message)) {
+        errorMessage(QLatin1String("Mail sending failed:\n") % smtp.lastError());
         return;
-    }
-
-    if (auth)
-        if (!smtp.login(user, password))
-        {
-            errorMessage(QLatin1String("Authentification Failed"));
-            return;
-        }
-
-    if (!smtp.sendMail(message))
-    {
-        errorMessage(QLatin1String("Mail sending failed"));
-        return;
-    }
-    else
-    {
+    } else {
         QMessageBox okMessage (this);
         okMessage.setText(QLatin1String("The email was succesfully sent."));
         okMessage.exec();

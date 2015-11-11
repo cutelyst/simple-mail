@@ -34,6 +34,7 @@ class SMTP_EXPORT Sender : public QObject
 public:
     enum AuthMethod
     {
+        AuthNone,
         AuthPlain,
         AuthLogin
     };
@@ -171,22 +172,11 @@ public:
      */
     void setSendMessageTimeout(int msec);
 
-    bool connectToHost();
-
-    bool login();
-    bool login(const QString &user, const QString &password, AuthMethod method = AuthLogin);
-
     bool sendMail(MimeMessage &email);
 
+    QString lastError() const;
+
     void quit();
-
-protected:
-    class ResponseTimeoutException {};
-    class SendMessageTimeoutException {};
-
-    void waitForResponse();
-
-    void sendMessage(const QByteArray &data);
 
 protected Q_SLOTS:
     void socketStateChanged(QAbstractSocket::SocketState state);

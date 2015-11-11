@@ -90,5 +90,4 @@ MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const
 
 MimeMultiPartPrivate::~MimeMultiPartPrivate()
 {
-    qDeleteAll(parts);
 }
