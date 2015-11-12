@@ -19,6 +19,7 @@
 #define MIMEPART_H
 
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QMetaType>
 
 #include "mimecontentformatter.h"
 
@@ -89,5 +90,7 @@ protected:
 };
 
 }
+
+Q_DECLARE_METATYPE(SimpleMail::MimePart*)
 
 #endif // MIMEPART_H
