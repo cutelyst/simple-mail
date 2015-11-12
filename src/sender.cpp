@@ -231,8 +231,6 @@ void Sender::socketReadyRead()
 
 bool SenderPrivate::sendMail(MimeMessage &email)
 {
-    Q_Q(Sender);
-
     if (!processState()) {
         return false;
     }
@@ -497,6 +495,25 @@ bool SenderPrivate::waitForResponse(int expectedCode)
 
 bool SenderPrivate::processState()
 {
+    switch (state) {
+    case SenderPrivate::Ready:
+        if (socket->state() != QAbstractSocket::ConnectedState) {
+            state = SenderPrivate::Disconnected;
+            socket->disconnect();
+            socket->waitForDisconnected();
+        }
+        break;
+    case SenderPrivate::Error:
+        if (socket->state() != QAbstractSocket::ConnectedState) {
+            state = SenderPrivate::Disconnected;
+            socket->disconnect();
+            socket->waitForDisconnected();
+        }
+        break;
+    default:
+        break;
+    }
+
     while (state != SenderPrivate::Ready) {
         qCDebug(SIMPLEMAIL_SENDER) << "Processing state" << state;
         switch (state) {
@@ -514,8 +531,8 @@ bool SenderPrivate::processState()
             break;
         case SenderPrivate::Error:
             // try again
-            state = SenderPrivate::Disconnected;
             socket->disconnect();
+            socket->waitForDisconnected();
             break;
         case SenderPrivate::Ready:
             break;
