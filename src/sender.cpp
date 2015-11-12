@@ -497,17 +497,13 @@ bool SenderPrivate::processState()
 {
     switch (state) {
     case SenderPrivate::Ready:
-        if (socket->state() != QAbstractSocket::ConnectedState) {
-            state = SenderPrivate::Disconnected;
-            socket->disconnect();
-            socket->waitForDisconnected();
-        }
-        break;
     case SenderPrivate::Error:
         if (socket->state() != QAbstractSocket::ConnectedState) {
             state = SenderPrivate::Disconnected;
-            socket->disconnect();
-            socket->waitForDisconnected();
+            if (socket->state() != QAbstractSocket::UnconnectedState) {
+                socket->disconnect();
+                socket->waitForDisconnected();
+            }
         }
         break;
     default:
