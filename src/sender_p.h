@@ -36,6 +36,7 @@ public:
         Connected,
         Ready
     };
+    SenderPrivate(Sender *parent);
 
     bool sendMail(MimeMessage &email);
     inline void sendMessage(const QByteArray &data);
