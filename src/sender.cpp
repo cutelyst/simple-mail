@@ -24,13 +24,13 @@ Q_LOGGING_CATEGORY(SIMPLEMAIL_SENDER, "simplemail.sender")
 using namespace SimpleMail;
 
 Sender::Sender(QObject *parent) : QObject(parent)
-  , d_ptr(new SenderPrivate)
+  , d_ptr(new SenderPrivate(this))
 {
     setConnectionType(TcpConnection);
 }
 
 Sender::Sender(const QString &host, int port, ConnectionType connectionType, QObject *parent) : QObject(parent)
-  , d_ptr(new SenderPrivate)
+  , d_ptr(new SenderPrivate(this))
 {
     Q_D(Sender);
 
@@ -229,8 +229,16 @@ void Sender::socketReadyRead()
 {
 }
 
+SenderPrivate::SenderPrivate(Sender *parent) :
+    q_ptr(parent)
+{
+
+}
+
 bool SenderPrivate::sendMail(MimeMessage &email)
 {
+    qCDebug(SIMPLEMAIL_SENDER) << "Sending MAIL" << this;
+
     if (!processState()) {
         return false;
     }
