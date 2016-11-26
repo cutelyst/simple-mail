@@ -375,6 +375,7 @@ bool SenderPrivate::connectToHost()
             return false;
         };
 
+        sslSock = qobject_cast<QSslSocket *>(socket);
         if (sslSock) {
             qCDebug(SIMPLEMAIL_SENDER) << "Starting client encryption";
             sslSock->startClientEncryption();
@@ -384,6 +385,9 @@ bool SenderPrivate::connectToHost()
                 Q_EMIT q->smtpError(Sender::ConnectionTimeoutError);
                 return false;
             }
+        } else {
+            qCDebug(SIMPLEMAIL_SENDER) << "Failed to start TLS negotiation";
+            return false;
         }
 
         qCDebug(SIMPLEMAIL_SENDER) << "Sending second EHLO" << name;
