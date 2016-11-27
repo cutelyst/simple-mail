@@ -191,13 +191,15 @@ QString MimeMessage::subject() const
 QList<MimePart*> MimeMessage::parts() const
 {
     Q_D(const MimeMessage);
+
+    QList<MimePart*> ret;
     if (typeid(*d->content) == typeid(MimeMultiPart)) {
-        return ((MimeMultiPart*) d->content)->parts();
+        ret = static_cast<MimeMultiPart*>(d->content)->parts();
     } else {
-        QList<MimePart*> *res = new QList<MimePart*>();
-        res->append(d->content);
-        return *res;
+        ret.append(d->content);
     }
+
+    return ret;
 }
 
 MimeMessagePrivate::~MimeMessagePrivate()
