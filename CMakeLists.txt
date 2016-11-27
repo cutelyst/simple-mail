@@ -4,14 +4,17 @@ cmake_minimum_required(VERSION 2.8.12)
 if (POLICY CMP0043)
   cmake_policy(SET CMP0043 NEW)
 endif()
+if (POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
+endif()
 
 find_package(Qt5 5.4.0 COMPONENTS
     Core
     Network
 )
 
-set(SIMPLEMAIL_VERSION_MAJOR  "0")
-set(SIMPLEMAIL_VERSION_MINOR  "1")
+set(SIMPLEMAIL_VERSION_MAJOR  "1")
+set(SIMPLEMAIL_VERSION_MINOR  "3")
 set(SIMPLEMAIL_VERSION_PATCH  "0")
 set(SIMPLEMAIL_VERSION_SUFFIX "${VERSION_SUFFIX}")
 set(SIMPLEMAIL_VERSION "${SIMPLEMAIL_VERSION_MAJOR}.${SIMPLEMAIL_VERSION_MINOR}.${SIMPLEMAIL_VERSION_PATCH}")
@@ -22,6 +25,9 @@ set(CMAKE_AUTOMOC ON)
 
 # Include our cmake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 # As moc files are generated in the binary dir, tell CMake
 # to always look for includes there:
