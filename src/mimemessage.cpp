@@ -213,7 +213,7 @@ QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList
 
     QByteArray mime = addressKind;
     bool first = true;
-    Q_FOREACH (const EmailAddress &email, emails) {
+    for (const EmailAddress &email : emails) {
         if (!first) {
             mime.append(',');
         } else {

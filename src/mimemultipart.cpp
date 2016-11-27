@@ -63,8 +63,8 @@ bool MimeMultiPart::writeData(QIODevice *device)
 {
     Q_D(MimePart);
 
-    auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
-    Q_FOREACH (MimePart *part, parts) {
+    const auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
+    for (MimePart *part : parts) {
         device->write("--" + d->contentBoundary + "\r\n");
         if (!part->write(device)) {
             return false;

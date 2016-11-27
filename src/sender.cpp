@@ -139,12 +139,10 @@ void Sender::setConnectionType(ConnectionType connectionType)
     case TlsConnection:
         d->socket = new QSslSocket(this);
     }
-    connect(d->socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-            this, SLOT(socketStateChanged(QAbstractSocket::SocketState)));
-    connect(d->socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(socketError(QAbstractSocket::SocketError)));
-    connect(d->socket, SIGNAL(readyRead()),
-            this, SLOT(socketReadyRead()));
+    connect(d->socket, &QTcpSocket::stateChanged, this, &Sender::socketStateChanged);
+    connect(d->socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
+            this, &Sender::socketError);
+    connect(d->socket, &QTcpSocket::readyRead, this, &Sender::socketReadyRead);
 }
 
 QString Sender::user() const
@@ -253,7 +251,8 @@ bool SenderPrivate::sendMail(MimeMessage &email)
     qCDebug(SIMPLEMAIL_SENDER) << "Sending RCPT TO command";
     // Send RCPT command for each recipient
     // To (primary recipients)
-    Q_FOREACH (const EmailAddress &rcpt, email.toRecipients()) {
+    const auto toRecipients = email.toRecipients();
+    for (const EmailAddress &rcpt : toRecipients) {
         sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
 
         if (!waitForResponse(250)) {
@@ -262,7 +261,8 @@ bool SenderPrivate::sendMail(MimeMessage &email)
     }
 
     // Cc (carbon copy)
-    Q_FOREACH (const EmailAddress &rcpt, email.ccRecipients()) {
+    const auto ccRecipients = email.ccRecipients();
+    for (const EmailAddress &rcpt : ccRecipients) {
         sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
 
         if (!waitForResponse(250)) {
@@ -271,7 +271,8 @@ bool SenderPrivate::sendMail(MimeMessage &email)
     }
 
     // Bcc (blind carbon copy)
-    Q_FOREACH (const EmailAddress &rcpt, email.bccRecipients()) {
+    const auto bccRecipients = email.bccRecipients();
+    for (const EmailAddress &rcpt : bccRecipients) {
         sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
 
         if (!waitForResponse(250)) {
