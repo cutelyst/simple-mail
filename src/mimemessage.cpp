@@ -23,6 +23,10 @@ x
 #include "quotedprintable.h"
 #include <typeinfo>
 
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(SIMPLEMAIL_MIMEMSG, "simplemail.mimemessage")
+
 using namespace SimpleMail;
 
 MimeMessage::MimeMessage(bool createAutoMimeContent) :
@@ -248,7 +252,7 @@ QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QStrin
         int encoded = 0;
         const QByteArray result = QuotedPrintable::encode(simple, true, &printable, &encoded);
         int sum = printable + encoded;
-        qDebug() << data << result << printable << encoded << sum << ((double) printable/sum) << (encoded/sum);
+        qCDebug(SIMPLEMAIL_MIMEMSG) << data << result << printable << encoded << sum << ((double) printable/sum) << (encoded/sum);
         if (sum != 0 && ((double) printable/sum) >= 0.8) {
             return " =?utf-8?Q?" + result + "?=";
         } else {
