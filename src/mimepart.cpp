@@ -169,12 +169,16 @@ QString MimePart::data() const
     switch (d->contentEncoding) {
     case _7Bit:
         ret = QString::fromLatin1(d->contentDevice->readAll());
+        break;
     case _8Bit:
         ret = QString::fromUtf8(d->contentDevice->readAll());
+        break;
     case Base64:
         ret = QString::fromUtf8(QByteArray::fromBase64(d->contentDevice->readAll()));
+        break;
     case QuotedPrintable:
         ret = QString::fromUtf8(QuotedPrintable::decode(d->contentDevice->readAll()));
+        break;
     }
     return ret;
 }
