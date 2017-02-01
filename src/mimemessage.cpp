@@ -18,7 +18,6 @@ x
 
 #include "mimemessage_p.h"
 
-#include <QtCore/QStringBuilder>
 #include <QtCore/QDebug>
 #include "quotedprintable.h"
 #include <typeinfo>

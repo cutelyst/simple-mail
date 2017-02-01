@@ -19,6 +19,7 @@
 #define EMAILADDRESS_H
 
 #include <QtCore/QSharedDataPointer>
+#include <QString>
 
 #include "smtpexports.h"
 

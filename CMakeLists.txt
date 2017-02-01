@@ -43,6 +43,7 @@ endif(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
 #
 # Options
 #
+option(ENABLE_MAINTAINER_CFLAGS "Enable maintainer CFlags" OFF)
 
 # NONE
 
@@ -74,12 +75,12 @@ configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 #
 # Custom C flags
 #
-set (MAINTAINER_CFLAGS "-Werror -Wall -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Wformat -Winit-self")
-option (DISABLE_MAINTAINER_CFLAGS "Disable maintainer CFlags" ON)
-if (DISABLE_MAINTAINER_CFLAGS)
-	set (MAINTAINER_CFLAGS "")
-endif (DISABLE_MAINTAINER_CFLAGS)
-add_definitions(${MAINTAINER_CFLAGS})
+if (ENABLE_MAINTAINER_CFLAGS)
+    set (MAINTAINER_CFLAGS "-Werror -Wall -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Wformat -Winit-self")
+    add_definitions(${MAINTAINER_CFLAGS}
+        -DQT_DEPRECATED_WARNINGS
+    )
+endif ()
 
 add_definitions(
     -DQT_NO_KEYWORDS
@@ -89,6 +90,10 @@ add_definitions(
     -DQT_NO_URL_CAST_FROM_STRING
     -DQT_NO_CAST_FROM_BYTEARRAY
     -DQT_USE_QSTRINGBUILDER
+)
+
+add_definitions(
+    -DQT_DISABLE_DEPRECATED_BEFORE=0x050800
 )
 
 add_definitions(

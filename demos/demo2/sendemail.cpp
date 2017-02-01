@@ -104,7 +104,7 @@ void SendEmail::on_sendEmail_clicked()
     }
 
     if (!smtp.sendMail(message)) {
-        errorMessage(QLatin1String("Mail sending failed:\n") % smtp.lastError());
+        errorMessage(QLatin1String("Mail sending failed:\n") + smtp.lastError());
         return;
     } else {
         QMessageBox okMessage (this);

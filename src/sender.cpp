@@ -417,7 +417,7 @@ bool SenderPrivate::login()
         qCDebug(SIMPLEMAIL_SENDER) << "Sending authentication plain";
 
         // Sending command: AUTH PLAIN base64('\0' + username + '\0' + password)
-        QString userpass = QLatin1Char('\0') % user % QLatin1Char('\0') % password;
+        QString userpass = QLatin1Char('\0') + user + QLatin1Char('\0') + password;
         sendMessage(QByteArrayLiteral("AUTH PLAIN ") + userpass.toLatin1().toBase64());
 
         // If the response is not 235 then the authentication was faild

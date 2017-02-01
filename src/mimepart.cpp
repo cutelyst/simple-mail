@@ -20,21 +20,23 @@
 
 #include <QtCore/QIODevice>
 #include <QtCore/QBuffer>
+#include <QtCore/QDebug>
 
 using namespace SimpleMail;
 
 MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
+    qDebug() << Q_FUNC_INFO;
 }
 
 MimePart::MimePart(const MimePart &other)
 {
-
+    qDebug() << Q_FUNC_INFO;
 }
 
 MimePart::~MimePart()
 {
-
+    qDebug() << Q_FUNC_INFO;
 }
 
 void MimePart::setContent(const QByteArray &content)
