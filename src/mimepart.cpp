@@ -71,7 +71,7 @@ QByteArray MimePart::header() const
 QByteArray MimePart::content() const
 {
     Q_D(const MimePart);
-    if (d->contentDevice) {
+    if (d->contentDevice && d->contentDevice->seek(0)) {
         return d->contentDevice->readAll();
     }
     return QByteArray();
