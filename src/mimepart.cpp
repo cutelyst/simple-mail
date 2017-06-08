@@ -39,6 +39,19 @@ MimePart::~MimePart()
     qDebug() << Q_FUNC_INFO;
 }
 
+MimePart &MimePart::operator=(const MimePart &other)
+{
+    setCharset(other.charset());
+    setContent(other.content());
+    setContentId(other.contentId());
+    setContentName(other.contentName());
+    setContentType(other.contentType());
+    setEncoding(other.encoding());
+    setHeader(other.header());
+
+    return *this;
+}
+
 void MimePart::setContent(const QByteArray &content)
 {
     Q_D(MimePart);
