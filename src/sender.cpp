@@ -17,6 +17,7 @@
 
 #include "sender_p.h"
 
+#include <QStringBuilder>
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(SIMPLEMAIL_SENDER, "simplemail.sender")
