@@ -138,6 +138,7 @@ void Sender::setConnectionType(ConnectionType connectionType)
     case SslConnection:
     case TlsConnection:
         d->socket = new QSslSocket(this);
+        connect(static_cast<QSslSocket*>(d->socket), static_cast<void(QSslSocket::*)(const QList<QSslError> &)>(&QSslSocket::sslErrors),this, &Sender::sslErrors, Qt::DirectConnection);
     }
     connect(d->socket, &QTcpSocket::stateChanged, this, &Sender::socketStateChanged);
     connect(d->socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
@@ -195,6 +196,24 @@ void Sender::setSendMessageTimeout(int msec)
 {
     Q_D(Sender);
     d->sendMessageTimeout = msec;
+}
+
+void Sender::ignoreSslErrors()
+{
+    Q_D(Sender);
+    if (connectionType() == SslConnection || connectionType() == TlsConnection)
+    {
+        static_cast<QSslSocket*>(d->socket)->ignoreSslErrors();
+    }
+}
+
+void Sender::ignoreSslErrors(const QList<QSslError> &errors)
+{
+    Q_D(Sender);
+    if (connectionType() == SslConnection || connectionType() == TlsConnection)
+    {
+        static_cast<QSslSocket*>(d->socket)->ignoreSslErrors(errors);
+    }
 }
 
 bool Sender::sendMail(MimeMessage &email)

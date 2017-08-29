@@ -172,6 +172,19 @@ public:
      */
     void setSendMessageTimeout(int msec);
 
+    /**
+     * @brief ignoreSslErrors tells the socket to ignore all pending ssl errors if SSL encryption is active.
+     *      Must be called in a direct connected slot/functor
+     */
+    void ignoreSslErrors();
+
+    /**
+     * @brief ignoreSslErrors tells the socket to ignore the given ssl errors if SSL encryption is active.
+     *      Must be called in a direct connected slot/functor
+     * @param errors defines the errors to ignore
+     */
+    void ignoreSslErrors(const QList<QSslError> &errors);
+
     bool sendMail(MimeMessage &email);
 
     QString lastError() const;
@@ -185,6 +198,7 @@ protected Q_SLOTS:
 
 Q_SIGNALS:
     void smtpError(SmtpError e);
+    void sslErrors(const QList<QSslError> &sslErrorList);
 
 protected:
     SenderPrivate *d_ptr;
