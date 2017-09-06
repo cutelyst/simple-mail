@@ -44,6 +44,7 @@ public:
     bool login();
     bool waitForResponse(int expectedCode);
     bool processState();
+    void setPeerVerificationType(const Sender::PeerVerificationType &type);
 
     State state = State::Disconnected;
     Sender *q_ptr;
@@ -54,6 +55,7 @@ public:
     int port = 25;
     Sender::ConnectionType connectionType;
     QString name = QHostInfo::localHostName();
+    Sender::PeerVerificationType peerVerificationType = Sender::VerifyPeer;
 
     QString user;
     QString password;
@@ -62,7 +64,6 @@ public:
     int connectionTimeout = 5000;
     int responseTimeout = 5000;
     int sendMessageTimeout = 60000;
-
 
     QByteArray responseText;
     int responseCode;

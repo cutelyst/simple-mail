@@ -138,6 +138,7 @@ void Sender::setConnectionType(ConnectionType connectionType)
     case SslConnection:
     case TlsConnection:
         d->socket = new QSslSocket(this);
+        d->setPeerVerificationType(d->peerVerificationType);
         connect(static_cast<QSslSocket*>(d->socket), static_cast<void(QSslSocket::*)(const QList<QSslError> &)>(&QSslSocket::sslErrors),this, &Sender::sslErrors, Qt::DirectConnection);
     }
     connect(d->socket, &QTcpSocket::stateChanged, this, &Sender::socketStateChanged);
@@ -214,6 +215,18 @@ void Sender::ignoreSslErrors(const QList<QSslError> &errors)
     {
         static_cast<QSslSocket*>(d->socket)->ignoreSslErrors(errors);
     }
+}
+
+void Sender::setPeerVerificationType(Sender::PeerVerificationType type)
+{
+    Q_D(Sender);
+    d->setPeerVerificationType(type);
+}
+
+Sender::PeerVerificationType Sender::peerVerificationType()
+{
+    Q_D(Sender);
+    return d->peerVerificationType;
 }
 
 bool Sender::sendMail(MimeMessage &email)
@@ -533,7 +546,7 @@ bool SenderPrivate::processState()
         if (socket->state() != QAbstractSocket::ConnectedState) {
             state = SenderPrivate::Disconnected;
             if (socket->state() != QAbstractSocket::UnconnectedState) {
-                socket->disconnect();
+                socket->disconnectFromHost();
                 socket->waitForDisconnected();
             }
         }
@@ -559,7 +572,7 @@ bool SenderPrivate::processState()
             break;
         case SenderPrivate::Error:
             // try again
-            socket->disconnect();
+            socket->disconnectFromHost();
             socket->waitForDisconnected();
             break;
         case SenderPrivate::Ready:
@@ -567,4 +580,24 @@ bool SenderPrivate::processState()
         }
     }
     return true;
+}
+
+void SenderPrivate::setPeerVerificationType(const Sender::PeerVerificationType &type)
+{
+    peerVerificationType = type;
+    if (socket != Q_NULLPTR)
+    {
+        if (connectionType == Sender::SslConnection || connectionType == Sender :: TlsConnection)
+        {
+            switch (type) {
+                case Sender::VerifyNone:
+                    static_cast<QSslSocket*>(socket)->setPeerVerifyMode(QSslSocket::VerifyNone);
+                    break;
+                case Sender::VerifyPeer:
+                default:
+                    static_cast<QSslSocket*>(socket)->setPeerVerifyMode(QSslSocket::VerifyPeer);
+                    break;
+            }
+        }
+    }
 }

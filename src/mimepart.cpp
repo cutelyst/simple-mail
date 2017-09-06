@@ -31,7 +31,13 @@ MimePart::MimePart() : d_ptr(new MimePartPrivate)
 
 MimePart::MimePart(const MimePart &other)
 {
-    qDebug() << Q_FUNC_INFO;
+    setCharset(other.charset());
+    setContent(other.content());
+    setContentId(other.contentId());
+    setContentName(other.contentName());
+    setContentType(other.contentType());
+    setEncoding(other.encoding());
+    setHeader(other.header());
 }
 
 MimePart::~MimePart()

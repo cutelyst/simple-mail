@@ -56,6 +56,12 @@ public:
         TlsConnection       // STARTTLS
     };
 
+    enum PeerVerificationType
+    {
+        VerifyNone,
+        VerifyPeer
+    };
+
     explicit Sender(QObject *parent = 0);
     Sender(const QString &host, int port, ConnectionType ct, QObject *parent = 0);
     virtual ~Sender();
@@ -184,6 +190,18 @@ public:
      * @param errors defines the errors to ignore
      */
     void ignoreSslErrors(const QList<QSslError> &errors);
+
+    /**
+     * @brief setPeerVerificationType Defines how the mail-server's SSL certificate should be examined
+     * @param type  VerifyNone does not try to verify the identity, VerifyPeer does check on server identity
+     */
+    void setPeerVerificationType(PeerVerificationType type);
+
+    /**
+     * @brief peerVerificationType Returns the type of verification done for the mail-server's SSL certificate
+     * @return PeerVerificationType as VerifyNone or VerifyPeer
+     */
+    PeerVerificationType peerVerificationType();
 
     bool sendMail(MimeMessage &email);
 
