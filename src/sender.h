@@ -38,6 +38,7 @@ public:
         AuthPlain,
         AuthLogin
     };
+    Q_ENUM(AuthMethod)
 
     enum SmtpError
     {
@@ -48,6 +49,7 @@ public:
         ServerError,    // 4xx smtp error
         ClientError     // 5xx smtp error
     };
+    Q_ENUM(SmtpError)
 
     enum ConnectionType
     {
@@ -55,12 +57,14 @@ public:
         SslConnection,
         TlsConnection       // STARTTLS
     };
+    Q_ENUM(ConnectionType)
 
     enum PeerVerificationType
     {
         VerifyNone,
         VerifyPeer
     };
+    Q_ENUM(PeerVerificationType)
 
     explicit Sender(QObject *parent = 0);
     Sender(const QString &host, int port, ConnectionType ct, QObject *parent = 0);

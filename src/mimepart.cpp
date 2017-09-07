@@ -31,13 +31,21 @@ MimePart::MimePart() : d_ptr(new MimePartPrivate)
 
 MimePart::MimePart(const MimePart &other)
 {
-    setCharset(other.charset());
-    setContent(other.content());
-    setContentId(other.contentId());
-    setContentName(other.contentName());
-    setContentType(other.contentType());
-    setEncoding(other.encoding());
-    setHeader(other.header());
+    Q_D(MimePart);
+    d->contentCharset = other.charset();
+
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
+    d->contentDevice->write(other.content());
+
+    d->contentId = other.contentId();
+    d->contentName = other.contentName();
+    d->contentType = other.contentType();
+    d->contentEncoding = other.encoding();
+    d->header = other.header();
 }
 
 MimePart::~MimePart()
@@ -47,13 +55,21 @@ MimePart::~MimePart()
 
 MimePart &MimePart::operator=(const MimePart &other)
 {
-    setCharset(other.charset());
-    setContent(other.content());
-    setContentId(other.contentId());
-    setContentName(other.contentName());
-    setContentType(other.contentType());
-    setEncoding(other.encoding());
-    setHeader(other.header());
+    Q_D(MimePart);
+    d->contentCharset = other.charset();
+
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
+    d->contentDevice->write(other.content());
+
+    d->contentId = other.contentId();
+    d->contentName = other.contentName();
+    d->contentType = other.contentType();
+    d->contentEncoding = other.encoding();
+    d->header = other.header();
 
     return *this;
 }
