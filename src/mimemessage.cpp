@@ -100,6 +100,9 @@ bool MimeMessage::write(QIODevice *device)
         const auto offsetTime = QTime::fromMSecsSinceStartOfDay(utcOffset * 1000);
         data.append(offsetTime.toString(QStringLiteral("HHmm")).toLatin1());
     }
+    if (device->write(data) != data.size()) {
+        return false;
+    }
 
     data = QByteArrayLiteral("Subject: ") + MimeMessagePrivate::encodeData(d->encoding, d->subject, true);
     if (device->write(data) != data.size()) {
