@@ -90,8 +90,7 @@ bool MimeMessage::write(QIODevice *device)
     if (utcOffset == 0) {
         data.append(QByteArrayLiteral("+0000"));
     } else {
-        const bool negative = (utcOffset < 0);
-        if (negative) {
+        if (utcOffset < 0) {
             data.append('-');
             utcOffset *= -1;
         } else {
