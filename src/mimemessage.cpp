@@ -22,6 +22,8 @@ x
 #include "quotedprintable.h"
 #include <typeinfo>
 
+#include <QDateTime>
+#include <QLocale>
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(SIMPLEMAIL_MIMEMSG, "simplemail.mimemessage")
@@ -35,7 +37,7 @@ MimeMessage::MimeMessage(bool createAutoMimeContent) :
     if (createAutoMimeContent) {
         d->content = new MimeMultiPart();
     }
-    
+
     d->autoMimeContentCreated = createAutoMimeContent;
 }
 
@@ -80,6 +82,23 @@ bool MimeMessage::write(QIODevice *device)
     data = MimeMessagePrivate::encode(QByteArrayLiteral("Cc: "), d->recipientsCc, d->encoding);
     if (device->write(data) != data.size()) {
         return false;
+    }
+
+    const auto dt = QDateTime::currentDateTime();
+    data = QByteArrayLiteral("Date: ") + QLocale::c().toString(dt, QStringLiteral("ddd, d MMM yyyy HH:mm:ss ")).toLatin1();
+    int utcOffset = dt.offsetFromUtc();
+    if (utcOffset == 0) {
+        data.append(QByteArrayLiteral("+0000"));
+    } else {
+        const bool negative = (utcOffset < 0);
+        if (negative) {
+            data.append('-');
+            utcOffset *= -1;
+        } else {
+            data.append('+');
+        }
+        const auto offsetTime = QTime::fromMSecsSinceStartOfDay(utcOffset * 1000);
+        data.append(offsetTime.toString(QStringLiteral("HHmm")).toLatin1());
     }
 
     data = QByteArrayLiteral("Subject: ") + MimeMessagePrivate::encodeData(d->encoding, d->subject, true);
