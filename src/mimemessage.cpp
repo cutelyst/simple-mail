@@ -84,21 +84,7 @@ bool MimeMessage::write(QIODevice *device)
         return false;
     }
 
-    const auto dt = QDateTime::currentDateTime();
-    data = QByteArrayLiteral("Date: ") + QLocale::c().toString(dt, QStringLiteral("ddd, d MMM yyyy HH:mm:ss ")).toLatin1();
-    int utcOffset = dt.offsetFromUtc();
-    if (utcOffset == 0) {
-        data.append(QByteArrayLiteral("+0000"));
-    } else {
-        if (utcOffset < 0) {
-            data.append('-');
-            utcOffset *= -1;
-        } else {
-            data.append('+');
-        }
-        const auto offsetTime = QTime::fromMSecsSinceStartOfDay(utcOffset * 1000);
-        data.append(offsetTime.toString(QStringLiteral("HHmm")).toLatin1());
-    }
+    data = QByteArrayLiteral("Date: ") + QLocale::c().toString(QDateTime::currentDateTimeUtc(), QStringLiteral("ddd, d MMM yyyy HH:mm:ss +0000")).toLatin1();
     if (device->write(data) != data.size()) {
         return false;
     }
