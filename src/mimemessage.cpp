@@ -83,7 +83,7 @@ bool MimeMessage::write(QIODevice *device)
         return false;
     }
 
-    data = QByteArrayLiteral("Date: ") + QDateTime::currentDateTime().toString(Qt::RFC2822Date).toLatin1();
+    data = QByteArrayLiteral("Date: ") + QDateTime::currentDateTime().toString(Qt::RFC2822Date).toLatin1() + QByteArrayLiteral("\r\n");
     if (device->write(data) != data.size()) {
         return false;
     }
