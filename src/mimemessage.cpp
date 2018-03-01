@@ -23,7 +23,6 @@ x
 #include <typeinfo>
 
 #include <QDateTime>
-#include <QLocale>
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(SIMPLEMAIL_MIMEMSG, "simplemail.mimemessage")
@@ -84,7 +83,7 @@ bool MimeMessage::write(QIODevice *device)
         return false;
     }
 
-    data = QByteArrayLiteral("Date: ") + QLocale::c().toString(QDateTime::currentDateTimeUtc(), QStringLiteral("ddd, d MMM yyyy HH:mm:ss +0000")).toLatin1();
+    data = QByteArrayLiteral("Date: ") + QDateTime::currentDateTime().toString(Qt::RFC2822Date).toLatin1();
     if (device->write(data) != data.size()) {
         return false;
     }
