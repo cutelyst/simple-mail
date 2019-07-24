@@ -41,21 +41,44 @@ set(simplemailqt_HEADERS_PRIVATE
 #     common.h
 )
 
-add_library(simplemail-qt5 SHARED
+add_library(SimpleMailQt5 SHARED
     ${simplemailqt_SRC}
     ${simplemailqt_HEADERS}
     ${simplemailqt_HEADERS_PRIVATE}
 )
-add_library(SimpleMailQt5::Core ALIAS simplemail-qt5)
-set_property(TARGET simplemail-qt5 PROPERTY EXPORT_NAME Core)
 
-set_target_properties(simplemail-qt5 PROPERTIES
+#Add an alias so that library can be used inside the build tree, e.g. when testing
+add_library(SimpleMailQt5::Core ALIAS SimpleMailQt5)
+
+#Set target properties
+target_include_directories(SimpleMailQt5
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:include/simplemail-qt5>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(SimpleMailQt5 PRIVATE cxx_auto_type)
+target_compile_options(SimpleMailQt5 PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall>)
+
+target_link_libraries(SimpleMailQt5
+    PUBLIC
+        Qt5::Core
+        Qt5::Network
+)
+
+##############################################
+# Installation instructions
+
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMailQt5)
+
+#This is required so that the exported target has the name UpnpQt and not upnpqt
+set_target_properties(SimpleMailQt5 PROPERTIES
+    EXPORT_NAME Core
     VERSION ${PROJECT_VERSION}
     SOVERSION 0
-)
-target_link_libraries(simplemail-qt5
-    Qt5::Core
-    Qt5::Network
 )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qt5.pc.in
@@ -63,7 +86,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qt5.pc.in
   @ONLY
 )
 
-install(TARGETS simplemail-qt5 EXPORT SimpleMailQt5Targets DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS SimpleMailQt5 EXPORT SimpleMailQt5Targets DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simplemail-qt5.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
