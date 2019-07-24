@@ -1,31 +1,25 @@
-cmake_minimum_required(VERSION 3.3)
-
-project(libsimplemail LANGUAGES CXX)
-
-find_package(Qt5 5.5.0 COMPONENTS
-    Core
-    Network
-)
-
-set(SIMPLEMAIL_VERSION_MAJOR  "1")
-set(SIMPLEMAIL_VERSION_MINOR  "3")
-set(SIMPLEMAIL_VERSION_PATCH  "0")
-set(SIMPLEMAIL_VERSION_SUFFIX "${VERSION_SUFFIX}")
-set(SIMPLEMAIL_VERSION "${SIMPLEMAIL_VERSION_MAJOR}.${SIMPLEMAIL_VERSION_MINOR}.${SIMPLEMAIL_VERSION_PATCH}")
-
-set(SIMPLEMAIL_API_LEVEL "0")
+cmake_minimum_required(VERSION 3.5)
+project(libsimplemail VERSION 1.4.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
-
-# Include our cmake modules
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
+# Include our cmake modules
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+
 # As moc files are generated in the binary dir, tell CMake
 # to always look for includes there:
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+option(BUILD_SHARED_LIBS "Build in shared lib mode" ON)
+
+find_package(Qt5 5.5.0 REQUIRED COMPONENTS Core Network)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Forbid in-tree building
 if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
@@ -84,14 +78,9 @@ add_definitions(
     -DQT_NO_URL_CAST_FROM_STRING
     -DQT_NO_CAST_FROM_BYTEARRAY
     -DQT_USE_QSTRINGBUILDER
-)
-
-add_definitions(
-    -DQT_DISABLE_DEPRECATED_BEFORE=0x050800
-)
-
-add_definitions(
-    -std=c++11
+    -DQT_NO_SIGNALS_SLOTS_KEYWORDS
+    -DQT_USE_FAST_OPERATOR_PLUS
+    -DQT_DISABLE_DEPRECATED_BEFORE=0x050c00
 )
 
 include_directories(
