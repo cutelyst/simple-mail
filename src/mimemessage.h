@@ -55,6 +55,9 @@ public:
 
     void setHeaderEncoding(MimePart::Encoding);
 
+    void addHeader(const QByteArray &headerName, const QByteArray &headerValue);
+    QList<QByteArray> getHeaders() const;
+
     void setReplyto(const EmailAddress &replyTo);
     EmailAddress replyTo() const;
 

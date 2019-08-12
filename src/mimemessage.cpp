@@ -68,6 +68,20 @@ bool MimeMessage::write(QIODevice *device)
     // Headers
     QByteArray data;
 
+    if(d->listExtraHeaders.count())
+    {
+        data.clear();
+        QListIterator<QByteArray> iExtraHeaders(d->listExtraHeaders);
+        while (iExtraHeaders.hasNext())
+        {
+            auto header = iExtraHeaders.next();
+            data += MimeMessagePrivate::encodeData(d->encoding, header, true) + QByteArrayLiteral("\r\n");
+        }
+        if (device->write(data) != data.size()) {
+            return false;
+        }
+    }
+
     data = MimeMessagePrivate::encode(QByteArrayLiteral("From: "), QList<EmailAddress>() << d->sender, d->encoding);
     if (device->write(data) != data.size()) {
         return false;
@@ -191,6 +205,18 @@ void MimeMessage::setHeaderEncoding(MimePart::Encoding hEnc)
 {
     Q_D(MimeMessage);
     d->encoding = hEnc;
+}
+
+void MimeMessage::addHeader(const QByteArray &headerName, const QByteArray &headerValue)
+{
+    Q_D(MimeMessage);
+    d->listExtraHeaders.append(headerName + ":" + headerValue);
+}
+
+QList<QByteArray> MimeMessage::getHeaders() const
+{
+    Q_D(const MimeMessage);
+    return d->listExtraHeaders;
 }
 
 EmailAddress MimeMessage::sender() const
