@@ -73,6 +73,14 @@ bool MimeMessage::write(QIODevice *device)
         return false;
     }
 
+    if(d->replyTo.address().isEmpty() == false)
+    {
+        data = MimeMessagePrivate::encode(QByteArrayLiteral("Reply-To: "), QList<EmailAddress>() << d->replyTo, d->encoding);
+        if (device->write(data) != data.size()) {
+            return false;
+        }
+    }
+
     data = MimeMessagePrivate::encode(QByteArrayLiteral("To: "), d->recipientsTo, d->encoding);
     if (device->write(data) != data.size()) {
         return false;
@@ -183,6 +191,18 @@ void MimeMessage::setHeaderEncoding(MimePart::Encoding hEnc)
 {
     Q_D(MimeMessage);
     d->encoding = hEnc;
+}
+
+EmailAddress MimeMessage::sender() const
+{
+    Q_D(const MimeMessage);
+    return d->sender;
+}
+
+void MimeMessage::setReplyto(const EmailAddress &replyTo)
+{
+    Q_D(MimeMessage);
+    d->replyTo = replyTo;
 }
 
 EmailAddress MimeMessage::sender() const
