@@ -133,7 +133,7 @@ void Sender::setConnectionType(ConnectionType connectionType)
 
     switch (connectionType) {
     case TcpConnection:
-        d->socket = new QTcpSocket(this);
+        d->socket = new QSslSocket(this);
         break;
     case SslConnection:
     case TlsConnection:
@@ -265,6 +265,11 @@ SenderPrivate::SenderPrivate(Sender *parent) :
 
 }
 
+SenderPrivate::~SenderPrivate()
+{
+    delete socket;
+}
+
 bool SenderPrivate::sendMail(MimeMessage &email)
 {
     qCDebug(SIMPLEMAIL_SENDER) << "Sending MAIL" << this;
@@ -349,7 +354,6 @@ bool SenderPrivate::connectToHost()
 {
     Q_Q(Sender);
 
-    QSslSocket *sslSock = nullptr;
     switch (connectionType) {
     case Sender::TlsConnection:
     case Sender::TcpConnection:
@@ -358,14 +362,8 @@ bool SenderPrivate::connectToHost()
         break;
     case Sender::SslConnection:
     {
-        sslSock = qobject_cast<QSslSocket*>(socket);
-        if (sslSock) {
-            qCDebug(SIMPLEMAIL_SENDER) << "Connecting to host encrypted" << host << port;
-            sslSock->connectToHostEncrypted(host, port);
-        } else {
-            return false;
-        }
-    }
+        qCDebug(SIMPLEMAIL_SENDER) << "Connecting to host encrypted" << host << port;
+        socket->connectToHostEncrypted(host, port);
         break;
     }
 
@@ -408,18 +406,12 @@ bool SenderPrivate::connectToHost()
             return false;
         };
 
-        sslSock = qobject_cast<QSslSocket *>(socket);
-        if (sslSock) {
-            qCDebug(SIMPLEMAIL_SENDER) << "Starting client encryption";
-            sslSock->startClientEncryption();
-
-            if (!sslSock->waitForEncrypted(connectionTimeout)) {
-                qCDebug(SIMPLEMAIL_SENDER) << "Failed to encrypt connection" << sslSock->errorString();
-                Q_EMIT q->smtpError(Sender::ConnectionTimeoutError);
-                return false;
-            }
-        } else {
-            qCDebug(SIMPLEMAIL_SENDER) << "Failed to start TLS negotiation";
+        qCDebug(SIMPLEMAIL_SENDER) << "Starting client encryption";
+        socket->ignoreSslErrors();
+        socket->startClientEncryption();
+        if (!socket->waitForEncrypted(connectionTimeout)) {
+            qCDebug(SIMPLEMAIL_SENDER) << "Failed to encrypt connection" << sslSock->errorString();
+            Q_EMIT q->smtpError(Sender::ConnectionTimeoutError);
             return false;
         }
 

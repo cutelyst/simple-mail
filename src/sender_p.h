@@ -37,6 +37,7 @@ public:
         Ready
     };
     SenderPrivate(Sender *parent);
+    ~SenderPrivate();
 
     bool sendMail(MimeMessage &email);
     inline void sendMessage(const QByteArray &data);
@@ -48,7 +49,7 @@ public:
 
     State state = State::Disconnected;
     Sender *q_ptr;
-    QTcpSocket *socket = nullptr;
+    QSslSocket *socket = nullptr;
     QString lastError;
 
     QString host = QLatin1String("localhost");
