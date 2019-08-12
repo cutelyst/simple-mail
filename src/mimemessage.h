@@ -55,6 +55,9 @@ public:
 
     void setHeaderEncoding(MimePart::Encoding);
 
+    void setReplyto(const EmailAddress &replyTo);
+    EmailAddress replyTo() const;
+
     QString subject() const;
     QList<MimePart *> parts() const;
 
