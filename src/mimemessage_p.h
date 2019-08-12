@@ -40,6 +40,7 @@ public:
     MimePart *content = nullptr;
     MimePart::Encoding encoding = MimePart::_8Bit;
     bool autoMimeContentCreated;
+    QList<QByteArray> listExtraHeaders;
 };
 
 }
