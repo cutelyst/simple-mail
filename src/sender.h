@@ -36,7 +36,8 @@ public:
     {
         AuthNone,
         AuthPlain,
-        AuthLogin
+        AuthLogin,
+        AuthCramMd5
     };
     Q_ENUM(AuthMethod)
 

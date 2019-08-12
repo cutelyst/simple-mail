@@ -487,6 +487,33 @@ bool SenderPrivate::login()
             Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
             return false;
         }
+    } else if (authMethod == Sender::AuthCramMd5) {
+        // NOTE Implementando - Ready
+        qCDebug(SIMPLEMAIL_SENDER) << "Sending authentication CRAM-MD5";
+        sendMessage(QByteArrayLiteral("AUTH CRAM-MD5"));
+
+        // Wait for 334
+        if (!waitForResponse(334)) {
+            Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
+            return false;
+        }
+
+        // Challenge
+        QByteArray ch = QByteArray::fromBase64(responseText.mid((4)));
+
+        // Calculamos el hash
+        QMessageAuthenticationCode code(QCryptographicHash::Md5);
+        code.setKey(password.toLatin1());
+        code.addData(ch);
+
+        QByteArray data(user.toLatin1() + " " + code.result().toHex());
+        sendMessage(data.toBase64());
+
+        // Wait for 334
+        if (!waitForResponse(235)) {
+            Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
+            return false;
+        }
     }
 
     state = SenderPrivate::Ready;
