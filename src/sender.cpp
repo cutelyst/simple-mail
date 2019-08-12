@@ -18,6 +18,7 @@
 #include "sender_p.h"
 
 #include <QLoggingCategory>
+#include <QMessageAuthenticationCode>
 
 Q_LOGGING_CATEGORY(SIMPLEMAIL_SENDER, "simplemail.sender")
 
