@@ -243,7 +243,7 @@ bool MimePart::write(QIODevice *device)
     if (!d->contentBoundary.isEmpty()) {
         headers.append("; boundary=" + d->contentBoundary);
     }
-    headers.append("\r\n");
+    headers.append("\"\r\n");
 
     // Content-Transfer-Encoding
     switch (d->contentEncoding) {
