@@ -235,7 +235,7 @@ bool MimePart::write(QIODevice *device)
     // Content-Type
     headers.append("Content-Type: " + d->contentType);
     if (!d->contentName.isEmpty()) {
-        headers.append("; name=\"" + d->contentName);
+        headers.append("; name=\"" + d->contentName + "\"");
     }
     if (!d->contentCharset.isEmpty()) {
         headers.append("; charset=" + d->contentCharset);
@@ -243,7 +243,7 @@ bool MimePart::write(QIODevice *device)
     if (!d->contentBoundary.isEmpty()) {
         headers.append("; boundary=" + d->contentBoundary);
     }
-    headers.append("\"\r\n");
+    headers.append("\r\n");
 
     // Content-Transfer-Encoding
     switch (d->contentEncoding) {
