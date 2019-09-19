@@ -363,7 +363,9 @@ bool MimePartPrivate::writeBase64(QIODevice *input, QIODevice *out)
         }
 
         totalRead += in;
-        QByteArray encoded = QByteArray(block, in).toBase64(QByteArray::Base64Encoding | QByteArray::OmitTrailingEquals);
+      
+        // removed QByteArray::OmitTrailingEquals flag to generate ending == to ensure compatability with Amazon SES
+        QByteArray encoded = QByteArray(block, in).toBase64(QByteArray::Base64Encoding);
         encoded = formatter.format(encoded, chars);
         if (encoded.size() != out->write(encoded)) {
             return false;
