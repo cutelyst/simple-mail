@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(libsimplemail VERSION 1.4.0 LANGUAGES CXX)
+project(libsimplemail VERSION 1.5.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 
