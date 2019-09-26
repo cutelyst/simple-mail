@@ -58,6 +58,8 @@ add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
 
 set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_LIBRARY_ARCHITECTURE}" CACHE PATH "Output directory for libraries")
 
+option(BUILD_DEMOS "Build the demos" ON)
+
 configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 
 #
@@ -110,4 +112,6 @@ install(EXPORT SimpleMailQt5Targets
 )
 
 add_subdirectory(src)
-add_subdirectory(demos)
+if (BUILD_DEMOS)
+    add_subdirectory(demos)
+endif (BUILD_DEMOS)
