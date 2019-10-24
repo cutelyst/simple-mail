@@ -6,6 +6,6 @@ includedir=${prefix}/include
 Name: simplemail-qt5
 Description: SimpleMail library for Qt5
 Version: @VERSION@
-Requires: QtCore
+Requires: Qt5Core
 Libs: -L${libdir} -lsimplemail-qt5
 Cflags: -I${includedir}/simplemail-qt5/
