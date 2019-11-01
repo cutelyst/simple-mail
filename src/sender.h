@@ -66,8 +66,8 @@ public:
     };
     Q_ENUM(PeerVerificationType)
 
-    explicit Sender(QObject *parent = 0);
-    Sender(const QString &host, int port, ConnectionType ct, QObject *parent = 0);
+    explicit Sender(QObject *parent = nullptr);
+    Sender(const QString &host, int port, ConnectionType ct, QObject *parent = nullptr);
     virtual ~Sender();
 
     /**
