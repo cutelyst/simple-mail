@@ -67,7 +67,7 @@ public:
     MimePart& getContent();
     void setContent(MimePart *content);
 
-    bool write(QIODevice *device);
+    bool write(QIODevice *device) const;
 
 protected:
     MimeMessagePrivate *d_ptr;

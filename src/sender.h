@@ -21,11 +21,11 @@
 #include <QObject>
 #include <QtNetwork/QSslSocket>
 
-#include "mimemessage.h"
 #include "smtpexports.h"
 
 namespace SimpleMail {
 
+class MimeMessage;
 class SenderPrivate;
 class SMTP_EXPORT Sender : public QObject
 {
@@ -84,12 +84,12 @@ public:
     /**
      * Returns the port of the SMTP server
      */
-    int port() const;
+    quint16 port() const;
 
     /**
      * Defines the port of the SMTP server
      */
-    void setPort(int port);
+    void setPort(quint16 port);
 
     /**
      * Defines the client's name. This name is sent by the EHLO command.
@@ -208,7 +208,7 @@ public:
      */
     PeerVerificationType peerVerificationType();
 
-    bool sendMail(MimeMessage &email);
+    bool sendMail(const MimeMessage &email);
 
     QString lastError() const;
 

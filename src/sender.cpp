@@ -17,6 +17,8 @@
 
 #include "sender_p.h"
 
+#include "mimemessage.h"
+
 #include <QLoggingCategory>
 #include <QMessageAuthenticationCode>
 
@@ -94,13 +96,13 @@ void Sender::setHost(const QString &host)
     d->host = host;
 }
 
-int Sender::port() const
+quint16 Sender::port() const
 {
     Q_D(const Sender);
     return d->port;
 }
 
-void Sender::setPort(int port)
+void Sender::setPort(quint16 port)
 {
     Q_D(Sender);
     d->port = port;
@@ -230,7 +232,7 @@ Sender::PeerVerificationType Sender::peerVerificationType()
     return d->peerVerificationType;
 }
 
-bool Sender::sendMail(MimeMessage &email)
+bool Sender::sendMail(const MimeMessage &email)
 {
     Q_D(Sender);
     return d->sendMail(email);
@@ -266,7 +268,7 @@ SenderPrivate::SenderPrivate(Sender *parent) :
 
 }
 
-bool SenderPrivate::sendMail(MimeMessage &email)
+bool SenderPrivate::sendMail(const MimeMessage &email)
 {
     qCDebug(SIMPLEMAIL_SENDER) << "Sending MAIL" << this;
 
@@ -407,7 +409,7 @@ bool SenderPrivate::connectToHost()
         if (!waitForResponse(220)) {
             Q_EMIT q->smtpError(Sender::ServerError);
             return false;
-        };
+        }
 
         sslSock = qobject_cast<QSslSocket *>(socket);
         if (sslSock) {
@@ -562,8 +564,6 @@ bool SenderPrivate::waitForResponse(int expectedCode)
             }
         }
     } while (true);
-
-    return false;
 }
 
 bool SenderPrivate::processState()
@@ -621,7 +621,7 @@ void SenderPrivate::setPeerVerificationType(const Sender::PeerVerificationType &
                 case Sender::VerifyNone:
                     static_cast<QSslSocket*>(socket)->setPeerVerifyMode(QSslSocket::VerifyNone);
                     break;
-                case Sender::VerifyPeer:
+//                case Sender::VerifyPeer:
                 default:
                     static_cast<QSslSocket*>(socket)->setPeerVerifyMode(QSslSocket::VerifyPeer);
                     break;
@@ -629,3 +629,5 @@ void SenderPrivate::setPeerVerificationType(const Sender::PeerVerificationType &
         }
     }
 }
+
+#include "moc_sender.cpp"

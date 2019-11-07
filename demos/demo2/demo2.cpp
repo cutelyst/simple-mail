@@ -25,15 +25,19 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    SendEmail form (NULL);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setApplicationName(QStringLiteral("SimpleMailQt"));
+    QCoreApplication::setOrganizationName(QStringLiteral("Cutelyst"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("org.cutelyst.simple-mail-qt"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("2.0.0"));
 
-    form.setWindowTitle(QLatin1String("SmtpClient for Qt - Demo 2"));
+    QApplication a(argc, argv);
+    SendEmail form;
+
+    form.setWindowTitle(QLatin1String("SimpleMailQt - Demo 2"));
 
     form.show();
 
     a.exec();
-
-
 }
 
