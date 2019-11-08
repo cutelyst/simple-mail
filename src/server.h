@@ -20,6 +20,7 @@
 
 #include "smtpexports.h"
 
+class QSslError;
 namespace SimpleMail {
 
 class MimeMessage;
@@ -34,7 +35,8 @@ public:
     {
         AuthNone,
         AuthPlain,
-        AuthLogin
+        AuthLogin,
+        AuthCramMd5,
     };
     Q_ENUM(AuthMethod)
 
@@ -45,7 +47,7 @@ public:
         SendDataTimeoutError,
         AuthenticationFailedError,
         ServerError,    // 4xx smtp error
-        ClientError     // 5xx smtp error
+        ClientError,    // 5xx smtp error
     };
     Q_ENUM(SmtpError)
 
@@ -53,14 +55,14 @@ public:
     {
         TcpConnection,
         SslConnection,
-        TlsConnection       // STARTTLS
+        TlsConnection,     // STARTTLS
     };
     Q_ENUM(ConnectionType)
 
     enum PeerVerificationType
     {
         VerifyNone,
-        VerifyPeer
+        VerifyPeer,
     };
     Q_ENUM(PeerVerificationType)
 
@@ -138,7 +140,29 @@ public:
      */
     void setAuthMethod(AuthMethod method);
 
+    /**
+     * Sends the email async.
+     * The email is added to a queue and is processed once
+     * the connection and protocol commands are exchanged,
+     * is the server reports PIPELINING the recipients commands
+     * are sent in one go automatically.
+     *
+     * You must delete the returned object, if you do so before
+     * it's finished() signal is emited this class won't send
+     * the email.
+     */
     ServerReply *sendMail(const MimeMessage &msg);
+
+    /**
+     * Returns the number of emails in queue
+     * Can be useful if you create multiple Server Instances and
+     * wants to load balance your emails.
+     */
+    int queueSize() const;
+
+Q_SIGNALS:
+    void smtpError(SmtpError e, const QString &description);
+    void sslErrors(const QList<QSslError> &sslErrorList);
 
 private:
     void connectToServer();

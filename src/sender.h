@@ -37,7 +37,7 @@ public:
         AuthNone,
         AuthPlain,
         AuthLogin,
-        AuthCramMd5
+        AuthCramMd5,
     };
     Q_ENUM(AuthMethod)
 
@@ -48,7 +48,7 @@ public:
         SendDataTimeoutError,
         AuthenticationFailedError,
         ServerError,    // 4xx smtp error
-        ClientError     // 5xx smtp error
+        ClientError,    // 5xx smtp error
     };
     Q_ENUM(SmtpError)
 
@@ -56,7 +56,7 @@ public:
     {
         TcpConnection,
         SslConnection,
-        TlsConnection       // STARTTLS
+        TlsConnection,      // STARTTLS
     };
     Q_ENUM(ConnectionType)
 

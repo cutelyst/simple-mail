@@ -24,16 +24,21 @@
 
 #include "smtpexports.h"
 
+#include <QSharedDataPointer>
+
 class QIODevice;
 namespace SimpleMail {
 
 class MimeMessagePrivate;
 class SMTP_EXPORT MimeMessage
 {
-    Q_DECLARE_PRIVATE(MimeMessage)
+//    Q_DECLARE_PRIVATE(MimeMessage)
 public:
-    MimeMessage(bool createAutoMimeConent = true);
+    explicit MimeMessage(bool createAutoMimeConent = true);
+    MimeMessage(const MimeMessage &other);
     virtual ~MimeMessage();
+
+    MimeMessage &operator=(const MimeMessage &other);
 
     void setSender(const EmailAddress &sender);
     EmailAddress sender() const;
@@ -70,7 +75,7 @@ public:
     bool write(QIODevice *device) const;
 
 protected:
-    MimeMessagePrivate *d_ptr;
+    QSharedDataPointer<MimeMessagePrivate> d;
 };
 
 }

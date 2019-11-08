@@ -28,16 +28,56 @@ namespace SimpleMail {
 class ServerReply;
 class ServerReplyContainer {
 public:
-    QPointer<ServerReply> reply;
+    enum State {
+        Initial,
+        SendingCommands,
+        SendingData,
+    };
+
+    ServerReplyContainer(const MimeMessage &email) : msg(email) {}
+
     MimeMessage msg;
-    bool sent = false;
+    QPointer<ServerReply> reply;
+    QByteArrayList commands;
+    QList<int> awaitedCodes;
+    State state = Initial;
 };
 
 class ServerPrivate
 {
-//    Q_DECLARE_PUBLIC(Serder)
+    Q_DECLARE_PUBLIC(Server)
 public:
+    enum State {
+        Disconnected,
+        Closing,
+        Connecting,
+        WaitingForServiceReady220,
+        WaitingForServerCaps250,
+        WaitingForAuthPlain235,
+        WaitingForAuthLogin334_step1,
+        WaitingForAuthLogin334_step2,
+        WaitingForAuthLogin235_step3,
+        WaitingForAuthCramMd5_334_step1,
+        WaitingForAuthCramMd5_334_step2,
+        Ready,
+        SendingMail,
+    };
+
+    ServerPrivate(Server *srv) : q_ptr(srv) { }
+    inline void createSocket();
+    void login();
+    void processNextMail();
+
+    bool parseResponseCode(int expectedCode);
+    int parseCaps();
+    inline void commandReset();
+    inline void commandNoop();
+    inline void commandQuit();
+
+    QList<ServerReplyContainer> queue;
+    Server *q_ptr;
     QTcpSocket *socket = nullptr;
+    QStringList caps;
     QString host;
     QString hostname;
     QString username;
@@ -45,7 +85,9 @@ public:
     quint16 port = 25;
     Server::ConnectionType ct = Server::TcpConnection;
     Server::AuthMethod authMethod = Server::AuthNone;
-    QList<ServerReplyContainer> queue;
+    State state = Disconnected;
+    QList<int> awaitedCodes;
+    bool capPipelining = false;
 };
 
 }

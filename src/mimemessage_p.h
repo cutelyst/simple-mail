@@ -24,9 +24,11 @@
 
 namespace SimpleMail {
 
-class MimeMessagePrivate
+class MimeMessagePrivate : public QSharedData
 {
 public:
+//    MimeMessagePrivate(const MimeMessagePrivate &other);
+    MimeMessagePrivate();
     ~MimeMessagePrivate();
 
     inline static QByteArray encode(const QByteArray &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec);

@@ -87,8 +87,10 @@ void SendEmail::on_sendEmail_clicked()
 
     auto content = new MimeHtml;
     content->setHtml(html);
+    qDebug() << "html 1" << content << html << content->html();
 
     message.addPart(content);
+    qDebug() << "sendMailAsync" << message.parts().first()->data();
 
     for (int i = 0; i < ui->attachments->count(); ++i) {
         message.addPart(new MimeAttachment(new QFile(ui->attachments->item(i)->text())));
@@ -104,6 +106,7 @@ void SendEmail::on_sendEmail_clicked()
 
     if (ui->asyncCB->isChecked()) {
         sendMailAsync(message);
+        sendMailAsync(message);
     } else {
         sendMailSync(message);
     }
@@ -111,6 +114,7 @@ void SendEmail::on_sendEmail_clicked()
 
 void SendEmail::sendMailAsync(const MimeMessage &msg)
 {
+    qDebug() << "sendMailAsync" << msg.parts().first()->data();
     auto server = new Server(this);
     server->setHost(ui->host->text());
     server->setPort(quint16(ui->port->value()));
