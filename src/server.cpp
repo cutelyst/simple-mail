@@ -22,7 +22,7 @@
 #include <QMessageAuthenticationCode>
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(SIMPLEMAIL_SERVER, "simplemail.server")
+Q_LOGGING_CATEGORY(SIMPLEMAIL_SERVER, "simplemail.server", QtInfoMsg)
 
 using namespace SimpleMail;
 
@@ -619,6 +619,5 @@ void ServerPrivate::commandQuit()
 {
     socket->write(QByteArrayLiteral("QUIT\r\n"));
 }
-
 
 #include "moc_server.cpp"

@@ -26,7 +26,6 @@ using namespace SimpleMail;
 
 MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 MimePart::MimePart(const MimePart &other)
@@ -50,7 +49,6 @@ MimePart::MimePart(const MimePart &other)
 
 MimePart::~MimePart()
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 MimePart &MimePart::operator=(const MimePart &other)
