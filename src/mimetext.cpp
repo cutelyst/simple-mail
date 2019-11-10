@@ -18,6 +18,8 @@
 
 #include "mimetext_p.h"
 
+#include <QDebug>
+
 using namespace SimpleMail;
 
 MimeText::MimeText(const QString &txt)

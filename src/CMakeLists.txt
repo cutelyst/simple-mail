@@ -17,6 +17,10 @@ set(simplemailqt_SRC
     quotedprintable.cpp
     sender.cpp
     sender_p.h
+    server.cpp
+    server_p.h
+    serverreply.cpp
+    serverreply_p.h
     smtpexports.h
 )
 
@@ -33,6 +37,8 @@ set(simplemailqt_HEADERS
     mimetext.h
     quotedprintable.h
     sender.h
+    server.h
+    serverreply.h
     smtpexports.h
     SmtpMime
 )

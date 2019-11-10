@@ -18,6 +18,7 @@
 #define SENDEMAIL_H
 
 #include <QWidget>
+#include <QSettings>
 
 #include "../../src/SmtpMime"
 
@@ -35,14 +36,15 @@ public:
     explicit SendEmail(QWidget *parent = 0);
     ~SendEmail();
 
-    static EmailAddress stringToEmail(const QString &str);
-
 private Q_SLOTS:
     void on_addAttachment_clicked();
 
     void on_sendEmail_clicked();
+    void sendMailAsync(const MimeMessage &msg);
+    void sendMailSync(const MimeMessage &msg);
 
 private:
+    QSettings m_settings;
     Ui::SendEmail *ui;
 
     void errorMessage(const QString & message);
