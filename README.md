@@ -15,7 +15,7 @@ The SimpleMail is small library writen for Qt 5 (C++11) that allows applications
 - multiple attachments and inline files (used in HTML)
 - different character sets (ascii, utf-8, etc) and encoding methods (7bit, 8bit, base64)
 - multiple types of recipients (to, cc, bcc)
-- error handling
+- error handling (including RESET command)
 - output compilant with RFC2045
 
 ## Examples
