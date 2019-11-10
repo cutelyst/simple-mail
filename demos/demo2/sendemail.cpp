@@ -101,6 +101,7 @@ void SendEmail::sendMailAsync(const MimeMessage &msg)
                                                                   ui->security->currentIndex() == 1 ? Server::SslConnection : Server::TlsConnection);
     const QString user = ui->username->text();
     if (!user.isEmpty()) {
+        server->setAuthMethod(Server::AuthLogin);
         server->setUsername(user);
         server->setPassword(ui->password->text());
     }

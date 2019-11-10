@@ -93,20 +93,21 @@ include_directories(
 
 # cmake config files
 configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/simplemailqt5-config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5Config.cmake
     @ONLY
 )
 configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config-version.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/simplemailqt5-config-version.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5ConfigVersion.cmake
     @ONLY
 )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simplemailqt5-config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/simplemailqt5-config-version.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simplemailqt5/
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5ConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMail2Qt5/
 )
-install(EXPORT SimpleMailQt5Targets
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/simplemailqt5/"
-    FILE SimpleMailQt5Targets.cmake
+
+install(EXPORT SimpleMailTargets
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMail${PROJECT_VERSION_MAJOR}Qt5/
+    FILE SimpleMail${PROJECT_VERSION_MAJOR}Qt5Targets.cmake
     NAMESPACE SimpleMail::
     COMPONENT Devel
 )

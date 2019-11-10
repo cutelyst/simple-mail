@@ -1,4 +1,4 @@
-find_package(Qt5 5.4.0 COMPONENTS
+find_package(Qt5 5.4.0 REQUIRED COMPONENTS
     Widgets
 )
 
@@ -16,7 +16,7 @@ add_executable(demo2
 )
 
 target_link_libraries(demo2
-    SimpleMailQt5::Core
+    SimpleMail2Qt5::Core
     Qt5::Core
     Qt5::Widgets
 )

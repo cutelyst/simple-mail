@@ -47,55 +47,53 @@ set(simplemailqt_HEADERS_PRIVATE
 #     common.h
 )
 
-add_library(SimpleMailQt5 SHARED
+add_library(SimpleMail2Qt5 SHARED
     ${simplemailqt_SRC}
     ${simplemailqt_HEADERS}
     ${simplemailqt_HEADERS_PRIVATE}
 )
 
 #Add an alias so that library can be used inside the build tree, e.g. when testing
-add_library(SimpleMailQt5::Core ALIAS SimpleMailQt5)
+add_library(SimpleMail${PROJECT_VERSION_MAJOR}Qt5::Core ALIAS SimpleMail2Qt5)
 
-#Set target properties
-target_include_directories(SimpleMailQt5
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:include/simplemail-qt5>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+if (CMAKE_GENERATOR MATCHES "Visual Studio")
+  set_property(TARGET SimpleMail2Qt5 PROPERTY DEBUG_POSTFIX "d")
+endif()
+
+target_compile_definitions(SimpleMail2Qt5
+  PRIVATE
+    PLUGINS_PREFER_DEBUG_POSTFIX=$<CONFIG:Debug>
 )
 
-target_compile_features(SimpleMailQt5 PRIVATE cxx_auto_type)
-target_compile_options(SimpleMailQt5 PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall>)
-
-target_link_libraries(SimpleMailQt5
-    PUBLIC
-        Qt5::Core
-        Qt5::Network
+target_include_directories(SimpleMail2Qt5 PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/simplemail2-qt5>
 )
 
-##############################################
-# Installation instructions
-
-include(GNUInstallDirs)
-set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMailQt5)
-
-#This is required so that the exported target has the name UpnpQt and not upnpqt
-set_target_properties(SimpleMailQt5 PROPERTIES
+set_target_properties(SimpleMail2Qt5 PROPERTIES
     EXPORT_NAME Core
     VERSION ${PROJECT_VERSION}
     SOVERSION 0
 )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qt5.pc.in
-  ${CMAKE_CURRENT_BINARY_DIR}/simplemail-qt5.pc
-  @ONLY
+target_link_libraries(SimpleMail2Qt5
+    PUBLIC
+        Qt5::Core
+        Qt5::Network
 )
 
-install(TARGETS SimpleMailQt5 EXPORT SimpleMailQt5Targets DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simplemail-qt5.pc
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+set_property(TARGET SimpleMail2Qt5 PROPERTY PUBLIC_HEADER ${simplemailqt_HEADERS})
+install(TARGETS SimpleMail2Qt5
+    EXPORT SimpleMailTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION bin COMPONENT runtime
+    ARCHIVE DESTINATION lib COMPONENT devel
+    PUBLIC_HEADER DESTINATION include/simplemail2-qt5/SimpleMail COMPONENT devel
 )
-install(FILES ${simplemailqt_HEADERS}
-        DESTINATION include/simplemail-qt5/SimpleMail
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qt5.pc.in
+  ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt5.pc
+  @ONLY
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt5.pc
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )

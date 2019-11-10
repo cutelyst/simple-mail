@@ -6,8 +6,6 @@
 
 SET(prefix "@CMAKE_INSTALL_PREFIX@")
 SET(exec_prefix "@CMAKE_INSTALL_PREFIX@")
-SET(SimpleMailQt5_LIBRARY "@CMAKE_INSTALL_LIBDIR@/libsimplemail-qt5.so" CACHE FILEPATH "Libraries for SimpleMail")
-SET(SimpleMailQt5_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include/simplemail-qt5/" CACHE PATH "Include path for SimpleMail")
-SET(SimpleMailQt5_FOUND "TRUE")
+SET(SimpleMail2Qt5_FOUND "TRUE")
     
-include("${CMAKE_CURRENT_LIST_DIR}/SimpleMailQt5Targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt5Targets.cmake")
