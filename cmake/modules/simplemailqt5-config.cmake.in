@@ -8,4 +8,4 @@ SET(prefix "@CMAKE_INSTALL_PREFIX@")
 SET(exec_prefix "@CMAKE_INSTALL_PREFIX@")
 SET(SimpleMail2Qt5_FOUND "TRUE")
     
-include("${CMAKE_CURRENT_LIST_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt5Targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/SimpleMail@PROJECT_VERSION_MAJOR@Qt5Targets.cmake")
