@@ -35,10 +35,25 @@ bool ServerReply::error() const
     return d->error;
 }
 
-QString ServerReply::errorText() const
+int ServerReply::responseCode() const
 {
     Q_D(const ServerReply);
-    return d->errorText;
+    return d->responseCode;
+}
+
+QString ServerReply::responseText() const
+{
+    Q_D(const ServerReply);
+    return d->responseText;
+}
+
+void ServerReply::finish(bool error, int responseCode, const QString &responseText)
+{
+    Q_D(ServerReply);
+    d->error = error;
+    d->responseCode = responseCode;
+    d->responseText = responseText;
+    Q_EMIT finished();
 }
 
 #include "moc_serverreply.cpp"

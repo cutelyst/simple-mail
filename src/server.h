@@ -160,13 +160,18 @@ public:
      */
     int queueSize() const;
 
+    /**
+     * Connects to the SMTP server.
+     * This is called automatically when an email is sent, and usually SMTP servers
+     * timeout the connection after a while.
+     */
+    void connectToServer();
+
 Q_SIGNALS:
     void smtpError(SmtpError e, const QString &description);
     void sslErrors(const QList<QSslError> &sslErrorList);
 
 private:
-    void connectToServer();
-
     ServerPrivate *d_ptr;
 };
 

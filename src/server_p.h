@@ -53,22 +53,27 @@ public:
         Connecting,
         WaitingForServiceReady220,
         WaitingForServerCaps250,
+        WaitingForServerStartTls_220,
         WaitingForAuthPlain235,
         WaitingForAuthLogin334_step1,
         WaitingForAuthLogin334_step2,
         WaitingForAuthLogin235_step3,
         WaitingForAuthCramMd5_334_step1,
-        WaitingForAuthCramMd5_334_step2,
+        WaitingForAuthCramMd5_235_step2,
         Ready,
+        Noop_250,
+        Reset_250,
         SendingMail,
     };
 
     ServerPrivate(Server *srv) : q_ptr(srv) { }
     inline void createSocket();
+    void setPeerVerificationType(const Server::PeerVerificationType &type);
     void login();
     void processNextMail();
 
-    bool parseResponseCode(int expectedCode);
+    bool parseResponseCode(int expectedCode, Server::SmtpError defaultError = Server::ServerError, QByteArray *responseMessage = nullptr);
+    int parseResponseCode(QByteArray *responseMessage = nullptr);
     int parseCaps();
     inline void commandReset();
     inline void commandNoop();
@@ -83,10 +88,10 @@ public:
     QString username;
     QString password;
     quint16 port = 25;
-    Server::ConnectionType ct = Server::TcpConnection;
+    Server::ConnectionType connectionType = Server::TcpConnection;
     Server::AuthMethod authMethod = Server::AuthNone;
+    Server::PeerVerificationType peerVerificationType = Server::VerifyPeer;
     State state = Disconnected;
-    QList<int> awaitedCodes;
     bool capPipelining = false;
 };
 

@@ -35,7 +35,7 @@ SendEmail::SendEmail(QWidget *parent) : QWidget(parent)
     ui->port->setValue(m_settings.value(QStringLiteral("port"), 25).toInt());
     ui->username->setText(m_settings.value(QStringLiteral("username")).toString());
     ui->password->setText(m_settings.value(QStringLiteral("password")).toString());
-    ui->ssl->setChecked(m_settings.value(QStringLiteral("ssl")).toBool());
+    ui->security->setCurrentIndex(m_settings.value(QStringLiteral("ssl")).toInt());
     ui->sender->setText(m_settings.value(QStringLiteral("sender")).toString());
     ui->asyncCB->setChecked(m_settings.value(QStringLiteral("async")).toBool());
 }
@@ -43,19 +43,6 @@ SendEmail::SendEmail(QWidget *parent) : QWidget(parent)
 SendEmail::~SendEmail()
 {
     delete ui;
-}
-
-EmailAddress SendEmail::stringToEmail(const QString &str)
-{
-    int p1 = str.indexOf(QLatin1String("<"));
-    int p2 = str.indexOf(QLatin1String(">"));
-
-    if (p1 == -1) {
-        // no name, only email address
-        return EmailAddress(str);
-    } else {
-        return EmailAddress(str.mid(p1 + 1, p2 - p1 - 1), str.left(p1));
-    }
 }
 
 void SendEmail::on_addAttachment_clicked()
@@ -70,27 +57,20 @@ void SendEmail::on_addAttachment_clicked()
 
 void SendEmail::on_sendEmail_clicked()
 {
-    EmailAddress sender = stringToEmail(ui->sender->text());
-
-    QStringList rcptStringList = ui->recipients->text().split(QLatin1Char(';'));
-
-    QString subject = ui->subject->text();
-    QString html = ui->texteditor->toHtml();
-
     MimeMessage message;
 
-    message.setSender(sender);
-    message.setSubject(subject);
+    message.setSender(ui->sender->text());
+    message.setSubject(ui->subject->text());
 
-    for (int i = 0; i < rcptStringList.size(); ++i)
-         message.addTo(stringToEmail(rcptStringList.at(i)));
+    const QStringList rcptStringList = ui->recipients->text().split(QLatin1Char(';'));
+    for (const QString &to : rcptStringList) {
+        message.addTo(to);
+    }
 
     auto content = new MimeHtml;
-    content->setHtml(html);
-    qDebug() << "html 1" << content << html << content->html();
+    content->setHtml(ui->texteditor->toHtml());
 
     message.addPart(content);
-    qDebug() << "sendMailAsync" << message.parts().first()->data();
 
     for (int i = 0; i < ui->attachments->count(); ++i) {
         message.addPart(new MimeAttachment(new QFile(ui->attachments->item(i)->text())));
@@ -100,12 +80,11 @@ void SendEmail::on_sendEmail_clicked()
     m_settings.setValue(QStringLiteral("port"), ui->port->value());
     m_settings.setValue(QStringLiteral("username"), ui->username->text());
     m_settings.setValue(QStringLiteral("password"), ui->password->text());
-    m_settings.setValue(QStringLiteral("ssl"), ui->ssl->isChecked());
+    m_settings.setValue(QStringLiteral("ssl"), ui->security->currentIndex());
     m_settings.setValue(QStringLiteral("sender"), ui->sender->text());
     m_settings.setValue(QStringLiteral("async"), ui->asyncCB->isChecked());
 
     if (ui->asyncCB->isChecked()) {
-        sendMailAsync(message);
         sendMailAsync(message);
     } else {
         sendMailSync(message);
@@ -114,11 +93,12 @@ void SendEmail::on_sendEmail_clicked()
 
 void SendEmail::sendMailAsync(const MimeMessage &msg)
 {
-    qDebug() << "sendMailAsync" << msg.parts().first()->data();
+    qDebug() << "sendMailAsync";
     auto server = new Server(this);
     server->setHost(ui->host->text());
     server->setPort(quint16(ui->port->value()));
-    server->setConnectionType(ui->ssl->isChecked() ? Server::SslConnection : Server::TcpConnection);
+    server->setConnectionType(ui->security->currentIndex() == 0 ? Server::TcpConnection :
+                                                                  ui->security->currentIndex() == 1 ? Server::SslConnection : Server::TlsConnection);
     const QString user = ui->username->text();
     if (!user.isEmpty()) {
         server->setUsername(user);
@@ -127,13 +107,13 @@ void SendEmail::sendMailAsync(const MimeMessage &msg)
 
     ServerReply *reply = server->sendMail(msg);
     connect(reply, &ServerReply::finished, this, [=] {
-        qDebug() << "ServerReply finished" << reply->error() << reply->errorText();
+        qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
         reply->deleteLater();
         if (reply->error()) {
-            errorMessage(QLatin1String("Mail sending failed:\n") + reply->errorText());
+            errorMessage(QLatin1String("Mail sending failed:\n") + reply->responseText());
         } else {
             QMessageBox okMessage(this);
-            okMessage.setText(QLatin1String("The email was succesfully sent."));
+            okMessage.setText(QLatin1String("The email was succesfully sent:\n") + reply->responseText());
             okMessage.exec();
         }
     });
@@ -143,11 +123,12 @@ void SendEmail::sendMailSync(const MimeMessage &msg)
 {
     QString host = ui->host->text();
     quint16 port = quint16(ui->port->value());
-    bool ssl = ui->ssl->isChecked();
+    Sender::ConnectionType ct = ui->security->currentIndex() == 0 ? Sender::TcpConnection :
+                                                                    ui->security->currentIndex() == 1 ? Sender::SslConnection : Sender::TlsConnection;
     QString user = ui->username->text();
     QString password = ui->password->text();
 
-    Sender smtp(host, port, ssl ? Sender::SslConnection : Sender::TcpConnection);
+    Sender smtp(host, port, ct);
     if (!user.isEmpty()) {
         smtp.setUser(user);
         smtp.setPassword(password);

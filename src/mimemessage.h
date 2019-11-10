@@ -19,7 +19,6 @@
 #define MIMEMESSAGE_H
 
 #include "mimepart.h"
-#include "mimemultipart.h"
 #include "emailaddress.h"
 
 #include "smtpexports.h"
@@ -32,7 +31,6 @@ namespace SimpleMail {
 class MimeMessagePrivate;
 class SMTP_EXPORT MimeMessage
 {
-//    Q_DECLARE_PRIVATE(MimeMessage)
 public:
     explicit MimeMessage(bool createAutoMimeConent = true);
     MimeMessage(const MimeMessage &other);

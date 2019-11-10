@@ -32,12 +32,19 @@ public:
     virtual ~ServerReply();
 
     bool error() const;
-    QString errorText() const;
+
+    int responseCode() const;
+    QString responseText() const;
 
 Q_SIGNALS:
     void finished();
 
+protected:
+    void finish(bool error, int responseCode, const QString &responseText);
+
 private:
+    friend class ServerPrivate;
+
     ServerReplyPrivate *d_ptr;
 };
 

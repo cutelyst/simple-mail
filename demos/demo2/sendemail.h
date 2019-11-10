@@ -36,8 +36,6 @@ public:
     explicit SendEmail(QWidget *parent = 0);
     ~SendEmail();
 
-    static EmailAddress stringToEmail(const QString &str);
-
 private Q_SLOTS:
     void on_addAttachment_clicked();
 

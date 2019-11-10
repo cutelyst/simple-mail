@@ -504,7 +504,7 @@ bool SenderPrivate::login()
         // Challenge
         QByteArray ch = QByteArray::fromBase64(responseText.mid((4)));
 
-        // Calculamos el hash
+        // Compute the hash
         QMessageAuthenticationCode code(QCryptographicHash::Md5);
         code.setKey(password.toLatin1());
         code.addData(ch);
@@ -512,7 +512,7 @@ bool SenderPrivate::login()
         QByteArray data(user.toLatin1() + " " + code.result().toHex());
         sendMessage(data.toBase64());
 
-        // Wait for 334
+        // Wait for 235
         if (!waitForResponse(235)) {
             Q_EMIT q->smtpError(Sender::AuthenticationFailedError);
             return false;
@@ -615,7 +615,7 @@ void SenderPrivate::setPeerVerificationType(const Sender::PeerVerificationType &
     peerVerificationType = type;
     if (socket != Q_NULLPTR)
     {
-        if (connectionType == Sender::SslConnection || connectionType == Sender :: TlsConnection)
+        if (connectionType == Sender::SslConnection || connectionType == Sender::TlsConnection)
         {
             switch (type) {
                 case Sender::VerifyNone:

@@ -29,6 +29,21 @@ EmailAddress::EmailAddress(const EmailAddress &other) : d_ptr(other.d_ptr)
 
 }
 
+EmailAddress::EmailAddress(const QString &nameAndAddress) : d_ptr(new EmailAddressPrivate)
+{
+    Q_D(EmailAddress);
+    int p1 = nameAndAddress.indexOf(QLatin1String("<"));
+    int p2 = nameAndAddress.indexOf(QLatin1String(">"));
+
+    if (p1 == -1) {
+        // no name, only email address
+        d->address = nameAndAddress;
+    } else {
+        d->address = nameAndAddress.mid(p1 + 1, p2 - p1 - 1);
+        d->name = nameAndAddress.left(p1);
+    }
+}
+
 EmailAddress::EmailAddress(const QString &address, const QString &name) : d_ptr(new EmailAddressPrivate)
 {
     Q_D(EmailAddress);

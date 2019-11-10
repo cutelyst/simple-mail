@@ -18,6 +18,7 @@
  */
 
 #include "mimemessage.h"
+#include "mimemultipart.h"
 
 #ifndef MIMEMESSAGE_P_H
 #define MIMEMESSAGE_P_H
@@ -27,8 +28,7 @@ namespace SimpleMail {
 class MimeMessagePrivate : public QSharedData
 {
 public:
-//    MimeMessagePrivate(const MimeMessagePrivate &other);
-    MimeMessagePrivate();
+    MimeMessagePrivate() = default;
     ~MimeMessagePrivate();
 
     inline static QByteArray encode(const QByteArray &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec);

@@ -16,29 +16,37 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="minimumSize">
-        <size>
-         <width>87</width>
-         <height>17</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>87</width>
-         <height>17</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>SMTP server:</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="host">
        <property name="text">
         <string>localhost</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Username:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3" colspan="3">
+      <widget class="QLineEdit" name="password">
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QSpinBox" name="port">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>99999</number>
+       </property>
+       <property name="value">
+        <number>25</number>
        </property>
       </widget>
      </item>
@@ -61,36 +69,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
-      <widget class="QSpinBox" name="port">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>99999</number>
-       </property>
-       <property name="value">
-        <number>25</number>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QCheckBox" name="ssl">
-       <property name="text">
-        <string>SSL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Username:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="username"/>
-     </item>
      <item row="1" column="2">
       <widget class="QLabel" name="label_6">
        <property name="text">
@@ -98,11 +76,45 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="3" colspan="2">
-      <widget class="QLineEdit" name="password">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="minimumSize">
+        <size>
+         <width>87</width>
+         <height>17</height>
+        </size>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>87</width>
+         <height>17</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>SMTP server:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="username"/>
+     </item>
+     <item row="0" column="4">
+      <widget class="QComboBox" name="security">
+       <item>
+        <property name="text">
+         <string>Unencrypted</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SSL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>TLS/STARTTLS</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

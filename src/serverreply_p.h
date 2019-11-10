@@ -8,7 +8,8 @@ namespace SimpleMail {
 class ServerReplyPrivate
 {
 public:
-    QString errorText;
+    QString responseText;
+    int responseCode = 0;
     bool error = false;
 };
 
