@@ -180,6 +180,24 @@ void Server::connectToServer()
     }
 }
 
+void Server::ignoreSslErrors()
+{
+    Q_D(Server);
+    auto sslSock = qobject_cast<QSslSocket*>(d->socket);
+    if (sslSock) {
+        sslSock->ignoreSslErrors();
+    }
+}
+
+void Server::ignoreSslErrors(const QList<QSslError> &errors)
+{
+    Q_D(Server);
+    auto sslSock = qobject_cast<QSslSocket*>(d->socket);
+    if (sslSock) {
+        sslSock->ignoreSslErrors(errors);
+    }
+}
+
 void ServerPrivate::createSocket()
 {
     Q_Q(Server);

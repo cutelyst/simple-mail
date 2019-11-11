@@ -167,6 +167,18 @@ public:
      */
     void connectToServer();
 
+    /**
+     * @brief ignoreSslErrors tells the socket to ignore all pending ssl errors if SSL encryption is active.
+     *      Must be called in a direct connected slot/functor
+     */
+    void ignoreSslErrors();
+
+    /**
+     * @brief ignoreSslErrors tells the socket to ignore the given ssl errors if SSL encryption is active.
+     * @param errors defines the errors to ignore
+     */
+    void ignoreSslErrors(const QList<QSslError> &errors);
+
 Q_SIGNALS:
     void smtpError(SmtpError e, const QString &description);
     void sslErrors(const QList<QSslError> &sslErrorList);
