@@ -475,28 +475,28 @@ void ServerPrivate::processNextMail()
 
         if (cont.state == ServerReplyContainer::Initial) {
             // Send the MAIL command with the sender
-            cont.commands << "MAIL FROM: <" + cont.msg.sender().address().toLatin1() + ">\r\n";
+            cont.commands << "MAIL FROM:<" + cont.msg.sender().address().toLatin1() + ">\r\n";
             cont.awaitedCodes << 250;
 
             // Send RCPT command for each recipient
             // To (primary recipients)
             const auto toRecipients = cont.msg.toRecipients();
             for (const EmailAddress &rcpt : toRecipients) {
-                cont.commands << "RCPT TO: <" + rcpt.address().toLatin1() + ">\r\n";
+                cont.commands << "RCPT TO:<" + rcpt.address().toLatin1() + ">\r\n";
                 cont.awaitedCodes << 250;
             }
 
             // Cc (carbon copy)
             const auto ccRecipients = cont.msg.ccRecipients();
             for (const EmailAddress &rcpt : ccRecipients) {
-                cont.commands << "RCPT TO: <" + rcpt.address().toLatin1() + ">\r\n";
+                cont.commands << "RCPT TO:<" + rcpt.address().toLatin1() + ">\r\n";
                 cont.awaitedCodes << 250;
             }
 
             // Bcc (blind carbon copy)
             const auto bccRecipients = cont.msg.bccRecipients();
             for (const EmailAddress &rcpt : bccRecipients) {
-                cont.commands << "RCPT TO: <" + rcpt.address().toLatin1() + ">\r\n";
+                cont.commands << "RCPT TO:<" + rcpt.address().toLatin1() + ">\r\n";
                 cont.awaitedCodes << 250;
             }
 
