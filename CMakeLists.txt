@@ -40,27 +40,13 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     "/usr" CACHE PATH "simplemail default install prefix" FORCE)
 endif()
 
-#
-# Configure files
-#
-set (PREFIXDIR "${CMAKE_INSTALL_PREFIX}")
-set (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBNAME}/")
-set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
-set (PKGDATADIR "${DATA_INSTALL_DIR}")
-set (LIBDIR "${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}")
-set (PKGLIBDIR "${LIBDIR}/simplemail")
-set (GETTEXT_PACKAGE "simplemail")
-set (LOCALE_DIR "${DATADIR}/locale")
-set (VERSION "${SIMPLEMAIL_VERSION}")
-set (BUILDDIR "${CMAKE_BINARY_DIR}")
+include(GNUInstallDirs)
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
 
 set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_LIBRARY_ARCHITECTURE}" CACHE PATH "Output directory for libraries")
 
 option(BUILD_DEMOS "Build the demos" ON)
-
-configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 
 #
 # Custom C flags
