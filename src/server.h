@@ -144,7 +144,7 @@ public:
      * Sends the email async.
      * The email is added to a queue and is processed once
      * the connection and protocol commands are exchanged,
-     * is the server reports PIPELINING the recipients commands
+     * if the server reports PIPELINING the recipients commands
      * are sent in one go automatically.
      *
      * You must delete the returned object, if you do so before
@@ -155,8 +155,8 @@ public:
 
     /**
      * Returns the number of emails in queue
-     * Can be useful if you create multiple Server Instances and
-     * wants to load balance your emails.
+     * Can be useful if you create multiple Server instances and
+     * want to load balance your emails.
      */
     int queueSize() const;
 
