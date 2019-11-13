@@ -26,7 +26,7 @@ if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
       message(STATUS "Please do an out-of-tree build:")
       message(STATUS "rm -f CMakeCache.txt && mkdir build && cd build; cmake .. && make")
       message(FATAL_ERROR "In-tree-build detected!")
-endif(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
+endif()
 
 #
 # Options
@@ -38,7 +38,7 @@ option(ENABLE_MAINTAINER_CFLAGS "Enable maintainer CFlags" OFF)
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX
     "/usr" CACHE PATH "simplemail default install prefix" FORCE)
-endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+endif()
 
 #
 # Configure files
@@ -115,4 +115,4 @@ install(EXPORT SimpleMailTargets
 add_subdirectory(src)
 if (BUILD_DEMOS)
     add_subdirectory(demos)
-endif (BUILD_DEMOS)
+endif ()
