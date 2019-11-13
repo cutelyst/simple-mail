@@ -278,7 +278,7 @@ bool SenderPrivate::sendMail(const MimeMessage &email)
 
     qCDebug(SIMPLEMAIL_SENDER) << "Sending MAIL command";
     // Send the MAIL command with the sender
-    sendMessage("MAIL FROM: <" + email.sender().address().toLatin1() + '>');
+    sendMessage("MAIL FROM:<" + email.sender().address().toLatin1() + '>');
     if (!waitForResponse(250)) {
         return false;
     }
@@ -288,7 +288,7 @@ bool SenderPrivate::sendMail(const MimeMessage &email)
     // To (primary recipients)
     const auto toRecipients = email.toRecipients();
     for (const EmailAddress &rcpt : toRecipients) {
-        sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
+        sendMessage("RCPT TO:<" + rcpt.address().toLatin1() + '>');
 
         if (!waitForResponse(250)) {
             return false;
@@ -298,7 +298,7 @@ bool SenderPrivate::sendMail(const MimeMessage &email)
     // Cc (carbon copy)
     const auto ccRecipients = email.ccRecipients();
     for (const EmailAddress &rcpt : ccRecipients) {
-        sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
+        sendMessage("RCPT TO:<" + rcpt.address().toLatin1() + '>');
 
         if (!waitForResponse(250)) {
             return false;
@@ -308,7 +308,7 @@ bool SenderPrivate::sendMail(const MimeMessage &email)
     // Bcc (blind carbon copy)
     const auto bccRecipients = email.bccRecipients();
     for (const EmailAddress &rcpt : bccRecipients) {
-        sendMessage("RCPT TO: <" + rcpt.address().toLatin1() + '>');
+        sendMessage("RCPT TO:<" + rcpt.address().toLatin1() + '>');
 
         if (!waitForResponse(250)) {
             return false;
