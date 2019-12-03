@@ -28,7 +28,7 @@ class SMTP_EXPORT MimeInlineFile : public MimeFile
 {
 public:
     MimeInlineFile(QFile *f);
-    ~MimeInlineFile();
+    virtual ~MimeInlineFile();
 };
 
 }

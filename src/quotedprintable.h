@@ -27,7 +27,7 @@ namespace SimpleMail {
 class SMTP_EXPORT QuotedPrintable
 {
 public:
-    static QByteArray encode(const QByteArray &input, bool rfc2047, int *printable = 0, int *encoded = 0);
+    static QByteArray encode(const QByteArray &input, bool rfc2047, int *printable = nullptr, int *encoded = nullptr);
     static QByteArray decode(const QByteArray &input);
 };
 

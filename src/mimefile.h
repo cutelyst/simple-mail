@@ -30,7 +30,7 @@ class SMTP_EXPORT MimeFile : public MimePart
 public:
     MimeFile(const QByteArray &stream, const QString &fileName);
     MimeFile(QFile *f);
-    ~MimeFile();
+    virtual ~MimeFile();
 };
 
 }

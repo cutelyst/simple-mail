@@ -28,7 +28,7 @@ class SMTP_EXPORT MimeText : public MimePart
 {
 public:
     MimeText(const QString &text = QString());
-    ~MimeText();
+    virtual ~MimeText();
 
     void setText(const QString &text);
     QString text() const;
