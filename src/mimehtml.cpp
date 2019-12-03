@@ -17,7 +17,7 @@
 */
 
 #include "mimehtml.h"
-#include "mimetext_p.h"
+#include "mimepart_p.h"
 
 using namespace SimpleMail;
 

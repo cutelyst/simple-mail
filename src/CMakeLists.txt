@@ -13,7 +13,6 @@ set(simplemailqt_SRC
     mimepart.cpp
     mimepart_p.h
     mimetext.cpp
-    mimetext_p.h
     quotedprintable.cpp
     sender.cpp
     sender_p.h

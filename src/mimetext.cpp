@@ -16,7 +16,8 @@
   See the LICENSE file for more details.
 */
 
-#include "mimetext_p.h"
+#include "mimetext.h"
+#include "mimepart_p.h"
 
 #include <QDebug>
 
