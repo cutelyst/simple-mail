@@ -62,11 +62,11 @@ QByteArray QuotedPrintable::encode(const QByteArray &input, bool rfc2047, int *p
 {
     QByteArray output;
 
-    unsigned char byte;
+    quint8 byte;
     static const char hex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     for (int i = 0; i < input.length() ; ++i) {
-        byte = input[i];
+        byte = quint8(input[i]);
 
         if (requiresEscape(byte, rfc2047)) {
             output.append('=');
@@ -76,7 +76,7 @@ QByteArray QuotedPrintable::encode(const QByteArray &input, bool rfc2047, int *p
                 ++(*encoded);
             }
         } else {
-            output.append(byte);
+            output.append(char(byte));
             if (printable) {
                 ++(*printable);
             }

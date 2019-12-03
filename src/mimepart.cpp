@@ -363,7 +363,7 @@ bool MimePartPrivate::writeBase64(QIODevice *input, QIODevice *out)
         totalRead += in;
       
         // removed QByteArray::OmitTrailingEquals flag to generate ending == to ensure compatability with Amazon SES
-        QByteArray encoded = QByteArray(block, in).toBase64(QByteArray::Base64Encoding);
+        QByteArray encoded = QByteArray(block, int(in)).toBase64(QByteArray::Base64Encoding);
         encoded = formatter.format(encoded, chars);
         if (encoded.size() != out->write(encoded)) {
             return false;
@@ -384,7 +384,7 @@ bool MimePartPrivate::writeQuotedPrintable(QIODevice *input, QIODevice *out)
         }
 
         totalRead += in;
-        QByteArray encoded = QuotedPrintable::encode(QByteArray(block, in), false);
+        QByteArray encoded = QuotedPrintable::encode(QByteArray(block, int(in)), false);
         encoded = formatter.formatQuotedPrintable(encoded, chars);
         if (encoded.size() != out->write(encoded)) {
             return false;

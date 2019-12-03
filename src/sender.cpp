@@ -40,7 +40,7 @@ Sender::Sender(const QString &host, int port, ConnectionType connectionType, QOb
     setConnectionType(connectionType);
 
     d->host = host;
-    d->port = port;
+    d->port = quint16(port);
 }
 
 Sender::~Sender()
