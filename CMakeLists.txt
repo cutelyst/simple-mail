@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(libsimplemail VERSION 2.0.0 LANGUAGES CXX)
 
+include(GNUInstallDirs)
+
 set(CMAKE_AUTOMOC ON)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
