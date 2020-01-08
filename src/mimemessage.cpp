@@ -121,13 +121,12 @@ bool MimeMessage::write(QIODevice *device) const
     }
 
     if (!d->content->write(device)) {
+        qCWarning(SIMPLEMAIL_MIMEMSG) << "Failed to write MIME content";
         return false;
     }
 
     // Send \r\n.\r\n to end the mail data
-    device->write(QByteArrayLiteral("\r\n.\r\n"));
-
-    return true;
+    return device->write(QByteArrayLiteral("\r\n.\r\n")) == 5;
 }
 
 void MimeMessage::setSender(const EmailAddress &sender)
