@@ -94,11 +94,29 @@ void SendEmail::on_sendEmail_clicked()
 void SendEmail::sendMailAsync(const MimeMessage &msg)
 {
     qDebug() << "sendMailAsync";
-    auto server = new Server(this);
-    server->setHost(ui->host->text());
-    server->setPort(quint16(ui->port->value()));
-    server->setConnectionType(ui->security->currentIndex() == 0 ? Server::TcpConnection :
-                                                                  ui->security->currentIndex() == 1 ? Server::SslConnection : Server::TlsConnection);
+
+    const QString host = ui->host->text();
+    const quint16 port(ui->port->value());
+    const Server::ConnectionType ct = ui->security->currentIndex() == 0 ?
+                Server::TcpConnection : ui->security->currentIndex() == 1 ?
+                    Server::SslConnection : Server::TlsConnection;
+
+    Server *server = nullptr;
+    for (auto srv : m_aServers) {
+        if (srv->host() == host && srv->port() == port & srv->connectionType() == ct) {
+            server = srv;
+            break;
+        }
+    }
+
+    if (!server) {
+        server = new Server(this);
+        server->setHost(host);
+        server->setPort(port);
+        server->setConnectionType(ct);
+        m_aServers.push_back(server);
+    }
+
     const QString user = ui->username->text();
     if (!user.isEmpty()) {
         server->setAuthMethod(Server::AuthLogin);

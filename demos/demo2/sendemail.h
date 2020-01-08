@@ -26,6 +26,10 @@ namespace Ui {
     class SendEmail;
 }
 
+namespace SimpleMail {
+class Server;
+}
+
 using namespace SimpleMail;
 
 class SendEmail : public QWidget
@@ -45,6 +49,7 @@ private Q_SLOTS:
 
 private:
     QSettings m_settings;
+    std::vector<Server *> m_aServers;
     Ui::SendEmail *ui;
 
     void errorMessage(const QString & message);
