@@ -237,6 +237,16 @@ void ServerPrivate::createSocket()
     q->connect(socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
                q, [=] (QAbstractSocket::SocketError error) {
         qCDebug(SIMPLEMAIL_SERVER) << "SocketError" << error << socket->readAll();
+        if (!queue.isEmpty()) {
+            ServerReplyContainer &cont = queue[0];
+            if (!cont.reply.isNull()) {
+                ServerReply *reply = cont.reply;
+                queue.removeFirst();
+                reply->finish(true, -1, socket->errorString());
+            } else {
+                queue.removeFirst();
+            }
+        }
     });
 
     q->connect(socket, &QTcpSocket::readyRead, q, [=] {
@@ -247,13 +257,6 @@ void ServerPrivate::createSocket()
                 if (!queue.isEmpty()) {
                     ServerReplyContainer &cont = queue[0];
                     if (cont.state == ServerReplyContainer::SendingCommands) {
-                        if (cont.reply.isNull()) {
-                            // Abort
-                            socket->disconnectFromHost();
-                            queue.removeFirst();
-                            return;
-                        }
-
                         while (!cont.awaitedCodes.isEmpty() && socket->canReadLine()) {
                             const int awaitedCode = cont.awaitedCodes.takeFirst();
 
@@ -261,8 +264,13 @@ void ServerPrivate::createSocket()
                             const int code = parseResponseCode(&responseText);
                             if (code != awaitedCode) {
                                 // Reset connection
-                                cont.reply->finish(true, code, QString::fromLatin1(responseText));
-                                queue.removeFirst();
+                                if (!cont.reply.isNull()) {
+                                    ServerReply *reply = cont.reply;
+                                    queue.removeFirst();
+                                    reply->finish(true, code, QString::fromLatin1(responseText));
+                                } else {
+                                    queue.removeFirst();
+                                }
                                 const QByteArray consume = socket->readAll();
                                 qDebug() << "Mail error" << consume;
                                 state = Ready;
@@ -282,8 +290,13 @@ void ServerPrivate::createSocket()
                                 qCDebug(SIMPLEMAIL_SERVER) << "Mail sent";
                             } else {
                                 qCCritical(SIMPLEMAIL_SERVER) << "Error writing mail";
-                                cont.reply->finish(true, -1, q->tr("Error sending mail DATA"));
-                                queue.removeFirst();
+                                if (!cont.reply.isNull()) {
+                                    ServerReply *reply = cont.reply;
+                                    queue.removeFirst();
+                                    reply->finish(true, -1, q->tr("Error sending mail DATA"));
+                                } else {
+                                    queue.removeFirst();
+                                }
                                 socket->disconnectFromHost();
                                 return;
                             }
@@ -292,11 +305,14 @@ void ServerPrivate::createSocket()
                         QByteArray responseText;
                         const int code = parseResponseCode(&responseText);
                         if (!cont.reply.isNull()) {
-                            cont.reply->finish(code != 250, code, QString::fromLatin1(responseText));
+                            ServerReply *reply = cont.reply;
+                            queue.removeFirst();
+                            reply->finish(code != 250, code, QString::fromLatin1(responseText));
+                        } else {
+                            queue.removeFirst();
                         }
                         qCDebug(SIMPLEMAIL_SERVER) << "MAIL FINISHED" << code << queue.size() << socket->canReadLine();
 
-                        queue.removeFirst();
                         processNextMail();
                     }
                 } else {
