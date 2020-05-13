@@ -24,11 +24,11 @@ Async Exaplame:
 
 ```c++
 #include <QCoreApplication>
-#include <Server>
+#include <SimpleMail/SimpleMail>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
 
     // First we need to create an Server object
     auto server = new SimpleMail::Server;
@@ -43,9 +43,9 @@ int main(int argc, char *argv[])
     server->setPassword("your_password");
 
     // Now we create a MimeMessage object. This will be the email.
-    MimeMessage message;
-    message.setSender(EmailAddress("your_email_address@gmail.com", "Your Name"));
-    message.addTo("Recipient's Name <recipient@host.com>");
+    SimpleMail::MimeMessage message;
+    message.setSender(SimpleMail::EmailAddress("your_email_address@gmail.com", "Your Name"));
+    message.addTo(SimpleMail::EmailAddress("Recipient's Name <recipient@host.com>"));
     message.setSubject("Testing Subject");
 
     // First we create a MimeText object.
@@ -53,18 +53,18 @@ int main(int argc, char *argv[])
     auto text = new MimeText;
 
     // Now add some text to the email.
-    text.setText("Hi,\nThis is a simple email message.\n");
+    text->setText("Hi,\nThis is a simple email message.\n");
 
     // Now add it to the mail
     message.addPart(text);
 
     // Now we can send the mail
-    ServerReply *reply = server->sendMail(msg);
-    connect(reply, &ServerReply::finished, this, [=] {
+    SimpleMail::ServerReply *reply = server->sendMail(message);
+    QObject::connect(reply, &SimpleMail::ServerReply::finished, [reply] {
         qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
         reply->deleteLater();// Don't forget to delete it
 
-        app.quit();
+        qApp->quit();
     });
 
     app.exec();
@@ -75,11 +75,11 @@ Blocking example:
 
 ```c++
 #include <QCoreApplication>
-#include <Sender>
+#include <SimpleMail/SimpleMail>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
 
     // First we need to create an Sender object
     // We will use the Gmail's smtp server (smtp.gmail.com, port 465, ssl)
@@ -91,13 +91,13 @@ int main(int argc, char *argv[])
     sender.setPassword("your_password");
 
     // Now we create a MimeMessage object. This will be the email.
-    MimeMessage message;
-    message.setSender(EmailAddress("your_email_address@gmail.com", "Your Name"));
+    SimpleMail::MimeMessage message;
+    message.setSender(SimpleMail::EmailAddress("your_email_address@gmail.com", "Your Name"));
     message.addTo("Recipient's Name <recipient@host.com>");
     message.setSubject("Testing Subject");
 
     // First we create a MimeText object.
-    MimeText text;
+    SimpleMail::MimeText text;
 
     // Now add some text to the email.
     text.setText("Hi,\nThis is a simple email message.\n");
@@ -107,7 +107,6 @@ int main(int argc, char *argv[])
 
     // Now we can send the mail
     sender.sendMail(message); // Blocks untill mail is delivered or errored
-
 }
 ```
 
