@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     // Now we create a MimeMessage object. This will be the email.
     SimpleMail::MimeMessage message;
     message.setSender(SimpleMail::EmailAddress("your_email_address@gmail.com", "Your Name"));
-    message.addTo("Recipient's Name <recipient@host.com>");
+    message.addTo(SimpleMail::EmailAddress("Recipient's Name <recipient@host.com>"));
     message.setSubject("Testing Subject");
 
     // First we create a MimeText object.
