@@ -1,6 +1,6 @@
 #include <QtCore>
 
-#include "../../src/SmtpMime"
+#include "../../src/SimpleMail"
 
 using namespace SimpleMail;
 
@@ -52,5 +52,4 @@ int main(int argc, char *argv[])
     }
 
     smtp.quit();
-
 }

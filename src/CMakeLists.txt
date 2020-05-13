@@ -39,7 +39,7 @@ set(simplemailqt_HEADERS
     server.h
     serverreply.h
     smtpexports.h
-    SmtpMime
+    SimpleMail
 )
 
 set(simplemailqt_HEADERS_PRIVATE

@@ -20,7 +20,7 @@
 #include <QWidget>
 #include <QSettings>
 
-#include "../../src/SmtpMime"
+#include "../../src/SimpleMail"
 
 namespace Ui {
     class SendEmail;
