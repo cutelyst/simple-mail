@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     // Now we create a MimeMessage object. This will be the email.
     SimpleMail::MimeMessage message;
-    message.setSender(SimpleMail::EmailAddress(QLatin1String("your_email_address@gmail.com", "Your Name")));
+    message.setSender(SimpleMail::EmailAddress(QLatin1String("your_email_address@gmail.com"), QLatin1String("Your Name")));
     message.addTo(SimpleMail::EmailAddress(QLatin1String("Recipient's Name <recipient@host.com>")));
     message.setSubject(QLatin1String("Testing Subject"));
 
