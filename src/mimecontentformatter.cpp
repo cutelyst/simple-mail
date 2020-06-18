@@ -21,56 +21,56 @@
 using namespace SimpleMail;
 
 MimeContentFormatter::MimeContentFormatter(int max_length) :
-	max_length(max_length)
+    max_length(max_length)
 {
 
 }
 
 QByteArray MimeContentFormatter::format(const QByteArray &content, int &chars) const
 {
-	QByteArray out;
-	out.reserve(6000);
+    QByteArray out;
+    out.reserve(6000);
 
-	for (int i = 0, size = content.length(); i < size; i+=max_length) {
-		out.append(content.mid(i,max_length));
-		out.append(QByteArrayLiteral("\r\n"));
-		chars += i;
-	}
+    for (int i = 0, size = content.length(); i < size; i+=max_length) {
+        out.append(content.mid(i,max_length));
+        out.append(QByteArrayLiteral("\r\n"));
+        chars += i;
+    }
 
-	return out;
+    return out;
 }
 
 QByteArray MimeContentFormatter::formatQuotedPrintable(const QByteArray &content, int &chars) const
 {
-	QByteArray out;
+    QByteArray out;
 
-	for (int i = 0; i < content.length() ; ++i) {
-		chars++;
+    for (int i = 0; i < content.length() ; ++i) {
+        chars++;
 
-		if (content[i] == '\n') {       // new line
-			out.append(content[i]);
-			chars = 0;
-			continue;
-		}
+        if (content[i] == '\n') {       // new line
+            out.append(content[i]);
+            chars = 0;
+            continue;
+        }
 
-		if ((chars > max_length - 1)
-				|| ((content[i] == '=') && (chars > max_length - 3) )) {
-			out.append(QByteArrayLiteral("=\r\n"));
-			chars = 1;
-		}
+        if ((chars > max_length - 1)
+                || ((content[i] == '=') && (chars > max_length - 3) )) {
+            out.append(QByteArrayLiteral("=\r\n"));
+            chars = 1;
+        }
 
-		out.append(content[i]);
-	}
+        out.append(content[i]);
+    }
 
-	return out;
+    return out;
 }
 
 void MimeContentFormatter::setMaxLength(int l)
 {
-	max_length = l;
+    max_length = l;
 }
 
 int MimeContentFormatter::maxLength() const
 {
-	return max_length;
+    return max_length;
 }
