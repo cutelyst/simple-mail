@@ -29,15 +29,12 @@ MimeContentFormatter::MimeContentFormatter(int max_length) :
 QByteArray MimeContentFormatter::format(const QByteArray &content, int &chars) const
 {
     QByteArray out;
+    out.reserve(6000);
 
-    for (int i = 0; i < content.length() ; ++i) {
-        chars++;
-        if (chars > max_length) {
-            out.append(QByteArrayLiteral("\r\n"));
-            chars = 1;
-        }
-
-        out.append(content[i]);
+    for (int i = 0, size = content.length(); i < size; i+=max_length) {
+        out.append(content.mid(i,max_length));
+        out.append(QByteArrayLiteral("\r\n"));
+        chars += i;
     }
 
     return out;
