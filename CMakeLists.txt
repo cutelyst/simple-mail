@@ -104,3 +104,6 @@ add_subdirectory(src)
 if (BUILD_DEMOS)
     add_subdirectory(demos)
 endif ()
+
+include(CPackConfig)
+
