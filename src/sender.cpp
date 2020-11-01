@@ -145,9 +145,13 @@ void Sender::setConnectionType(ConnectionType connectionType)
         connect(static_cast<QSslSocket*>(d->socket), static_cast<void(QSslSocket::*)(const QList<QSslError> &)>(&QSslSocket::sslErrors),this, &Sender::sslErrors, Qt::DirectConnection);
     }
     connect(d->socket, &QTcpSocket::stateChanged, this, &Sender::socketStateChanged);
-    connect(d->socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
-            this, &Sender::socketError);
     connect(d->socket, &QTcpSocket::readyRead, this, &Sender::socketReadyRead);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    connect(d->socket, &QTcpSocket::errorOccurred, this, &Sender::socketError);
+#else
+    connect(d->socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error), this, &Sender::socketError);
+#endif
 }
 
 QString Sender::user() const

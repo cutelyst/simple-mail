@@ -234,8 +234,7 @@ void ServerPrivate::createSocket()
         state = WaitingForServiceReady220;
     });
 
-    q->connect(socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
-               q, [=] (QAbstractSocket::SocketError error) {
+    auto erroFn = [=] (QAbstractSocket::SocketError error) {
         qCDebug(SIMPLEMAIL_SERVER) << "SocketError" << error << socket->readAll();
         if (!queue.isEmpty()) {
             ServerReplyContainer &cont = queue[0];
@@ -247,7 +246,12 @@ void ServerPrivate::createSocket()
                 queue.removeFirst();
             }
         }
-    });
+    };
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    q->connect(socket, &QTcpSocket::errorOccurred, q, erroFn);
+#else
+    q->connect(socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error), q, erroFn);
+#endif
 
     q->connect(socket, &QTcpSocket::readyRead, q, [=] {
         qCDebug(SIMPLEMAIL_SERVER) << "readyRead" << socket->bytesAvailable();
