@@ -25,7 +25,7 @@ x
 #include <QDateTime>
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(SIMPLEMAIL_MIMEMSG, "simplemail.mimemessage")
+Q_LOGGING_CATEGORY(SIMPLEMAIL_MIMEMSG, "simplemail.mimemessage", QtInfoMsg)
 
 using namespace SimpleMail;
 
