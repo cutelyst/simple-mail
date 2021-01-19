@@ -1,7 +1,7 @@
 SimpleMail [![Build Status](https://travis-ci.org/cutelyst/simple-mail.svg?branch=master)](https://travis-ci.org/cutelyst/simple-mail)
 =============================================
 
-The SimpleMail is small library writen for Qt 5 (C++11) that allows applications to send complex emails (plain text, html, attachments, inline files, etc.) using the Simple Mail Transfer Protocol (SMTP).
+The SimpleMail is small library writen for Qt 5 or 6 (C++11) that allows applications to send complex emails (plain text, html, attachments, inline files, etc.) using the Simple Mail Transfer Protocol (SMTP).
 
 ## Features:
 
