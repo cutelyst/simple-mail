@@ -1,7 +1,10 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.9)
 project(libsimplemail VERSION 2.3.0 LANGUAGES CXX)
 
 include(GNUInstallDirs)
+
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} 5.5.0 COMPONENTS Core Network REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -16,8 +19,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 option(BUILD_SHARED_LIBS "Build in shared lib mode" ON)
-
-find_package(Qt5 5.5.0 REQUIRED COMPONENTS Core Network)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -41,8 +42,6 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX
     "/usr" CACHE PATH "simplemail default install prefix" FORCE)
 endif()
-
-include(GNUInstallDirs)
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
 
@@ -81,21 +80,21 @@ include_directories(
 
 # cmake config files
 configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}Config.cmake
     @ONLY
 )
 configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config-version.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5ConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}ConfigVersion.cmake
     @ONLY
 )
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5Config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt5ConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}ConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMail2Qt5/
 )
 
 install(EXPORT SimpleMailTargets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMail${PROJECT_VERSION_MAJOR}Qt5/
-    FILE SimpleMail${PROJECT_VERSION_MAJOR}Qt5Targets.cmake
+    FILE SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}Targets.cmake
     NAMESPACE SimpleMail::
     COMPONENT Devel
 )

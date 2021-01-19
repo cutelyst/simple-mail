@@ -22,6 +22,7 @@ x
 #include "quotedprintable.h"
 #include <typeinfo>
 
+#include <QIODevice>
 #include <QDateTime>
 #include <QLoggingCategory>
 

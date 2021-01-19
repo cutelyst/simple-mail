@@ -1,22 +1,26 @@
-find_package(Qt5 5.4.0 REQUIRED COMPONENTS
-    Widgets
-)
+find_package(Qt${QT_VERSION_MAJOR} 5.5.0 COMPONENTS Widgets REQUIRED)
 
 set(demo_SRCS
     sendemail.cpp
     demo2.cpp
 )
 
-qt5_wrap_ui(demo_SRCS
-    sendemail.ui
-)
+if (${QT_VERSION_MAJOR} EQUAL 5)
+    qt5_wrap_ui(demo_SRCS
+        sendemail.ui
+        )
+else ()
+    qt6_wrap_ui(demo_SRCS
+        sendemail.ui
+    )
+endif ()
 
 add_executable(demo2
     ${demo_SRCS}
 )
 
 target_link_libraries(demo2
-    SimpleMail2Qt5::Core
-    Qt5::Core
-    Qt5::Widgets
+    SimpleMail2Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Widgets
 )
