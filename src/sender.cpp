@@ -172,6 +172,17 @@ int Sender::responseCode() const
     return d->responseCode;
 }
 
+QString SimpleMail::Sender::mailQueueId() const
+{
+    Q_D(const Sender);
+    if (d->responseWithMailQueueId.contains(QLatin1String("queued as"))) {
+        return d->responseWithMailQueueId.section(QLatin1String("queued as"), 1, 1, QString::SectionCaseInsensitiveSeps).trimmed();
+    } else {
+        qCDebug(SIMPLEMAIL_SENDER) << "Response with mail queue ID has unkown format. Returning entire response, must be parsed manually.";
+        return d->responseWithMailQueueId;
+    }
+}
+
 int Sender::connectionTimeout() const
 {
     Q_D(const Sender);
@@ -278,6 +289,7 @@ bool SenderPrivate::sendMail(const MimeMessage &email)
 
     responseText.clear();
     responseCode = -1;
+    responseWithMailQueueId.clear();
 
     if (!processState()) {
         return false;
@@ -341,6 +353,8 @@ bool SenderPrivate::sendMail(const MimeMessage &email)
         return false;
     }
     qCDebug(SIMPLEMAIL_SENDER) << "Mail sent";
+
+    responseWithMailQueueId = QString::fromUtf8(responseText).trimmed();
 
     return true;
 }

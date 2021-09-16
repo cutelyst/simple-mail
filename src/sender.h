@@ -154,6 +154,11 @@ public:
     int responseCode() const;
 
     /**
+     * Returns the mail queue ID the SMTP server last returned
+     */
+    QString mailQueueId() const;
+
+    /**
      * Returns the connection timeout when connecting to the SMTP server
      */
     int connectionTimeout() const;

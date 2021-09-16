@@ -67,6 +67,7 @@ public:
 
     QByteArray responseText;
     int responseCode = -1;
+    QString responseWithMailQueueId;
 };
 
 }
