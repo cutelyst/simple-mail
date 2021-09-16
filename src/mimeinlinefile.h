@@ -28,6 +28,7 @@ class SMTP_EXPORT MimeInlineFile : public MimeFile
 {
 public:
     MimeInlineFile(QFile *f);
+    MimeInlineFile(const QByteArray &stream, const QString &fileName, const QByteArray &mimeType = {});
     virtual ~MimeInlineFile();
 };
 
