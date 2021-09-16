@@ -26,6 +26,12 @@ MimeInlineFile::MimeInlineFile(QFile *f) : MimeFile(f)
     d->header.append(QByteArrayLiteral("Content-Disposition: inline\r\n"));
 }
 
+MimeInlineFile::MimeInlineFile(const QByteArray &stream, const QString &fileName, const QByteArray &mimeType) : MimeFile(stream, fileName, mimeType)
+{
+    Q_D(MimePart);
+    d->header.append(QByteArrayLiteral("Content-Disposition: inline\r\n"));
+}
+
 MimeInlineFile::~MimeInlineFile()
 {
 
