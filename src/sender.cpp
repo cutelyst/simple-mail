@@ -276,6 +276,9 @@ bool SenderPrivate::sendMail(const MimeMessage &email)
 {
     qCDebug(SIMPLEMAIL_SENDER) << "Sending MAIL" << this;
 
+    responseText.clear();
+    responseCode = -1;
+
     if (!processState()) {
         return false;
     }
