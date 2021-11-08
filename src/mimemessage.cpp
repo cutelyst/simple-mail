@@ -126,8 +126,7 @@ bool MimeMessage::write(QIODevice *device) const
         return false;
     }
 
-    // Send \r\n.\r\n to end the mail data
-    return device->write(QByteArrayLiteral("\r\n.\r\n")) == 5;
+    return true;
 }
 
 void MimeMessage::setSender(const EmailAddress &sender)
