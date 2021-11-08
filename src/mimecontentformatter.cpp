@@ -59,6 +59,12 @@ QByteArray MimeContentFormatter::formatQuotedPrintable(const QByteArray &content
             chars = 1;
         }
 
+        // dot stuffing: https://www.rfc-editor.org/rfc/rfc5321#section-4.5.2
+        if (chars == 1 && content[i] == '.') {
+            out.append('.');
+            chars++;
+        }
+
         out.append(content[i]);
     }
 
