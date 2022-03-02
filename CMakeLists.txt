@@ -77,11 +77,11 @@ include_directories(
 )
 
 # cmake config files
-configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config.cmake.in
+configure_file(${CMAKE_MODULE_PATH}/simplemailqt${QT_VERSION_MAJOR}-config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}Config.cmake
     @ONLY
 )
-configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config-version.cmake.in
+configure_file(${CMAKE_MODULE_PATH}/simplemailqt${QT_VERSION_MAJOR}-config-version.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}ConfigVersion.cmake
     @ONLY
 )
