@@ -4,7 +4,7 @@ project(libsimplemail VERSION 2.3.0 LANGUAGES CXX)
 include(GNUInstallDirs)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Network REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} 5.5.0 COMPONENTS Core Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Network REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 
