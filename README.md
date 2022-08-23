@@ -97,13 +97,13 @@ int main(int argc, char *argv[])
     message.setSubject("Testing Subject");
 
     // First we create a MimeText object.
-    SimpleMail::MimeText text;
+    auto text = new SimpleMail::MimeText;
 
     // Now add some text to the email.
-    text.setText("Hi,\nThis is a simple email message.\n");
+    text->setText("Hi,\nThis is a simple email message.\n");
 
     // Now add it to the mail
-    message.addPart(&text);
+    message.addPart(text);
 
     // Now we can send the mail
     sender.sendMail(message); // Blocks untill mail is delivered or errored
