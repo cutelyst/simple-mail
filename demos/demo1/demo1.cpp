@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
     auto text = new MimeText;
 
-    text.setText(QLatin1String("Hi,\nThis is a simple email message.\n"));
+    text->setText(QLatin1String("Hi,\nThis is a simple email message.\n"));
 
     // Now add it to the mail
 
