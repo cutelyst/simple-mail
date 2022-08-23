@@ -37,13 +37,13 @@ int main(int argc, char *argv[])
     // Now add some text to the email.
     // First we create a MimeText object.
 
-    MimeText text;
+    auto text = new MimeText;
 
     text.setText(QLatin1String("Hi,\nThis is a simple email message.\n"));
 
     // Now add it to the mail
 
-    message.addPart(&text);
+    message.addPart(text);
 
     // Now we can send the mail
     if (!smtp.sendMail(message)) {
