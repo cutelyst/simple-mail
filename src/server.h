@@ -17,10 +17,10 @@
 #define SERVER_H
 
 #include <QObject>
+#include <QSslError>
 
 #include "smtpexports.h"
 
-class QSslError;
 namespace SimpleMail {
 
 class MimeMessage;
