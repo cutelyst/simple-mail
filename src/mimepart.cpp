@@ -233,7 +233,8 @@ bool MimePart::write(QIODevice *device)
     // Content-Type
     headers.append("Content-Type: " + d->contentType);
     if (!d->contentName.isEmpty()) {
-        headers.append("; name=\"" + d->contentName + "\"");
+        //headers.append("; name=\"" + d->contentName + "\"");
+		headers.append("; name=\"?UTF-8?B?" + d->contentName.toBase64(QByteArray::Base64Encoding) + "?=\"");
     }
     if (!d->contentCharset.isEmpty()) {
         headers.append("; charset=" + d->contentCharset);
