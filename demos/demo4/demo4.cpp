@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
 
     // An unique content id must be setted
     image1.setContentId(QByteArrayLiteral("image1"));
-    image1.setContentType(QByteArrayLiteral("image/jpg"));
+    image1.setContentType(QByteArrayLiteral("image/jpeg"));
 
     MimeInlineFile image2 (new QFile(QLatin1String("image2.jpg")));
     image2.setContentId(QByteArrayLiteral("image2"));
-    image2.setContentType(QByteArrayLiteral("image/jpg"));
+    image2.setContentType(QByteArrayLiteral("image/jpeg"));
 
     message.addPart(&html);
     message.addPart(&image1);
