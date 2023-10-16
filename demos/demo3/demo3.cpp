@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     MimeAttachment attachment(new QFile(QLatin1String("image1.jpg")));
 
     // the file type can be setted. (by default is application/octet-stream)
-    attachment.setContentType(QByteArrayLiteral("image/jpg"));
+    attachment.setContentType(QByteArrayLiteral("image/jpeg"));
 
     // Now add it to message
     message.addPart(&attachment);
