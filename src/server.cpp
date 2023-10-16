@@ -290,7 +290,7 @@ void ServerPrivate::createSocket()
 
                         if (cont.awaitedCodes.isEmpty()) {
                             cont.state = ServerReplyContainer::SendingData;
-                            if (cont.msg.write(socket)) {
+                            if (cont.msg.write(socket) && socket->write(QByteArrayLiteral("\r\n.\r\n")) == 5) {
                                 qCDebug(SIMPLEMAIL_SERVER) << "Mail sent";
                             } else {
                                 qCCritical(SIMPLEMAIL_SERVER) << "Error writing mail";
