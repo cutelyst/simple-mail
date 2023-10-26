@@ -59,10 +59,6 @@ if (ENABLE_MAINTAINER_CFLAGS)
     )
 endif ()
 
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/SimpleMail
-)
-
 # cmake config files
 configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}Config.cmake
