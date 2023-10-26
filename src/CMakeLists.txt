@@ -103,7 +103,7 @@ install(TARGETS SimpleMail2Qt${QT_VERSION_MAJOR}
     PUBLIC_HEADER DESTINATION include/simplemail2-qt${QT_VERSION_MAJOR}/SimpleMail COMPONENT devel
 )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qt5.pc.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qtX.pc.in
   ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}.pc
   @ONLY
 )

@@ -5,7 +5,7 @@ The SimpleMail is small library writen for Qt 5 or 6 (C++11) that allows applica
 
 ## Features:
 
-- Blocking and Asyncronous modes
+- Asyncronous operation
 - SMTP pipelining
 - TCP and SSL connections to SMTP servers (STARTTLS included)
 - SMTP authentication (PLAIN, LOGIN, CRAM-MD5 methods)
@@ -19,8 +19,6 @@ The SimpleMail is small library writen for Qt 5 or 6 (C++11) that allows applica
 - output compilant with RFC2045
 
 ## Examples
-
-Async Exaplame:
 
 ```c++
 #include <QCoreApplication>
@@ -49,8 +47,7 @@ int main(int argc, char *argv[])
     message.setSubject("Testing Subject");
 
     // First we create a MimeText object.
-    // This must be created with new otherwise it will be deleted once we leave the scope.
-    auto text = new MimeText;
+    auto text = std::make_shared<MimeText>();
 
     // Now add some text to the email.
     text->setText("Hi,\nThis is a simple email message.\n");
@@ -68,45 +65,6 @@ int main(int argc, char *argv[])
     });
 
     app.exec();
-}
-```
-
-Blocking example:
-
-```c++
-#include <QCoreApplication>
-#include <SimpleMail/SimpleMail>
-
-int main(int argc, char *argv[])
-{
-    QCoreApplication app(argc, argv);
-
-    // First we need to create an Sender object
-    // We will use the Gmail's smtp server (smtp.gmail.com, port 465, ssl)
-    SimpleMail::Sender sender("smtp.gmail.com", 465, SimpleMail::Sender::SslConnection);
-
-    // We need to set the username (your email address) and the password
-    // for smtp authentification.
-    sender.setUser("your_email_address@gmail.com");
-    sender.setPassword("your_password");
-
-    // Now we create a MimeMessage object. This will be the email.
-    SimpleMail::MimeMessage message;
-    message.setSender(SimpleMail::EmailAddress("your_email_address@gmail.com", "Your Name"));
-    message.addTo(SimpleMail::EmailAddress("Recipient's Name <recipient@host.com>"));
-    message.setSubject("Testing Subject");
-
-    // First we create a MimeText object.
-    auto text = new SimpleMail::MimeText;
-
-    // Now add some text to the email.
-    text->setText("Hi,\nThis is a simple email message.\n");
-
-    // Now add it to the mail
-    message.addPart(text);
-
-    // Now we can send the mail
-    sender.sendMail(message); // Blocks untill mail is delivered or errored
 }
 ```
 

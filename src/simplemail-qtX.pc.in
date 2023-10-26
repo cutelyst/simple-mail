@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@/simplemail@PROJECT_VERSION_MAJOR@-qt@QT_VERSION_MAJOR@
+
+Name: simplemail@PROJECT_VERSION_MAJOR@-qt@QT_VERSION_MAJOR@
+Description: SimpleMail library for Qt@QT_VERSION_MAJOR@
+Version: @PROJECT_VERSION@
+Requires: Qt@QT_VERSION_MAJOR@Core
+Libs: -L${libdir} -lSimpleMail@PROJECT_VERSION_MAJOR@Qt@QT_VERSION_MAJOR@
+Cflags: -I${includedir}

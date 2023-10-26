@@ -1,6 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
+  Copyright (C) 2015-2023 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -14,9 +14,7 @@
 
   See the LICENSE file for more details.
 */
-
-#ifndef MIMEMULTIPART_H
-#define MIMEMULTIPART_H
+#pragma once
 
 #include <QtCore/QList>
 
@@ -53,5 +51,3 @@ protected:
 };
 
 }
-
-#endif // MIMEMULTIPART_H
