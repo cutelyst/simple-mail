@@ -45,22 +45,22 @@ int main(int argc, char *argv[])
     message.setSubject(QLatin1String("SmtpClient for Qt - Demo"));
 
     // Add some text
-    MimeText text;
-    text.setText(QLatin1String("Hi!\n This is an email with some attachments."));
-    message.addPart(&text);
+    auto text = std::make_shared<MimeText>();
+    text->setText(QLatin1String("Hi!\n This is an email with some attachments."));
+    message.addPart(text);
 
     // Now we create the attachment object
-    MimeAttachment attachment(std::make_shared<QFile>(QLatin1String("image1.jpg")));
+    auto attachment = std::make_shared<MimeAttachment>(std::make_shared<QFile>(QLatin1String("image1.jpg")));
 
     // the file type can be setted. (by default is application/octet-stream)
-    attachment.setContentType(QByteArrayLiteral("image/jpeg"));
+    attachment->setContentType(QByteArrayLiteral("image/jpeg"));
 
     // Now add it to message
-    message.addPart(&attachment);
+    message.addPart(attachment);
 
     // Add an another attachment
-    MimeAttachment document(std::make_shared<QFile>(QLatin1String("document.pdf")));
-    message.addPart(&document);
+    auto document = std::make_shared<MimeAttachment>(std::make_shared<QFile>(QLatin1String("document.pdf")));
+    message.addPart(document);
 
     // Now we can send the mail
     ServerReply *reply = server.sendMail(message);

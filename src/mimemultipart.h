@@ -45,8 +45,8 @@ public:
     void setMimeType(const MultiPartType type);
     MultiPartType mimeType() const;
 
-    QList<MimePart *> parts() const;
-    void addPart(MimePart *part);
+    QList<std::shared_ptr<MimePart> > parts() const;
+    void addPart(const std::shared_ptr<MimePart> &part);
 
 protected:
     virtual bool writeData(QIODevice *device) Q_DECL_FINAL;

@@ -27,7 +27,7 @@ namespace SimpleMail {
 class SMTP_EXPORT MimeText : public MimePart
 {
 public:
-    MimeText(const QString &text = QString());
+    MimeText(const QString &text = {});
     virtual ~MimeText();
 
     void setText(const QString &text);

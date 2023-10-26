@@ -33,7 +33,7 @@ using namespace SimpleMail;
 MimeMessage::MimeMessage(bool createAutoMimeContent) : d(new MimeMessagePrivate)
 {
     if (createAutoMimeContent) {
-        d->content = new MimeMultiPart();
+        d->content = std::make_shared<MimeMultiPart>();
     }
 
     d->autoMimeContentCreated = createAutoMimeContent;
@@ -60,11 +60,11 @@ MimePart& MimeMessage::getContent()
     return *d->content;
 }
 
-void MimeMessage::setContent(MimePart *content)
+void MimeMessage::setContent(const std::shared_ptr<MimePart> &content)
 {
     if (d->autoMimeContentCreated) {
-      d->autoMimeContentCreated = false;
-      delete d->content;
+        // TODO remove??
+        d->autoMimeContentCreated = false;
     }
     d->content = content;
 }
@@ -184,11 +184,11 @@ void MimeMessage::setSubject(const QString &subject)
     d->subject = subject;
 }
 
-void MimeMessage::addPart(MimePart *part)
+void MimeMessage::addPart(const std::shared_ptr<MimePart> &part)
 {
     auto content = d->content;
     if (typeid(*content) == typeid(MimeMultiPart)) {
-        static_cast<MimeMultiPart*>(d->content)->addPart(part);
+        std::static_pointer_cast<MimeMultiPart>(d->content)->addPart(part);
     }
 }
 
@@ -222,23 +222,20 @@ QString MimeMessage::subject() const
     return d->subject;
 }
 
-QList<MimePart*> MimeMessage::parts() const
+QList<std::shared_ptr<MimePart>> MimeMessage::parts() const
 {
-    QList<MimePart*> ret;
+    QList<std::shared_ptr<MimePart>> ret;
     auto content = d->content;
     if (typeid(*content) == typeid(MimeMultiPart)) {
-        ret = static_cast<MimeMultiPart*>(d->content)->parts();
+        ret = std::static_pointer_cast<MimeMultiPart>(d->content)->parts();
     } else {
-        ret.append(d->content);
+        ret.append(std::shared_ptr<MimePart>(d->content));
     }
 
     return ret;
 }
 
-MimeMessagePrivate::~MimeMessagePrivate()
-{
-    delete content;
-}
+MimeMessagePrivate::~MimeMessagePrivate() = default;
 
 QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec)
 {

@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     // Now add some text to the email.
     // First we create a MimeText object.
 
-    auto text = new MimeText;
+    auto text = std::make_shared<MimeText>();
 
     text->setText(QLatin1String("Hi,\nThis is a simple email message.\n"));
 

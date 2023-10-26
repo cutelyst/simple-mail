@@ -54,7 +54,7 @@ public:
     void addBcc(const EmailAddress &rcpt);
 
     void setSubject(const QString &subject);
-    void addPart(MimePart* part);
+    void addPart(const std::shared_ptr<MimePart> &part);
 
     void setHeaderEncoding(MimePart::Encoding);
 
@@ -65,10 +65,10 @@ public:
     EmailAddress replyTo() const;
 
     QString subject() const;
-    QList<MimePart *> parts() const;
+    QList<std::shared_ptr<MimePart> > parts() const;
 
     MimePart& getContent();
-    void setContent(MimePart *content);
+    void setContent(const std::shared_ptr<MimePart> &content);
 
     bool write(QIODevice *device) const;
 

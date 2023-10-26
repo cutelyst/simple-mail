@@ -45,29 +45,29 @@ int main(int argc, char *argv[])
     message.setSubject(QLatin1String("SmtpClient for Qt - Example 4 - Html email with images"));
 
     // Now we need to create a MimeHtml object for HTML content
-    MimeHtml html;
+    auto html = std::make_shared<MimeHtml>();
 
-    html.setHtml(QLatin1String("<h1> Hello! </h1>"
-                               "<h2> This is the first image </h2>"
-                               "<img src='cid:image1' />"
-                               "<h2> This is the second image </h2>"
-                               "<img src='cid:image2' />"));
+    html->setHtml(QLatin1String("<h1> Hello! </h1>"
+                                "<h2> This is the first image </h2>"
+                                "<img src='cid:image1' />"
+                                "<h2> This is the second image </h2>"
+                                "<img src='cid:image2' />"));
 
 
     // Create a MimeInlineFile object for each image
-    MimeInlineFile image1 (std::make_shared<QFile>(QLatin1String("image1.jpg")));
+    auto image1 = std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image1.jpg")));
 
     // An unique content id must be setted
-    image1.setContentId(QByteArrayLiteral("image1"));
-    image1.setContentType(QByteArrayLiteral("image/jpeg"));
+    image1->setContentId(QByteArrayLiteral("image1"));
+    image1->setContentType(QByteArrayLiteral("image/jpeg"));
 
-    MimeInlineFile image2 (std::make_shared<QFile>(QLatin1String("image2.jpg")));
-    image2.setContentId(QByteArrayLiteral("image2"));
-    image2.setContentType(QByteArrayLiteral("image/jpeg"));
+    auto image2 = std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image2.jpg")));
+    image2->setContentId(QByteArrayLiteral("image2"));
+    image2->setContentType(QByteArrayLiteral("image/jpeg"));
 
-    message.addPart(&html);
-    message.addPart(&image1);
-    message.addPart(&image2);
+    message.addPart(html);
+    message.addPart(image1);
+    message.addPart(image2);
 
     // Now we can send the mail
     ServerReply *reply = server.sendMail(message);

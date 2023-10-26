@@ -66,13 +66,13 @@ void SendEmail::on_sendEmail_clicked()
         message.addTo(to);
     }
 
-    auto content = new MimeHtml;
+    auto content = std::make_shared<MimeHtml>();
     content->setHtml(ui->texteditor->toHtml());
 
     message.addPart(content);
 
     for (int i = 0; i < ui->attachments->count(); ++i) {
-        message.addPart(new MimeAttachment(std::make_shared<QFile>(ui->attachments->item(i)->text())));
+        message.addPart(std::make_shared<MimeAttachment>(std::make_shared<QFile>(ui->attachments->item(i)->text())));
     }
 
     m_settings.setValue(QStringLiteral("host"), ui->host->text());
