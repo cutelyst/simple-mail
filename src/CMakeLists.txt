@@ -46,7 +46,7 @@ set(simplemailqt_HEADERS_PRIVATE
 #     common.h
 )
 
-add_library(SimpleMail2Qt${QT_VERSION_MAJOR} SHARED
+add_library(SimpleMail2Qt${QT_VERSION_MAJOR}
     ${simplemailqt_SRC}
     ${simplemailqt_HEADERS}
     ${simplemailqt_HEADERS_PRIVATE}
@@ -73,6 +73,13 @@ target_compile_definitions(SimpleMail2Qt${QT_VERSION_MAJOR}
     QT_USE_FAST_OPERATOR_PLUS
     QT_DISABLE_DEPRECATED_BEFORE=0x050f00
 )
+
+if (NOT BUILD_SHARED_LIBS)
+    target_compile_definitions(SimpleMail2Qt${QT_VERSION_MAJOR}
+      PRIVATE
+        SIMPLE_MAIL_QT_STATIC
+    )
+endif ()
 
 target_include_directories(SimpleMail2Qt${QT_VERSION_MAJOR} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

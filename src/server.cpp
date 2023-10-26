@@ -558,11 +558,13 @@ bool ServerPrivate::parseResponseCode(int expectedCode, Server::SmtpError defaul
     if (responseCode / 100 == 4) {
         //        lastError = QString::fromLatin1(responseText);
         Q_EMIT q->smtpError(Server::ServerError, QString::fromLatin1(responseText));
+        return false;
     }
 
     if (responseCode / 100 == 5) {
         //        lastError = QString::fromLatin1(responseText);
         Q_EMIT q->smtpError(Server::ClientError, QString::fromLatin1(responseText));
+        return false;
     }
 
     if (responseText[3] == ' ') {

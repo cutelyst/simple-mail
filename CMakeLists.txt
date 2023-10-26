@@ -3,7 +3,9 @@ project(libsimplemail VERSION 2.3.0 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Network REQUIRED)
+if (NOT DEFINED QT_VERSION_MAJOR)
+    find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Network REQUIRED)
+endif ()
 find_package(Qt${QT_VERSION_MAJOR} 5.5.0 COMPONENTS Core Network REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
@@ -42,8 +44,6 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX
     "/usr" CACHE PATH "simplemail default install prefix" FORCE)
 endif()
-
-add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
 
 set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_LIBRARY_ARCHITECTURE}" CACHE PATH "Output directory for libraries")
 

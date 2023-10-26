@@ -199,7 +199,7 @@ void MimeMessage::setHeaderEncoding(MimePart::Encoding hEnc)
 
 void MimeMessage::addHeader(const QByteArray &headerName, const QByteArray &headerValue)
 {
-    d->listExtraHeaders.append(headerName + ":" + headerValue);
+    d->listExtraHeaders.append(headerName + ": " + headerValue);
 }
 
 QList<QByteArray> MimeMessage::getHeaders() const
