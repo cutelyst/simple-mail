@@ -55,13 +55,13 @@ int main(int argc, char *argv[])
 
 
     // Create a MimeInlineFile object for each image
-    MimeInlineFile image1 (new QFile(QLatin1String("image1.jpg")));
+    MimeInlineFile image1 (std::make_shared<QFile>(QLatin1String("image1.jpg")));
 
     // An unique content id must be setted
     image1.setContentId(QByteArrayLiteral("image1"));
     image1.setContentType(QByteArrayLiteral("image/jpeg"));
 
-    MimeInlineFile image2 (new QFile(QLatin1String("image2.jpg")));
+    MimeInlineFile image2 (std::make_shared<QFile>(QLatin1String("image2.jpg")));
     image2.setContentId(QByteArrayLiteral("image2"));
     image2.setContentType(QByteArrayLiteral("image/jpeg"));
 

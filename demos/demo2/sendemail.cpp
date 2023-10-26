@@ -72,7 +72,7 @@ void SendEmail::on_sendEmail_clicked()
     message.addPart(content);
 
     for (int i = 0; i < ui->attachments->count(); ++i) {
-        message.addPart(new MimeAttachment(new QFile(ui->attachments->item(i)->text())));
+        message.addPart(new MimeAttachment(std::make_shared<QFile>(ui->attachments->item(i)->text())));
     }
 
     m_settings.setValue(QStringLiteral("host"), ui->host->text());

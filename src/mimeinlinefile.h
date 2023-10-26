@@ -27,7 +27,7 @@ namespace SimpleMail {
 class SMTP_EXPORT MimeInlineFile : public MimeFile
 {
 public:
-    MimeInlineFile(QFile *f);
+    MimeInlineFile(const std::shared_ptr<QFile> &file);
     MimeInlineFile(const QByteArray &stream, const QString &fileName, const QByteArray &mimeType = {});
     virtual ~MimeInlineFile();
 };
