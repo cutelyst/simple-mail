@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(libsimplemail VERSION 2.3.0 LANGUAGES CXX)
+project(libsimplemail VERSION 2.99.0 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 

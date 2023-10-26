@@ -45,7 +45,6 @@ private Q_SLOTS:
 
     void on_sendEmail_clicked();
     void sendMailAsync(const MimeMessage &msg);
-    void sendMailSync(const MimeMessage &msg);
 
 private:
     QSettings m_settings;

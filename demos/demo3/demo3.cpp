@@ -22,14 +22,15 @@ using namespace SimpleMail;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
 
-    // First create the SmtpClient object and set the user and the password.
+    Server server;
+    server.setHost(QLatin1String("smtp.gmail.com"));
+    server.setPort(465);
+    server.setConnectionType(Server::SslConnection);
 
-    Sender smtp(QLatin1String("smtp.gmail.com"), 465, Sender::SslConnection);
-
-    smtp.setUser(QLatin1String("your_email@host.com"));
-    smtp.setPassword(QLatin1String("your_password"));
+    server.setUsername(QLatin1String("your_email@host.com"));
+    server.setPassword(QLatin1String("your_password"));
 
     // Create a MimeMessage
 
@@ -62,10 +63,12 @@ int main(int argc, char *argv[])
     message.addPart(&document);
 
     // Now we can send the mail
-    if (!smtp.sendMail(message)) {
-        qDebug() << "Failed to send mail!" << smtp.lastError();
-        return -3;
-    }
+    ServerReply *reply = server.sendMail(message);
+    QObject::connect(reply, &ServerReply::finished, [=] {
+        qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
+        reply->deleteLater();
+        qApp->exit(reply->error() ? -3 : 0);
+    });
 
-    smtp.quit();
+    app.exec();
 }
