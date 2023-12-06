@@ -20,6 +20,7 @@
 #include <QFileDialog>
 #include <QErrorMessage>
 #include <QMessageBox>
+#include <QDebug>
 
 #include "server.h"
 #include "serverreply.h"

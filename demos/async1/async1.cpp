@@ -1,5 +1,8 @@
 #include <QCoreApplication>
+#include <QDebug>
+
 #include "../../src/SimpleMail"
+
 
 int main(int argc, char *argv[])
 {
