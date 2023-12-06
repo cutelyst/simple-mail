@@ -6,21 +6,18 @@ using namespace SimpleMail;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
 
-    // This is a first demo application of the SmtpClient for Qt project
-
-
-    // First we need to create an SmtpClient object
+    // First we need to create a Server object
     // We will use the Gmail's smtp server (smtp.gmail.com, port 465, ssl)
 
-    Sender smtp(QLatin1String("smtp.gmail.com"), 465, Sender::SslConnection);
+    Server server;
+    server.setHost(QLatin1String("smtp.gmail.com"));
+    server.setPort(465);
+    server.setConnectionType(Server::SslConnection);
 
-    // We need to set the username (your email address) and password
-    // for smtp authentification.
-
-    smtp.setUser(QLatin1String("your_email_address@host.com"));
-    smtp.setPassword(QLatin1String("your_password"));
+    server.setUsername(QLatin1String("your_email@host.com"));
+    server.setPassword(QLatin1String("your_password"));
 
     // Now we create a MimeMessage object. This is the email.
 
@@ -37,7 +34,7 @@ int main(int argc, char *argv[])
     // Now add some text to the email.
     // First we create a MimeText object.
 
-    auto text = new MimeText;
+    auto text = std::make_shared<MimeText>();
 
     text->setText(QLatin1String("Hi,\nThis is a simple email message.\n"));
 
@@ -46,10 +43,12 @@ int main(int argc, char *argv[])
     message.addPart(text);
 
     // Now we can send the mail
-    if (!smtp.sendMail(message)) {
-        qDebug() << "Failed to send mail!" << smtp.lastError();
-        return -3;
-    }
+    ServerReply *reply = server.sendMail(message);
+    QObject::connect(reply, &ServerReply::finished, [=] {
+        qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
+        reply->deleteLater();
+        qApp->exit(reply->error() ? -3 : 0);
+    });
 
-    smtp.quit();
+    app.exec();
 }

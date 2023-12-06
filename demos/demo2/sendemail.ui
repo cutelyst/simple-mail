@@ -123,7 +123,6 @@
     <widget class="QLabel" name="label_7">
      <property name="font">
       <font>
-       <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
@@ -245,17 +244,10 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="6" column="0" colspan="2">
     <widget class="QPushButton" name="sendEmail">
      <property name="text">
       <string>Send Email</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QCheckBox" name="asyncCB">
-     <property name="text">
-      <string>Async</string>
      </property>
     </widget>
    </item>

@@ -24,11 +24,14 @@
 
 using namespace SimpleMail;
 
-MimeFile::MimeFile(QFile *file)
+MimeFile::MimeFile(const std::shared_ptr<QFile> &file)
 {
     Q_D(MimePart);
     d->contentEncoding = Base64;
     d->contentDevice = file;
+    if (file) {
+        file->setParent(nullptr);
+    }
 
     const QString filename = QFileInfo(*file).fileName();
     d->contentName = filename.toLatin1();

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 Daniel Nicoletti <dantti12@gmail.com>
+  Copyright (C) 2019-2023 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -13,14 +13,18 @@
 
   See the LICENSE file for more details.
 */
-#ifndef SERVER_H
-#define SERVER_H
+#pragma once
 
 #include <QObject>
 
+#include <QtNetwork/qtnetwork-config.h>
+
 #include "smtpexports.h"
 
+#ifndef QT_NO_SSL
 class QSslError;
+#endif
+
 namespace SimpleMail {
 
 class MimeMessage;
@@ -54,8 +58,10 @@ public:
     enum ConnectionType
     {
         TcpConnection,
+#ifndef QT_NO_SSL
         SslConnection,
         TlsConnection,     // STARTTLS
+#endif
     };
     Q_ENUM(ConnectionType)
 
@@ -167,6 +173,7 @@ public:
      */
     void connectToServer();
 
+#ifndef QT_NO_SSL
     /**
      * @brief ignoreSslErrors tells the socket to ignore all pending ssl errors if SSL encryption is active.
      *      Must be called in a direct connected slot/functor
@@ -178,15 +185,16 @@ public:
      * @param errors defines the errors to ignore
      */
     void ignoreSslErrors(const QList<QSslError> &errors);
+#endif
 
 Q_SIGNALS:
     void smtpError(SmtpError e, const QString &description);
+#ifndef QT_NO_SSL
     void sslErrors(const QList<QSslError> &sslErrorList);
+#endif
 
 private:
     ServerPrivate *d_ptr;
 };
 
 }
-
-#endif // SERVER_H

@@ -14,8 +14,6 @@ set(simplemailqt_SRC
     mimepart_p.h
     mimetext.cpp
     quotedprintable.cpp
-    sender.cpp
-    sender_p.h
     server.cpp
     server_p.h
     serverreply.cpp
@@ -35,7 +33,6 @@ set(simplemailqt_HEADERS
     mimepart.h
     mimetext.h
     quotedprintable.h
-    sender.h
     server.h
     serverreply.h
     smtpexports.h
@@ -46,7 +43,7 @@ set(simplemailqt_HEADERS_PRIVATE
 #     common.h
 )
 
-add_library(SimpleMail2Qt${QT_VERSION_MAJOR} SHARED
+add_library(SimpleMail2Qt${QT_VERSION_MAJOR}
     ${simplemailqt_SRC}
     ${simplemailqt_HEADERS}
     ${simplemailqt_HEADERS_PRIVATE}
@@ -74,6 +71,13 @@ target_compile_definitions(SimpleMail2Qt${QT_VERSION_MAJOR}
     QT_DISABLE_DEPRECATED_BEFORE=0x050f00
 )
 
+if (NOT BUILD_SHARED_LIBS)
+    target_compile_definitions(SimpleMail2Qt${QT_VERSION_MAJOR}
+      PRIVATE
+        SIMPLE_MAIL_QT_STATIC
+    )
+endif ()
+
 target_include_directories(SimpleMail2Qt${QT_VERSION_MAJOR} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include/simplemail2-qt${QT_VERSION_MAJOR}>
@@ -99,7 +103,7 @@ install(TARGETS SimpleMail2Qt${QT_VERSION_MAJOR}
     PUBLIC_HEADER DESTINATION include/simplemail2-qt${QT_VERSION_MAJOR}/SimpleMail COMPONENT devel
 )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qt5.pc.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/simplemail-qtX.pc.in
   ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}.pc
   @ONLY
 )

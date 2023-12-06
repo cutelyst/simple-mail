@@ -22,14 +22,15 @@ using namespace SimpleMail;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
 
-    // First create the SmtpClient object and set the user and the password.
+    Server server;
+    server.setHost(QLatin1String("smtp.gmail.com"));
+    server.setPort(465);
+    server.setConnectionType(Server::SslConnection);
 
-    Sender smtp(QLatin1String("smtp.gmail.com"), 465, Sender::SslConnection);
-
-    smtp.setUser(QLatin1String("your_email@host.com"));
-    smtp.setPassword(QLatin1String("your_password"));
+    server.setUsername(QLatin1String("your_email@host.com"));
+    server.setPassword(QLatin1String("your_password"));
 
     // Create a MimeMessage
 
@@ -44,36 +45,37 @@ int main(int argc, char *argv[])
     message.setSubject(QLatin1String("SmtpClient for Qt - Example 4 - Html email with images"));
 
     // Now we need to create a MimeHtml object for HTML content
-    MimeHtml html;
+    auto html = std::make_shared<MimeHtml>();
 
-    html.setHtml(QLatin1String("<h1> Hello! </h1>"
-                               "<h2> This is the first image </h2>"
-                               "<img src='cid:image1' />"
-                               "<h2> This is the second image </h2>"
-                               "<img src='cid:image2' />"));
+    html->setHtml(QLatin1String("<h1> Hello! </h1>"
+                                "<h2> This is the first image </h2>"
+                                "<img src='cid:image1' />"
+                                "<h2> This is the second image </h2>"
+                                "<img src='cid:image2' />"));
 
 
     // Create a MimeInlineFile object for each image
-    MimeInlineFile image1 (new QFile(QLatin1String("image1.jpg")));
+    auto image1 = std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image1.jpg")));
 
     // An unique content id must be setted
-    image1.setContentId(QByteArrayLiteral("image1"));
-    image1.setContentType(QByteArrayLiteral("image/jpg"));
+    image1->setContentId(QByteArrayLiteral("image1"));
+    image1->setContentType(QByteArrayLiteral("image/jpeg"));
 
-    MimeInlineFile image2 (new QFile(QLatin1String("image2.jpg")));
-    image2.setContentId(QByteArrayLiteral("image2"));
-    image2.setContentType(QByteArrayLiteral("image/jpg"));
+    auto image2 = std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image2.jpg")));
+    image2->setContentId(QByteArrayLiteral("image2"));
+    image2->setContentType(QByteArrayLiteral("image/jpeg"));
 
-    message.addPart(&html);
-    message.addPart(&image1);
-    message.addPart(&image2);
+    message.addPart(html);
+    message.addPart(image1);
+    message.addPart(image2);
 
-    // Now the email can be sended
-    if (!smtp.sendMail(message)) {
-        qDebug() << "Failed to send mail!" << smtp.lastError();
-        return -3;
-    }
+    // Now we can send the mail
+    ServerReply *reply = server.sendMail(message);
+    QObject::connect(reply, &ServerReply::finished, [=] {
+        qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
+        reply->deleteLater();
+        qApp->exit(reply->error() ? -3 : 0);
+    });
 
-    smtp.quit();
-
+    app.exec();
 }

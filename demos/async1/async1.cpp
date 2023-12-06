@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     // First we create a MimeText object.
     // This must be created with new otherwise it will be deleted once we leave the scope.
-    auto text = new SimpleMail::MimeText;
+    auto text = std::make_shared<SimpleMail::MimeText>();
 
     // Now add some text to the email.
     text->setText(QLatin1String("Hi,\nThis is a simple email message.\n"));

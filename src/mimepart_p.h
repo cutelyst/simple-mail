@@ -35,7 +35,7 @@ public:
     bool writeQuotedPrintable(QIODevice *input, QIODevice *out);
 
     QByteArray header;
-    QIODevice *contentDevice = nullptr;
+    std::shared_ptr<QIODevice> contentDevice;
 
     QByteArray contentId;
     QByteArray contentName;

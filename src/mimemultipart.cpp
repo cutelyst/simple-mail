@@ -47,13 +47,13 @@ MimeMultiPart::~MimeMultiPart()
 
 }
 
-void MimeMultiPart::addPart(MimePart *part)
+void MimeMultiPart::addPart(const std::shared_ptr<SimpleMail::MimePart> &part)
 {
     Q_D(MimePart);
     static_cast<MimeMultiPartPrivate*>(d)->parts.append(part);
 }
 
-QList<MimePart*> MimeMultiPart::parts() const
+QList<std::shared_ptr<MimePart>> MimeMultiPart::parts() const
 {
     Q_D(const MimePart);
     return static_cast<const MimeMultiPartPrivate*>(d)->parts;
@@ -64,7 +64,7 @@ bool MimeMultiPart::writeData(QIODevice *device)
     Q_D(MimePart);
 
     const auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
-    for (MimePart *part : parts) {
+    for (const auto &part : parts) {
         device->write("--" + d->contentBoundary + "\r\n");
         if (!part->write(device)) {
             return false;
@@ -88,7 +88,4 @@ MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const
     return static_cast<const MimeMultiPartPrivate*>(d)->type;
 }
 
-MimeMultiPartPrivate::~MimeMultiPartPrivate()
-{
-    qDeleteAll(parts);
-}
+MimeMultiPartPrivate::~MimeMultiPartPrivate() = default;

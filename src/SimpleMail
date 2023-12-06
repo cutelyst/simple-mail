@@ -15,10 +15,8 @@
 
   See the LICENSE file for more details.
 */
-#ifndef SIMPLEMAIL_H
-#define SIMPLEMAIL_H
+#pragma once
 
-#include "sender.h"
 #include "mimepart.h"
 #include "mimehtml.h"
 #include "mimeattachment.h"
@@ -28,5 +26,3 @@
 #include "mimefile.h"
 #include "server.h"
 #include "serverreply.h"
-
-#endif // SIMPLEMAIL_H

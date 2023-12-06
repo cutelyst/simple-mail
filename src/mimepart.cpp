@@ -33,10 +33,7 @@ MimePart::MimePart(const MimePart &other)
     Q_D(MimePart);
     d->contentCharset = other.charset();
 
-    if (d->contentDevice) {
-        delete d->contentDevice;
-    }
-    d->contentDevice = new QBuffer;
+    d->contentDevice = std::make_shared<QBuffer>();
     d->contentDevice->open(QBuffer::ReadWrite);
     d->contentDevice->write(other.content());
 
@@ -56,10 +53,7 @@ MimePart &MimePart::operator=(const MimePart &other)
     Q_D(MimePart);
     d->contentCharset = other.charset();
 
-    if (d->contentDevice) {
-        delete d->contentDevice;
-    }
-    d->contentDevice = new QBuffer;
+    d->contentDevice = std::make_unique<QBuffer>();
     d->contentDevice->open(QBuffer::ReadWrite);
     d->contentDevice->write(other.content());
 
@@ -75,10 +69,8 @@ MimePart &MimePart::operator=(const MimePart &other)
 void MimePart::setContent(const QByteArray &content)
 {
     Q_D(MimePart);
-    if (d->contentDevice) {
-        delete d->contentDevice;
-    }
-    d->contentDevice = new QBuffer;
+
+    d->contentDevice = std::make_unique<QBuffer>();
     d->contentDevice->open(QBuffer::ReadWrite);
     d->contentDevice->write(content);
 }
@@ -174,10 +166,7 @@ void MimePart::setData(const QString &data)
 {
     Q_D(MimePart);
 
-    if (d->contentDevice) {
-        delete d->contentDevice;
-    }
-    d->contentDevice = new QBuffer;
+    d->contentDevice = std::make_unique<QBuffer>();
     d->contentDevice->open(QBuffer::ReadWrite);
 
     switch (d->contentEncoding) {
@@ -233,8 +222,7 @@ bool MimePart::write(QIODevice *device)
     // Content-Type
     headers.append("Content-Type: " + d->contentType);
     if (!d->contentName.isEmpty()) {
-        //headers.append("; name=\"" + d->contentName + "\"");
-		headers.append("; name=\"?UTF-8?B?" + d->contentName.toBase64(QByteArray::Base64Encoding) + "?=\"");
+        headers.append("; name=\"?UTF-8?B?" + d->contentName.toBase64(QByteArray::Base64Encoding) + "?=\"");
     }
     if (!d->contentCharset.isEmpty()) {
         headers.append("; charset=" + d->contentCharset);
@@ -287,7 +275,7 @@ bool MimePart::writeData(QIODevice *device)
     Q_D(MimePart);
 
     /* === Content === */
-    QIODevice *input = d->contentDevice;
+    QIODevice *input = d->contentDevice.get();
     if (!input->isOpen()) {
         if (!input->open(QIODevice::ReadOnly)) {
             return false;
@@ -327,10 +315,7 @@ MimePartPrivate *MimePart::d_func()
     return d_ptr.data();
 }
 
-MimePartPrivate::~MimePartPrivate()
-{
-    delete contentDevice;
-}
+MimePartPrivate::~MimePartPrivate() = default;
 
 bool MimePartPrivate::writeRaw(QIODevice *input, QIODevice *out)
 {

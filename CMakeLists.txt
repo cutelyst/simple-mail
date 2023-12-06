@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.9)
-project(libsimplemail VERSION 2.3.0 LANGUAGES CXX)
+project(libsimplemail VERSION 2.99.0 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Network REQUIRED)
+if (NOT DEFINED QT_VERSION_MAJOR)
+    find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Network REQUIRED)
+endif ()
 find_package(Qt${QT_VERSION_MAJOR} 5.5.0 COMPONENTS Core Network REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
@@ -43,8 +45,6 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     "/usr" CACHE PATH "simplemail default install prefix" FORCE)
 endif()
 
-add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
-
 set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_LIBRARY_ARCHITECTURE}" CACHE PATH "Output directory for libraries")
 
 option(BUILD_DEMOS "Build the demos" ON)
@@ -59,22 +59,18 @@ if (ENABLE_MAINTAINER_CFLAGS)
     )
 endif ()
 
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/SimpleMail
-)
-
 # cmake config files
-configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}Config.cmake
+configure_file(${CMAKE_MODULE_PATH}/simplemailqtX-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}Config.cmake
     @ONLY
 )
-configure_file(${CMAKE_MODULE_PATH}/simplemailqt5-config-version.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}ConfigVersion.cmake
+configure_file(${CMAKE_MODULE_PATH}/simplemailqtX-config-version.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}ConfigVersion.cmake
     @ONLY
 )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}Config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail2Qt${QT_VERSION_MAJOR}ConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMail2Qt${QT_VERSION_MAJOR}/
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}ConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}/
 )
 
 install(EXPORT SimpleMailTargets
@@ -90,4 +86,3 @@ if (BUILD_DEMOS)
 endif ()
 
 include(CPackConfig)
-

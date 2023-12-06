@@ -165,6 +165,7 @@ void Server::connectToServer()
         d->socket->connectToHost(d->host, d->port);
         d->state = ServerPrivate::Connecting;
         break;
+#ifndef QT_NO_SSL
     case Server::SslConnection:
     {
         auto sslSock = qobject_cast<QSslSocket*>(d->socket);
@@ -176,10 +177,14 @@ void Server::connectToServer()
             return /*false*/;
         }
     }
+#else
+        qCDebug(SIMPLEMAIL_SERVER) << "Impossible to connected to host encrypted QT_NO_SSL is defined";
+#endif
         break;
     }
 }
 
+#ifndef QT_NO_SSL
 void Server::ignoreSslErrors()
 {
     Q_D(Server);
@@ -197,6 +202,7 @@ void Server::ignoreSslErrors(const QList<QSslError> &errors)
         sslSock->ignoreSslErrors(errors);
     }
 }
+#endif
 
 void ServerPrivate::createSocket()
 {
@@ -212,10 +218,14 @@ void ServerPrivate::createSocket()
         break;
     case Server::SslConnection:
     case Server::TlsConnection:
+#ifndef QT_NO_SSL
         socket = new QSslSocket(q);
         setPeerVerificationType(peerVerificationType);
         q->connect(static_cast<QSslSocket*>(socket), static_cast<void(QSslSocket::*)(const QList<QSslError> &)>(&QSslSocket::sslErrors),
                    q, &Server::sslErrors, Qt::DirectConnection);
+#else
+        qFatal("QT_NO_SSL defined, can't send emails");
+#endif
     }
     q->connect(socket, &QTcpSocket::stateChanged, q, [=] (QAbstractSocket::SocketState sockState) {
         qCDebug(SIMPLEMAIL_SERVER) << "stateChanged" << sockState << socket->readAll();
@@ -290,7 +300,7 @@ void ServerPrivate::createSocket()
 
                         if (cont.awaitedCodes.isEmpty()) {
                             cont.state = ServerReplyContainer::SendingData;
-                            if (cont.msg.write(socket)) {
+                            if (cont.msg.write(socket) && socket->write(QByteArrayLiteral("\r\n.\r\n")) == 5) {
                                 qCDebug(SIMPLEMAIL_SERVER) << "Mail sent";
                             } else {
                                 qCCritical(SIMPLEMAIL_SERVER) << "Error writing mail";
@@ -331,6 +341,7 @@ void ServerPrivate::createSocket()
                 if (ret != 0 && ret == 1) {
                     qCDebug(SIMPLEMAIL_SERVER) << "CAPS" << caps;
                     capPipelining = caps.contains(QStringLiteral("250-PIPELINING"));
+#ifndef QT_NO_SSL
                     if (connectionType == Server::TlsConnection) {
                         auto sslSocket = qobject_cast<QSslSocket*>(socket);
                         if (sslSocket) {
@@ -345,6 +356,9 @@ void ServerPrivate::createSocket()
                     } else {
                         login();
                     }
+#else
+                    login();
+#endif
                     break;
                 } else if (ret == -1) {
                     break;
@@ -354,6 +368,7 @@ void ServerPrivate::createSocket()
         case WaitingForServerStartTls_220:
             if (socket->canReadLine()) {
                 if (parseResponseCode(220)) {
+#ifndef QT_NO_SSL
                     auto sslSock = qobject_cast<QSslSocket *>(socket);
                     if (sslSock) {
                         qCDebug(SIMPLEMAIL_SERVER) << "Starting client encryption";
@@ -364,6 +379,7 @@ void ServerPrivate::createSocket()
                         state = WaitingForServerCaps250;
                         caps.clear();
                     }
+#endif
                 }
             }
             break;
@@ -442,6 +458,7 @@ void ServerPrivate::createSocket()
 void ServerPrivate::setPeerVerificationType(const Server::PeerVerificationType &type)
 {
     peerVerificationType = type;
+#ifndef QT_NO_SSL
     if (socket != Q_NULLPTR)
     {
         if (connectionType == Server::SslConnection || connectionType == Server::TlsConnection)
@@ -457,6 +474,7 @@ void ServerPrivate::setPeerVerificationType(const Server::PeerVerificationType &
             }
         }
     }
+#endif
 }
 
 void ServerPrivate::login()
@@ -558,11 +576,13 @@ bool ServerPrivate::parseResponseCode(int expectedCode, Server::SmtpError defaul
     if (responseCode / 100 == 4) {
         //        lastError = QString::fromLatin1(responseText);
         Q_EMIT q->smtpError(Server::ServerError, QString::fromLatin1(responseText));
+        return false;
     }
 
     if (responseCode / 100 == 5) {
         //        lastError = QString::fromLatin1(responseText);
         Q_EMIT q->smtpError(Server::ClientError, QString::fromLatin1(responseText));
+        return false;
     }
 
     if (responseText[3] == ' ') {

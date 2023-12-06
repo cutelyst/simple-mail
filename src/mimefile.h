@@ -1,6 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
+  Copyright (C) 2015-2023 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -14,9 +14,7 @@
 
   See the LICENSE file for more details.
 */
-
-#ifndef MIMEFILE_H
-#define MIMEFILE_H
+#pragma once
 
 #include "mimepart.h"
 #include <QFile>
@@ -30,10 +28,8 @@ class SMTP_EXPORT MimeFile : public MimePart
 public:
     MimeFile(const QByteArray &stream, const QString &fileName);
     MimeFile(const QByteArray &stream, const QString &fileName, const QByteArray &mimeType);
-    MimeFile(QFile *f);
+    MimeFile(const std::shared_ptr<QFile> &f);
     virtual ~MimeFile();
 };
 
 }
-
-#endif // MIMEFILE_H
