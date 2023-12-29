@@ -59,12 +59,12 @@ void SendEmail::on_sendEmail_clicked()
 {
     MimeMessage message;
 
-    message.setSender(ui->sender->text());
+    message.setSender(EmailAddress{ui->sender->text()});
     message.setSubject(ui->subject->text());
 
     const QStringList rcptStringList = ui->recipients->text().split(QLatin1Char(';'), Qt::SkipEmptyParts);
     for (const QString &to : rcptStringList) {
-        message.addTo(to);
+        message.addTo(EmailAddress{to});
     }
 
     message.addPart(std::make_shared<MimeHtml>(ui->texteditor->toHtml()));

@@ -459,10 +459,8 @@ void ServerPrivate::setPeerVerificationType(const Server::PeerVerificationType &
 {
     peerVerificationType = type;
 #ifndef QT_NO_SSL
-    if (socket != Q_NULLPTR)
-    {
-        if (connectionType == Server::SslConnection || connectionType == Server::TlsConnection)
-        {
+    if (socket != nullptr) {
+        if (connectionType == Server::SslConnection || connectionType == Server::TlsConnection) {
             switch (type) {
                 case Server::VerifyNone:
                     static_cast<QSslSocket*>(socket)->setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -657,7 +655,7 @@ void ServerPrivate::commandReset()
 {
     if (state == Ready) {
         qCDebug(SIMPLEMAIL_SERVER) << "Sending RESET";
-        socket->write(QByteArrayLiteral("RSET\r\n"));
+        socket->write("RSET\r\n", 6);
         state = Reset_250;
     }
 }
@@ -666,14 +664,14 @@ void ServerPrivate::commandNoop()
 {
     if (state == Ready) {
         qCDebug(SIMPLEMAIL_SERVER) << "Sending NOOP";
-        socket->write(QByteArrayLiteral("NOOP\r\n"));
+        socket->write("NOOP\r\n", 6);
         state = Noop_250;
     }
 }
 
 void ServerPrivate::commandQuit()
 {
-    socket->write(QByteArrayLiteral("QUIT\r\n"));
+    socket->write("QUIT\r\n", 6);
 }
 
 void ServerPrivate::failConnection(Server::SmtpError defaultError, int responseCode, const QString &error)
