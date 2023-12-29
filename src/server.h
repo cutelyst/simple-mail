@@ -15,11 +15,10 @@
 */
 #pragma once
 
-#include <QObject>
-
-#include <QtNetwork/qtnetwork-config.h>
-
 #include "smtpexports.h"
+
+#include <QObject>
+#include <QtNetwork/qtnetwork-config.h>
 
 #ifndef QT_NO_SSL
 class QSslError;
@@ -35,8 +34,7 @@ class SMTP_EXPORT Server : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(Server)
 public:
-    enum AuthMethod
-    {
+    enum AuthMethod {
         AuthNone,
         AuthPlain,
         AuthLogin,
@@ -44,29 +42,26 @@ public:
     };
     Q_ENUM(AuthMethod)
 
-    enum SmtpError
-    {
+    enum SmtpError {
         ConnectionTimeoutError,
         ResponseTimeoutError,
         SendDataTimeoutError,
         AuthenticationFailedError,
-        ServerError,    // 4xx smtp error
-        ClientError,    // 5xx smtp error
+        ServerError, // 4xx smtp error
+        ClientError, // 5xx smtp error
     };
     Q_ENUM(SmtpError)
 
-    enum ConnectionType
-    {
+    enum ConnectionType {
         TcpConnection,
 #ifndef QT_NO_SSL
         SslConnection,
-        TlsConnection,     // STARTTLS
+        TlsConnection, // STARTTLS
 #endif
     };
     Q_ENUM(ConnectionType)
 
-    enum PeerVerificationType
-    {
+    enum PeerVerificationType {
         VerifyNone,
         VerifyPeer,
     };
@@ -175,13 +170,14 @@ public:
 
 #ifndef QT_NO_SSL
     /**
-     * @brief ignoreSslErrors tells the socket to ignore all pending ssl errors if SSL encryption is active.
-     *      Must be called in a direct connected slot/functor
+     * @brief ignoreSslErrors tells the socket to ignore all pending ssl errors if SSL encryption is
+     * active. Must be called in a direct connected slot/functor
      */
     void ignoreSslErrors();
 
     /**
-     * @brief ignoreSslErrors tells the socket to ignore the given ssl errors if SSL encryption is active.
+     * @brief ignoreSslErrors tells the socket to ignore the given ssl errors if SSL encryption is
+     * active.
      * @param errors defines the errors to ignore
      */
     void ignoreSslErrors(const QList<QSslError> &errors);
@@ -197,4 +193,4 @@ private:
     ServerPrivate *d_ptr;
 };
 
-}
+} // namespace SimpleMail

@@ -14,9 +14,9 @@
   See the LICENSE file for more details.
 */
 
-#include <QtCore>
-
 #include "../../src/SimpleMail"
+
+#include <QtCore>
 
 using namespace SimpleMail;
 
@@ -50,7 +50,8 @@ int main(int argc, char *argv[])
     message.addPart(text);
 
     // Now we create the attachment object
-    auto attachment = std::make_shared<MimeAttachment>(std::make_shared<QFile>(QLatin1String("image1.jpg")));
+    auto attachment =
+        std::make_shared<MimeAttachment>(std::make_shared<QFile>(QLatin1String("image1.jpg")));
 
     // the file type can be setted. (by default is application/octet-stream)
     attachment->setContentType(QByteArrayLiteral("image/jpeg"));
@@ -59,7 +60,8 @@ int main(int argc, char *argv[])
     message.addPart(attachment);
 
     // Add an another attachment
-    auto document = std::make_shared<MimeAttachment>(std::make_shared<QFile>(QLatin1String("document.pdf")));
+    auto document =
+        std::make_shared<MimeAttachment>(std::make_shared<QFile>(QLatin1String("document.pdf")));
     message.addPart(document);
 
     // Now we can send the mail

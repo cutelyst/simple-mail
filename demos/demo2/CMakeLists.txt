@@ -21,6 +21,6 @@ add_executable(demo2
 
 target_link_libraries(demo2
     SimpleMail2Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt::Core
+    Qt::Widgets
 )

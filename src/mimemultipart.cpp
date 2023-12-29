@@ -17,53 +17,53 @@
 
 #include "mimemultipart_p.h"
 
-#include <QtCore/QUuid>
 #include <QtCore/QIODevice>
+#include <QtCore/QUuid>
 
 using namespace SimpleMail;
 
 const QByteArray MULTI_PART_NAMES[] = {
-    QByteArrayLiteral("multipart/mixed"),         //    Mixed
-    QByteArrayLiteral("multipart/digest"),        //    Digest
-    QByteArrayLiteral("multipart/alternative"),   //    Alternative
-    QByteArrayLiteral("multipart/related"),       //    Related
-    QByteArrayLiteral("multipart/report"),        //    Report
-    QByteArrayLiteral("multipart/signed"),        //    Signed
-    QByteArrayLiteral("multipart/encrypted")      //    Encrypted
+    QByteArrayLiteral("multipart/mixed"),       //    Mixed
+    QByteArrayLiteral("multipart/digest"),      //    Digest
+    QByteArrayLiteral("multipart/alternative"), //    Alternative
+    QByteArrayLiteral("multipart/related"),     //    Related
+    QByteArrayLiteral("multipart/report"),      //    Report
+    QByteArrayLiteral("multipart/signed"),      //    Signed
+    QByteArrayLiteral("multipart/encrypted")    //    Encrypted
 };
 
-MimeMultiPart::MimeMultiPart(MultiPartType type) : MimePart(new MimeMultiPartPrivate)
+MimeMultiPart::MimeMultiPart(MultiPartType type)
+    : MimePart(new MimeMultiPartPrivate)
 {
     Q_D(MimePart);
-    static_cast<MimeMultiPartPrivate*>(d)->type = type;
-    d->contentType = MULTI_PART_NAMES[type];
-    d->contentEncoding = _8Bit;
+    static_cast<MimeMultiPartPrivate *>(d)->type = type;
+    d->contentType                               = MULTI_PART_NAMES[type];
+    d->contentEncoding                           = _8Bit;
 
     d->contentBoundary = QUuid::createUuid().toRfc4122().toHex();
 }
 
 MimeMultiPart::~MimeMultiPart()
 {
-
 }
 
 void MimeMultiPart::addPart(const std::shared_ptr<SimpleMail::MimePart> &part)
 {
     Q_D(MimePart);
-    static_cast<MimeMultiPartPrivate*>(d)->parts.append(part);
+    static_cast<MimeMultiPartPrivate *>(d)->parts.append(part);
 }
 
 QList<std::shared_ptr<MimePart>> MimeMultiPart::parts() const
 {
     Q_D(const MimePart);
-    return static_cast<const MimeMultiPartPrivate*>(d)->parts;
+    return static_cast<const MimeMultiPartPrivate *>(d)->parts;
 }
 
 bool MimeMultiPart::writeData(QIODevice *device)
 {
     Q_D(MimePart);
 
-    const auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
+    const auto parts = static_cast<MimeMultiPartPrivate *>(d)->parts;
     for (const auto &part : parts) {
         device->write("--" + d->contentBoundary + "\r\n");
         if (!part->write(device)) {
@@ -78,14 +78,14 @@ bool MimeMultiPart::writeData(QIODevice *device)
 void MimeMultiPart::setMimeType(const MultiPartType type)
 {
     Q_D(MimePart);
-    d->contentType = MULTI_PART_NAMES[type];
-    static_cast<MimeMultiPartPrivate*>(d)->type = type;
+    d->contentType                               = MULTI_PART_NAMES[type];
+    static_cast<MimeMultiPartPrivate *>(d)->type = type;
 }
 
 MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const
 {
     Q_D(const MimePart);
-    return static_cast<const MimeMultiPartPrivate*>(d)->type;
+    return static_cast<const MimeMultiPartPrivate *>(d)->type;
 }
 
 MimeMultiPartPrivate::~MimeMultiPartPrivate() = default;

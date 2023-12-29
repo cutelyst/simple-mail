@@ -16,11 +16,11 @@
 */
 #pragma once
 
-#include <QFile>
-#include "mimepart.h"
 #include "mimefile.h"
-
+#include "mimepart.h"
 #include "smtpexports.h"
+
+#include <QFile>
 
 namespace SimpleMail {
 
@@ -32,4 +32,4 @@ public:
     virtual ~MimeAttachment();
 };
 
-}
+} // namespace SimpleMail

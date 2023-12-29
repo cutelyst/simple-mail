@@ -17,7 +17,6 @@
 #pragma once
 
 #include "mimefile.h"
-
 #include "smtpexports.h"
 
 namespace SimpleMail {
@@ -26,8 +25,10 @@ class SMTP_EXPORT MimeInlineFile : public MimeFile
 {
 public:
     MimeInlineFile(const std::shared_ptr<QFile> &file);
-    MimeInlineFile(const QByteArray &stream, const QString &fileName, const QByteArray &mimeType = {});
+    MimeInlineFile(const QByteArray &stream,
+                   const QString &fileName,
+                   const QByteArray &mimeType = {});
     virtual ~MimeInlineFile();
 };
 
-}
+} // namespace SimpleMail

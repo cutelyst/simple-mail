@@ -16,12 +16,11 @@
 */
 #pragma once
 
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QMetaType>
-
 #include "mimecontentformatter.h"
-
 #include "smtpexports.h"
+
+#include <QtCore/QMetaType>
+#include <QtCore/QSharedDataPointer>
 
 class QIODevice;
 namespace SimpleMail {
@@ -30,12 +29,7 @@ class MimePartPrivate;
 class SMTP_EXPORT MimePart
 {
 public:
-    enum Encoding {        
-        _7Bit,
-        _8Bit,
-        Base64,
-        QuotedPrintable
-    };
+    enum Encoding { _7Bit, _8Bit, Base64, QuotedPrintable };
 
     MimePart();
     MimePart(const MimePart &other);
@@ -80,13 +74,10 @@ protected:
     QSharedDataPointer<MimePartPrivate> d_ptr;
 
     // Q_DECLARE_PRIVATE equivalent for shared data pointers
-    MimePartPrivate* d_func();
-    inline const MimePartPrivate* d_func() const
-    {
-        return d_ptr.constData();
-    }
+    MimePartPrivate *d_func();
+    inline const MimePartPrivate *d_func() const { return d_ptr.constData(); }
 };
 
-}
+} // namespace SimpleMail
 
-Q_DECLARE_METATYPE(SimpleMail::MimePart*)
+Q_DECLARE_METATYPE(SimpleMail::MimePart *)

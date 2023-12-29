@@ -6,7 +6,7 @@ include(GNUInstallDirs)
 if (NOT DEFINED QT_VERSION_MAJOR)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Network REQUIRED)
 endif ()
-find_package(Qt${QT_VERSION_MAJOR} 5.5.0 COMPONENTS Core Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} 5.15.0 COMPONENTS Core Network REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -22,7 +22,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 option(BUILD_SHARED_LIBS "Build in shared lib mode" ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -52,7 +52,7 @@ option(BUILD_DEMOS "Build the demos" ON)
 #
 # Custom C flags
 #
-if (ENABLE_MAINTAINER_CFLAGS)
+if (ENABLE_MAINTAINER_CFLAGS AND NOT MSVC)
     set (MAINTAINER_CFLAGS "-Werror -Wall -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Wformat -Winit-self")
     add_definitions(${MAINTAINER_CFLAGS}
         -DQT_DEPRECATED_WARNINGS

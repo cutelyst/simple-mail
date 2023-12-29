@@ -14,9 +14,9 @@
   See the LICENSE file for more details.
 */
 
-#include <QtCore>
-
 #include "../../src/SimpleMail"
+
+#include <QtCore>
 
 using namespace SimpleMail;
 
@@ -53,15 +53,16 @@ int main(int argc, char *argv[])
                                 "<h2> This is the second image </h2>"
                                 "<img src='cid:image2' />"));
 
-
     // Create a MimeInlineFile object for each image
-    auto image1 = std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image1.jpg")));
+    auto image1 =
+        std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image1.jpg")));
 
     // An unique content id must be setted
     image1->setContentId(QByteArrayLiteral("image1"));
     image1->setContentType(QByteArrayLiteral("image/jpeg"));
 
-    auto image2 = std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image2.jpg")));
+    auto image2 =
+        std::make_shared<MimeInlineFile>(std::make_shared<QFile>(QLatin1String("image2.jpg")));
     image2->setContentId(QByteArrayLiteral("image2"));
     image2->setContentType(QByteArrayLiteral("image/jpeg"));
 

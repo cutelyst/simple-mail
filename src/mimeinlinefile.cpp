@@ -16,17 +16,22 @@
 */
 
 #include "mimeinlinefile.h"
+
 #include "mimepart_p.h"
 
 using namespace SimpleMail;
 
-MimeInlineFile::MimeInlineFile(const std::shared_ptr<QFile> &file) : MimeFile(file)
+MimeInlineFile::MimeInlineFile(const std::shared_ptr<QFile> &file)
+    : MimeFile(file)
 {
     Q_D(MimePart);
     d->header.append(QByteArrayLiteral("Content-Disposition: inline\r\n"));
 }
 
-MimeInlineFile::MimeInlineFile(const QByteArray &stream, const QString &fileName, const QByteArray &mimeType) : MimeFile(stream, fileName, mimeType)
+MimeInlineFile::MimeInlineFile(const QByteArray &stream,
+                               const QString &fileName,
+                               const QByteArray &mimeType)
+    : MimeFile(stream, fileName, mimeType)
 {
     Q_D(MimePart);
     d->header.append(QByteArrayLiteral("Content-Disposition: inline\r\n"));
@@ -34,5 +39,4 @@ MimeInlineFile::MimeInlineFile(const QByteArray &stream, const QString &fileName
 
 MimeInlineFile::~MimeInlineFile()
 {
-
 }

@@ -22,35 +22,34 @@ using namespace SimpleMail;
 // ASCII character values used throughout
 const unsigned char MinPrintableRange = 0x20;
 const unsigned char MaxPrintableRange = 0x7e;
-const unsigned char HorizontalTab = 0x09;
-//const unsigned char LineFeed = 0x0a;
+const unsigned char HorizontalTab     = 0x09;
+// const unsigned char LineFeed = 0x0a;
 const unsigned char FormFeed = 0x0c;
-//const unsigned char CarriageReturn = 0x0d;
-const unsigned char Space = 0x20;
-const unsigned char Equals = 0x3d;
+// const unsigned char CarriageReturn = 0x0d;
+const unsigned char Space           = 0x20;
+const unsigned char Equals          = 0x3d;
 const unsigned char ExclamationMark = 0x21;
-const unsigned char Asterisk = 0x2a;
-const unsigned char Plus = 0x2b;
-const unsigned char Minus = 0x2d;
-const unsigned char Slash = 0x2f;
-const unsigned char Underscore = 0x5f;
+const unsigned char Asterisk        = 0x2a;
+const unsigned char Plus            = 0x2b;
+const unsigned char Minus           = 0x2d;
+const unsigned char Slash           = 0x2f;
+const unsigned char Underscore      = 0x5f;
 
 static inline bool requiresEscape(unsigned char input, bool rfc2047)
 {
     // For both, we need to escape '=' and anything unprintable
-    bool escape = ((input > MaxPrintableRange) ||
-                   ((input < MinPrintableRange) && (input != HorizontalTab) && (input != FormFeed)) ||
-                   (input == Equals));
+    bool escape =
+        ((input > MaxPrintableRange) ||
+         ((input < MinPrintableRange) && (input != HorizontalTab) && (input != FormFeed)) ||
+         (input == Equals));
 
     // For RFC 2047, we need to escape '?', '_', ' ' & '\t'
     // In fact, since the output may be used in a header field 'word', then the only characters
     // that can be used un-escaped are: alphanumerics, '!', '*', '+' '-', '/' and '_'
-    if (!escape && rfc2047)
-    {
+    if (!escape && rfc2047) {
         // We can also ignore space, since it will become an underscore
         if ((input != ExclamationMark) && (input != Asterisk) && (input != Plus) &&
-                (input != Minus) && (input != Slash) && (input != Underscore) && (input != Space))
-        {
+            (input != Minus) && (input != Slash) && (input != Underscore) && (input != Space)) {
             escape = !isalnum(input);
         }
     }
@@ -58,14 +57,16 @@ static inline bool requiresEscape(unsigned char input, bool rfc2047)
     return escape;
 }
 
-QByteArray QuotedPrintable::encode(const QByteArray &input, bool rfc2047, int *printable, int *encoded)
+QByteArray
+    QuotedPrintable::encode(const QByteArray &input, bool rfc2047, int *printable, int *encoded)
 {
     QByteArray output;
 
     quint8 byte;
-    static const char hex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    static const char hex[] = {
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    for (int i = 0; i < input.length() ; ++i) {
+    for (int i = 0; i < input.length(); ++i) {
         byte = quint8(input[i]);
 
         if (requiresEscape(byte, rfc2047)) {
@@ -88,20 +89,21 @@ QByteArray QuotedPrintable::encode(const QByteArray &input, bool rfc2047, int *p
 
 QByteArray QuotedPrintable::decode(const QByteArray &input)
 {
-    //                           0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  A   B   C   D   E   F
-    static const int hexVal[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13, 14, 15};
+    //                           0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  A   B   C   D E
+    //                           F
+    static const int hexVal[] = {0, 1, 2, 3, 4, 5,  6,  7,  8,  9,  0, 0,
+                                 0, 0, 0, 0, 0, 10, 11, 12, 13, 14, 15};
 
     QByteArray output;
 
     int len = input.length();
-    for (int i = 0; i < len-2; ++i) {
+    for (int i = 0; i < len - 2; ++i) {
         if (input.at(i) == '=') {
-            int x = input.at(i+1) - '0';
-            int y = input.at(i+2) - '0';
+            int x = input.at(i + 1) - '0';
+            int y = input.at(i + 2) - '0';
             if (x >= 0 && y >= 0 && x < 23 && y < 23) {
                 output.append(char((hexVal[x] << 4) + hexVal[y]));
-            }
-            else {
+            } else {
                 output.append('=').append(char(x + '0')).append(char(y + '0'));
             }
 

@@ -17,7 +17,6 @@
 #pragma once
 
 #include "mimetext.h"
-
 #include "smtpexports.h"
 
 namespace SimpleMail {
@@ -32,4 +31,4 @@ public:
     QString html() const;
 };
 
-}
+} // namespace SimpleMail

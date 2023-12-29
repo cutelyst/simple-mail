@@ -16,8 +16,8 @@
 #ifndef SERVER_P_H
 #define SERVER_P_H
 
-#include "server.h"
 #include "mimemessage.h"
+#include "server.h"
 
 #include <QPointer>
 
@@ -26,7 +26,8 @@ class QTcpSocket;
 namespace SimpleMail {
 
 class ServerReply;
-class ServerReplyContainer {
+class ServerReplyContainer
+{
 public:
     enum State {
         Initial,
@@ -34,7 +35,10 @@ public:
         SendingData,
     };
 
-    ServerReplyContainer(const MimeMessage &email) : msg(email) {}
+    ServerReplyContainer(const MimeMessage &email)
+        : msg(email)
+    {
+    }
 
     MimeMessage msg;
     QPointer<ServerReply> reply;
@@ -66,13 +70,18 @@ public:
         SendingMail,
     };
 
-    ServerPrivate(Server *srv) : q_ptr(srv) { }
+    ServerPrivate(Server *srv)
+        : q_ptr(srv)
+    {
+    }
     inline void createSocket();
     void setPeerVerificationType(const Server::PeerVerificationType &type);
     void login();
     void processNextMail();
 
-    bool parseResponseCode(int expectedCode, Server::SmtpError defaultError = Server::ServerError, QByteArray *responseMessage = nullptr);
+    bool parseResponseCode(int expectedCode,
+                           Server::SmtpError defaultError = Server::ServerError,
+                           QByteArray *responseMessage    = nullptr);
     int parseResponseCode(QByteArray *responseMessage = nullptr);
     int parseCaps();
     inline void commandReset();
@@ -88,14 +97,14 @@ public:
     QString hostname;
     QString username;
     QString password;
-    quint16 port = 25;
-    Server::ConnectionType connectionType = Server::TcpConnection;
-    Server::AuthMethod authMethod = Server::AuthNone;
+    quint16 port                                      = 25;
+    Server::ConnectionType connectionType             = Server::TcpConnection;
+    Server::AuthMethod authMethod                     = Server::AuthNone;
     Server::PeerVerificationType peerVerificationType = Server::VerifyPeer;
-    State state = Disconnected;
-    bool capPipelining = false;
+    State state                                       = Disconnected;
+    bool capPipelining                                = false;
 };
 
-}
+} // namespace SimpleMail
 
 #endif // SERVER_P_H

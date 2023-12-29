@@ -14,12 +14,12 @@
   See the LICENSE file for more details.
 */
 
-#include <QtWidgets/QApplication>
-
-#include "sendemail.h"
 #include "../../src/SimpleMail"
+#include "sendemail.h"
 
 #include <iostream>
+
+#include <QtWidgets/QApplication>
 
 using namespace std;
 
@@ -42,4 +42,3 @@ int main(int argc, char *argv[])
 
     a.exec();
 }
-

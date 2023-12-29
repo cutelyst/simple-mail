@@ -1,5 +1,7 @@
-#include <QCoreApplication>
 #include "../../src/SimpleMail"
+
+#include <QCoreApplication>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +21,8 @@ int main(int argc, char *argv[])
 
     // Now we create a MimeMessage object. This will be the email.
     SimpleMail::MimeMessage message;
-    message.setSender(SimpleMail::EmailAddress(QLatin1String("your_email_address@gmail.com"), QLatin1String("Your Name")));
+    message.setSender(SimpleMail::EmailAddress(QLatin1String("your_email_address@gmail.com"),
+                                               QLatin1String("Your Name")));
     message.addTo(SimpleMail::EmailAddress(QLatin1String("Recipient's Name <recipient@host.com>")));
     message.setSubject(QLatin1String("Testing Subject"));
 
@@ -37,7 +40,7 @@ int main(int argc, char *argv[])
     SimpleMail::ServerReply *reply = server->sendMail(message);
     QObject::connect(reply, &SimpleMail::ServerReply::finished, [reply] {
         qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
-        reply->deleteLater();// Don't forget to delete it
+        reply->deleteLater(); // Don't forget to delete it
 
         qApp->quit();
     });

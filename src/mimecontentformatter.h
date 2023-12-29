@@ -16,9 +16,9 @@
 */
 #pragma once
 
-#include <QByteArray>
-
 #include "smtpexports.h"
+
+#include <QByteArray>
 
 namespace SimpleMail {
 
@@ -37,4 +37,4 @@ protected:
     int max_length;
 };
 
-}
+} // namespace SimpleMail

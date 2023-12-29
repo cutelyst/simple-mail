@@ -16,11 +16,12 @@
 */
 
 #include "mimefile.h"
+
 #include "mimepart_p.h"
 
 #include <QtCore/QBuffer>
-#include <QtCore/QMimeDatabase>
 #include <QtCore/QFileInfo>
+#include <QtCore/QMimeDatabase>
 
 using namespace SimpleMail;
 
@@ -28,13 +29,13 @@ MimeFile::MimeFile(const std::shared_ptr<QFile> &file)
 {
     Q_D(MimePart);
     d->contentEncoding = Base64;
-    d->contentDevice = file;
+    d->contentDevice   = file;
     if (file) {
         file->setParent(nullptr);
     }
 
     const QString filename = QFileInfo(*file).fileName();
-    d->contentName = filename.toLatin1();
+    d->contentName         = filename.toLatin1();
 
     QMimeDatabase db;
     QMimeType mime = db.mimeTypeForFile(file->fileName());
@@ -44,7 +45,8 @@ MimeFile::MimeFile(const std::shared_ptr<QFile> &file)
     }
 }
 
-MimeFile::MimeFile(const QByteArray &stream, const QString &fileName) : MimeFile(stream, fileName, {})
+MimeFile::MimeFile(const QByteArray &stream, const QString &fileName)
+    : MimeFile(stream, fileName, {})
 {
 }
 
@@ -52,8 +54,8 @@ MimeFile::MimeFile(const QByteArray &stream, const QString &fileName, const QByt
 {
     Q_D(MimePart);
     d->contentEncoding = Base64;
-    d->contentName = fileName.toLatin1();
-    d->contentType = mimeType;
+    d->contentName     = fileName.toLatin1();
+    d->contentType     = mimeType;
     if (d->contentType.isEmpty()) {
         d->contentType = QByteArrayLiteral("application/octet-stream");
     }

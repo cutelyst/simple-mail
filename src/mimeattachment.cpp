@@ -16,26 +16,30 @@
 */
 
 #include "mimeattachment.h"
+
 #include "mimepart_p.h"
 
 #include <QtCore/QFileInfo>
 
 using namespace SimpleMail;
 
-MimeAttachment::MimeAttachment(const std::shared_ptr<QFile> &file) : MimeFile(file)
+MimeAttachment::MimeAttachment(const std::shared_ptr<QFile> &file)
+    : MimeFile(file)
 {
     Q_D(MimePart);
     const QString filename = QFileInfo(*file).fileName();
-    d->header.append("Content-Disposition: attachment; filename=\"=?UTF-8?B?" + filename.toUtf8().toBase64(QByteArray::Base64Encoding) + "?=\"\r\n");
+    d->header.append("Content-Disposition: attachment; filename=\"=?UTF-8?B?" +
+                     filename.toUtf8().toBase64(QByteArray::Base64Encoding) + "?=\"\r\n");
 }
 
-MimeAttachment::MimeAttachment(const QByteArray &stream, const QString &fileName): MimeFile(stream, fileName)
+MimeAttachment::MimeAttachment(const QByteArray &stream, const QString &fileName)
+    : MimeFile(stream, fileName)
 {
     Q_D(MimePart);
-    d->header.append("Content-Disposition: attachment; filename=\"=?UTF-8?B?" + fileName.toUtf8().toBase64(QByteArray::Base64Encoding) + "?=\"\r\n");
+    d->header.append("Content-Disposition: attachment; filename=\"=?UTF-8?B?" +
+                     fileName.toUtf8().toBase64(QByteArray::Base64Encoding) + "?=\"\r\n");
 }
 
 MimeAttachment::~MimeAttachment()
 {
-
 }

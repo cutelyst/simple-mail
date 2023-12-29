@@ -16,10 +16,11 @@
 */
 #pragma once
 
-#include "mimepart.h"
 #include "emailaddress.h"
-
+#include "mimepart.h"
 #include "smtpexports.h"
+
+#include <memory>
 
 #include <QSharedDataPointer>
 
@@ -63,9 +64,9 @@ public:
     EmailAddress replyTo() const;
 
     QString subject() const;
-    QList<std::shared_ptr<MimePart> > parts() const;
+    QList<std::shared_ptr<MimePart>> parts() const;
 
-    MimePart& getContent();
+    MimePart &getContent();
     void setContent(const std::shared_ptr<MimePart> &content);
 
     bool write(QIODevice *device) const;
@@ -74,4 +75,4 @@ protected:
     QSharedDataPointer<MimeMessagePrivate> d;
 };
 
-}
+} // namespace SimpleMail

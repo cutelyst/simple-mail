@@ -17,11 +17,13 @@
 */
 
 #include "mimehtml.h"
+
 #include "mimepart_p.h"
 
 using namespace SimpleMail;
 
-MimeHtml::MimeHtml(const QString &html) : MimeText(html)
+MimeHtml::MimeHtml(const QString &html)
+    : MimeText(html)
 {
     Q_D(MimePart);
     d->contentType = QByteArrayLiteral("text/html");
@@ -29,7 +31,6 @@ MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 
 MimeHtml::~MimeHtml()
 {
-
 }
 
 void MimeHtml::setHtml(const QString &html)

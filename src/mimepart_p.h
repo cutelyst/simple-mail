@@ -22,6 +22,8 @@
 
 #include "mimepart.h"
 
+#include <memory>
+
 class QFile;
 namespace SimpleMail {
 
@@ -47,7 +49,6 @@ public:
     MimePart::Encoding contentEncoding = MimePart::_7Bit;
 };
 
-}
+} // namespace SimpleMail
 
 #endif // MIMEPART_P_H
-
