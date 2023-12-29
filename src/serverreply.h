@@ -15,9 +15,9 @@
 */
 #pragma once
 
-#include <QObject>
-
 #include "smtpexports.h"
+
+#include <QObject>
 
 namespace SimpleMail {
 
@@ -47,4 +47,4 @@ private:
     ServerReplyPrivate *d_ptr;
 };
 
-}
+} // namespace SimpleMail

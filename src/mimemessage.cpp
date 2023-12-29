@@ -17,20 +17,21 @@ x
 */
 
 #include "mimemessage_p.h"
-
-#include <QtCore/QDebug>
 #include "quotedprintable.h"
+
 #include <typeinfo>
 
-#include <QIODevice>
 #include <QDateTime>
+#include <QIODevice>
 #include <QLoggingCategory>
+#include <QtCore/QDebug>
 
 Q_LOGGING_CATEGORY(SIMPLEMAIL_MIMEMSG, "simplemail.mimemessage", QtInfoMsg)
 
 using namespace SimpleMail;
 
-MimeMessage::MimeMessage(bool createAutoMimeContent) : d(new MimeMessagePrivate)
+MimeMessage::MimeMessage(bool createAutoMimeContent)
+    : d(new MimeMessagePrivate)
 {
     if (createAutoMimeContent) {
         d->content = std::make_shared<MimeMultiPart>();
@@ -39,14 +40,13 @@ MimeMessage::MimeMessage(bool createAutoMimeContent) : d(new MimeMessagePrivate)
     d->autoMimeContentCreated = createAutoMimeContent;
 }
 
-MimeMessage::MimeMessage(const MimeMessage &other) : d(other.d)
+MimeMessage::MimeMessage(const MimeMessage &other)
+    : d(other.d)
 {
-
 }
 
 MimeMessage::~MimeMessage()
 {
-
 }
 
 MimeMessage &MimeMessage::operator=(const MimeMessage &other)
@@ -55,7 +55,7 @@ MimeMessage &MimeMessage::operator=(const MimeMessage &other)
     return *this;
 }
 
-MimePart& MimeMessage::getContent()
+MimePart &MimeMessage::getContent()
 {
     return *d->content;
 }
@@ -77,20 +77,23 @@ bool MimeMessage::write(QIODevice *device) const
     if (!d->listExtraHeaders.isEmpty()) {
         const auto listExtraHeaders = d->listExtraHeaders;
         for (const QByteArray &header : listExtraHeaders) {
-            data += MimeMessagePrivate::encodeData(d->encoding, QString::fromLatin1(header), true) + QByteArrayLiteral("\r\n");
+            data += MimeMessagePrivate::encodeData(d->encoding, QString::fromLatin1(header), true) +
+                    QByteArrayLiteral("\r\n");
         }
         if (device->write(data) != data.size()) {
             return false;
         }
     }
 
-    data = MimeMessagePrivate::encode(QByteArrayLiteral("From: "), QList<EmailAddress>() << d->sender, d->encoding);
+    data = MimeMessagePrivate::encode(
+        QByteArrayLiteral("From: "), QList<EmailAddress>() << d->sender, d->encoding);
     if (device->write(data) != data.size()) {
         return false;
     }
 
     if (d->replyTo.address().isEmpty() == false) {
-        data = MimeMessagePrivate::encode(QByteArrayLiteral("Reply-To: "), QList<EmailAddress>() << d->replyTo, d->encoding);
+        data = MimeMessagePrivate::encode(
+            QByteArrayLiteral("Reply-To: "), QList<EmailAddress>() << d->replyTo, d->encoding);
         if (device->write(data) != data.size()) {
             return false;
         }
@@ -106,12 +109,15 @@ bool MimeMessage::write(QIODevice *device) const
         return false;
     }
 
-    data = QByteArrayLiteral("Date: ") + QDateTime::currentDateTime().toString(Qt::RFC2822Date).toLatin1() + QByteArrayLiteral("\r\n");
+    data = QByteArrayLiteral("Date: ") +
+           QDateTime::currentDateTime().toString(Qt::RFC2822Date).toLatin1() +
+           QByteArrayLiteral("\r\n");
     if (device->write(data) != data.size()) {
         return false;
     }
 
-    data = QByteArrayLiteral("Subject: ") + MimeMessagePrivate::encodeData(d->encoding, d->subject, true);
+    data = QByteArrayLiteral("Subject: ") +
+           MimeMessagePrivate::encodeData(d->encoding, d->subject, true);
     if (device->write(data) != data.size()) {
         return false;
     }
@@ -186,8 +192,8 @@ void MimeMessage::setSubject(const QString &subject)
 
 void MimeMessage::addPart(const std::shared_ptr<MimePart> &part)
 {
-    auto content = d->content;
-    if (typeid(*content) == typeid(MimeMultiPart)) {
+    auto content = *d->content;
+    if (typeid(content) == typeid(MimeMultiPart)) {
         std::static_pointer_cast<MimeMultiPart>(d->content)->addPart(part);
     }
 }
@@ -225,8 +231,8 @@ QString MimeMessage::subject() const
 QList<std::shared_ptr<MimePart>> MimeMessage::parts() const
 {
     QList<std::shared_ptr<MimePart>> ret;
-    auto content = d->content;
-    if (typeid(*content) == typeid(MimeMultiPart)) {
+    auto content = *d->content;
+    if (typeid(content) == typeid(MimeMultiPart)) {
         ret = std::static_pointer_cast<MimeMultiPart>(d->content)->parts();
     } else {
         ret.append(std::shared_ptr<MimePart>(d->content));
@@ -237,14 +243,16 @@ QList<std::shared_ptr<MimePart>> MimeMessage::parts() const
 
 MimeMessagePrivate::~MimeMessagePrivate() = default;
 
-QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList<EmailAddress> &emails, MimePart::Encoding codec)
+QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind,
+                                      const QList<EmailAddress> &emails,
+                                      MimePart::Encoding codec)
 {
     if (emails.isEmpty()) {
         return QByteArray();
     }
 
     QByteArray mime = addressKind;
-    bool first = true;
+    bool first      = true;
     for (const EmailAddress &email : emails) {
         if (!first) {
             mime.append(',');
@@ -265,21 +273,23 @@ QByteArray MimeMessagePrivate::encode(const QByteArray &addressKind, const QList
     return mime;
 }
 
-QByteArray MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QString &data, bool autoencoding)
+QByteArray
+    MimeMessagePrivate::encodeData(MimePart::Encoding codec, const QString &data, bool autoencoding)
 {
     const QString simpleData = data.simplified();
-    const QByteArray simple = simpleData.toUtf8();
+    const QByteArray simple  = simpleData.toUtf8();
     if (autoencoding) {
         if (simpleData.toLatin1() == simple) {
             return simple;
         }
 
-        int printable = 0;
-        int encoded = 0;
+        int printable           = 0;
+        int encoded             = 0;
         const QByteArray result = QuotedPrintable::encode(simple, true, &printable, &encoded);
-        int sum = printable + encoded;
-        qCDebug(SIMPLEMAIL_MIMEMSG) << data << result << printable << encoded << sum << (double(printable)/sum) << (encoded/sum);
-        if (sum != 0 && (double(printable)/sum) >= 0.8) {
+        int sum                 = printable + encoded;
+        qCDebug(SIMPLEMAIL_MIMEMSG) << data << result << printable << encoded << sum
+                                    << (double(printable) / sum) << (encoded / sum);
+        if (sum != 0 && (double(printable) / sum) >= 0.8) {
             return " =?utf-8?Q?" + result + "?=";
         } else {
             return " =?utf-8?B?" + data.toUtf8().toBase64() + "?=";

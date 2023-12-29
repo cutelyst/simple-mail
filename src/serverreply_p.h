@@ -10,9 +10,9 @@ class ServerReplyPrivate
 public:
     QString responseText;
     int responseCode = 0;
-    bool error = false;
+    bool error       = false;
 };
 
-}
+} // namespace SimpleMail
 
 #endif // SERVERREPLY_P_H

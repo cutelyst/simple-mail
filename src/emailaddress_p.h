@@ -31,7 +31,6 @@ public:
     QString address;
 };
 
-}
+} // namespace SimpleMail
 
 #endif // EMAILADDRESS_P_H
-

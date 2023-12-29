@@ -33,7 +33,6 @@ public:
     MimeMultiPart::MultiPartType type;
 };
 
-}
+} // namespace SimpleMail
 
 #endif // MIMEMULTIPART_P_H
-

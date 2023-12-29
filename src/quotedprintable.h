@@ -16,17 +16,20 @@
 */
 #pragma once
 
-#include <QByteArray>
-
 #include "smtpexports.h"
+
+#include <QByteArray>
 
 namespace SimpleMail {
 
 class SMTP_EXPORT QuotedPrintable
 {
 public:
-    static QByteArray encode(const QByteArray &input, bool rfc2047, int *printable = nullptr, int *encoded = nullptr);
+    static QByteArray encode(const QByteArray &input,
+                             bool rfc2047,
+                             int *printable = nullptr,
+                             int *encoded   = nullptr);
     static QByteArray decode(const QByteArray &input);
 };
 
-}
+} // namespace SimpleMail

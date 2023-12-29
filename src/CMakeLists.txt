@@ -91,8 +91,8 @@ set_target_properties(SimpleMail2Qt${QT_VERSION_MAJOR} PROPERTIES
 
 target_link_libraries(SimpleMail2Qt${QT_VERSION_MAJOR}
     PUBLIC
-        Qt${QT_VERSION_MAJOR}::Core
-        Qt${QT_VERSION_MAJOR}::Network
+        Qt::Core
+        Qt::Network
 )
 
 set_property(TARGET SimpleMail2Qt${QT_VERSION_MAJOR} PROPERTY PUBLIC_HEADER ${simplemailqt_HEADERS})

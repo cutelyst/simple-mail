@@ -14,14 +14,15 @@
   See the LICENSE file for more details.
 */
 #include "serverreply.h"
+
 #include "serverreply_p.h"
 
 using namespace SimpleMail;
 
-ServerReply::ServerReply(QObject *parent) : QObject(parent)
-  , d_ptr(new ServerReplyPrivate)
+ServerReply::ServerReply(QObject *parent)
+    : QObject(parent)
+    , d_ptr(new ServerReplyPrivate)
 {
-
 }
 
 ServerReply::~ServerReply()
@@ -50,7 +51,7 @@ QString ServerReply::responseText() const
 void ServerReply::finish(bool error, int responseCode, const QString &responseText)
 {
     Q_D(ServerReply);
-    d->error = error;
+    d->error        = error;
     d->responseCode = responseCode;
     d->responseText = responseText;
     Q_EMIT finished();

@@ -1,6 +1,6 @@
-#include <QtCore>
-
 #include "../../src/SimpleMail"
+
+#include <QtCore>
 
 using namespace SimpleMail;
 

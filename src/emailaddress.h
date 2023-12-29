@@ -16,10 +16,10 @@
 */
 #pragma once
 
-#include <QtCore/QSharedDataPointer>
-#include <QString>
-
 #include "smtpexports.h"
+
+#include <QString>
+#include <QtCore/QSharedDataPointer>
 
 namespace SimpleMail {
 
@@ -46,11 +46,8 @@ protected:
 
 private:
     // Q_DECLARE_PRIVATE equivalent for shared data pointers
-    EmailAddressPrivate* d_func();
-    inline const EmailAddressPrivate* d_func() const
-    {
-        return d_ptr.constData();
-    }
+    EmailAddressPrivate *d_func();
+    inline const EmailAddressPrivate *d_func() const { return d_ptr.constData(); }
 };
 
-}
+} // namespace SimpleMail
