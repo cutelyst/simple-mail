@@ -574,14 +574,12 @@ bool ServerPrivate::parseResponseCode(int expectedCode, Server::SmtpError defaul
     const int responseCode = responseText.left(3).toInt();
 
     if (responseCode / 100 == 4) {
-        //        lastError = QString::fromLatin1(responseText);
-        Q_EMIT q->smtpError(Server::ServerError, QString::fromLatin1(responseText));
+        failConnection(Server::ServerError, responseCode, QString::fromLatin1(responseText));
         return false;
     }
 
     if (responseCode / 100 == 5) {
-        //        lastError = QString::fromLatin1(responseText);
-        Q_EMIT q->smtpError(Server::ClientError, QString::fromLatin1(responseText));
+        failConnection(Server::ClientError, responseCode, QString::fromLatin1(responseText));
         return false;
     }
 
@@ -589,7 +587,7 @@ bool ServerPrivate::parseResponseCode(int expectedCode, Server::SmtpError defaul
         if (responseCode != expectedCode) {
             const QString lastError = QString::fromLatin1(responseText);
             qCWarning(SIMPLEMAIL_SERVER) << "Unexpected server response" << lastError << expectedCode;
-            Q_EMIT q->smtpError(defaultError, lastError);
+            failConnection(defaultError, responseCode, lastError);
             return false;
         }
         if (responseMessage) {
@@ -600,7 +598,7 @@ bool ServerPrivate::parseResponseCode(int expectedCode, Server::SmtpError defaul
 
     const QString lastError = QString::fromLatin1(responseText);
     qCWarning(SIMPLEMAIL_SERVER) << "Unexpected server response" << lastError << expectedCode;
-    Q_EMIT q->smtpError(defaultError, lastError);
+    failConnection(defaultError, responseCode, lastError);
     return false;
 }
 
@@ -676,6 +674,23 @@ void ServerPrivate::commandNoop()
 void ServerPrivate::commandQuit()
 {
     socket->write(QByteArrayLiteral("QUIT\r\n"));
+}
+
+void ServerPrivate::failConnection(Server::SmtpError defaultError, int responseCode, const QString &error)
+{
+    Q_Q(Server);
+
+    qCDebug(SIMPLEMAIL_SERVER) << "failConnection" << defaultError << responseCode << error;
+    // Call this when the connection should be closed due an error
+    for (auto &mail : queue) {
+        ServerReply *reply = mail.reply;
+        reply->finish(true, responseCode, error);
+    }
+    queue.clear();
+
+    socket->close();
+
+    Q_EMIT q->smtpError(defaultError, error);
 }
 
 #include "moc_server.cpp"

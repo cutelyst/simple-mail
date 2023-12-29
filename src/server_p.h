@@ -78,6 +78,7 @@ public:
     inline void commandReset();
     inline void commandNoop();
     inline void commandQuit();
+    void failConnection(Server::SmtpError defaultError, int responseCode, const QString &error);
 
     QList<ServerReplyContainer> queue;
     Server *q_ptr;

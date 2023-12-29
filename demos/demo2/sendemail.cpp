@@ -19,6 +19,7 @@
 
 #include <QFileDialog>
 #include <QErrorMessage>
+#include <QSslError>
 #include <QMessageBox>
 
 #include "server.h"
@@ -66,10 +67,7 @@ void SendEmail::on_sendEmail_clicked()
         message.addTo(to);
     }
 
-    auto content = std::make_shared<MimeHtml>();
-    content->setHtml(ui->texteditor->toHtml());
-
-    message.addPart(content);
+    message.addPart(std::make_shared<MimeHtml>(ui->texteditor->toHtml()));
 
     for (int i = 0; i < ui->attachments->count(); ++i) {
         message.addPart(std::make_shared<MimeAttachment>(std::make_shared<QFile>(ui->attachments->item(i)->text())));
@@ -105,6 +103,9 @@ void SendEmail::sendMailAsync(const MimeMessage &msg)
 
     if (!server) {
         server = new Server(this);
+        connect(server, &Server::sslErrors, this, [](const QList<QSslError> &errors) {
+            qDebug() << "Server SSL errors" << errors.size();
+        });
         server->setHost(host);
         server->setPort(port);
         server->setConnectionType(ct);
