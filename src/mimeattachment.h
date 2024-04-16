@@ -27,7 +27,7 @@ namespace SimpleMail {
 class SMTP_EXPORT MimeAttachment : public MimeFile
 {
 public:
-    MimeAttachment(const std::shared_ptr<QFile> &file);
+    MimeAttachment(std::shared_ptr<QFile> && file);
     MimeAttachment(const QByteArray &stream, const QString &fileName);
     virtual ~MimeAttachment();
 };

@@ -23,8 +23,7 @@
 
 using namespace SimpleMail;
 
-MimeAttachment::MimeAttachment(const std::shared_ptr<QFile> &file)
-    : MimeFile(file)
+MimeAttachment::MimeAttachment(std::shared_ptr<QFile> && file) : MimeFile(std::move(file))
 {
     Q_D(MimePart);
     const QString filename = QFileInfo(*file).fileName();

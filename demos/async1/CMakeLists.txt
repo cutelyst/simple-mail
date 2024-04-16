@@ -7,6 +7,6 @@ add_executable(async1
 )
 
 target_link_libraries(async1
-    SimpleMail2Qt${QT_VERSION_MAJOR}::Core
+    SimpleMail::Core
     Qt::Core
 )

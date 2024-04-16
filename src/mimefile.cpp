@@ -25,23 +25,24 @@
 
 using namespace SimpleMail;
 
-MimeFile::MimeFile(const std::shared_ptr<QFile> &file)
+MimeFile::MimeFile(std::shared_ptr<QFile> && file)
 {
     Q_D(MimePart);
-    d->contentEncoding = Base64;
-    d->contentDevice   = file;
     if (file) {
-        file->setParent(nullptr);
-    }
+        const QString filename = QFileInfo(*file).fileName();
+        d->contentName = filename.toLatin1();
 
-    const QString filename = QFileInfo(*file).fileName();
-    d->contentName         = filename.toLatin1();
+        QMimeDatabase db;
+        QMimeType mime = db.mimeTypeForFile(filename);
+        d->contentType = mime.name().toLatin1();
+        if (d->contentType.isEmpty()) {
+            d->contentType = QByteArrayLiteral("application/octet-stream");
+        }
 
-    QMimeDatabase db;
-    QMimeType mime = db.mimeTypeForFile(file->fileName());
-    d->contentType = mime.name().toLatin1();
-    if (d->contentType.isEmpty()) {
-        d->contentType = QByteArrayLiteral("application/octet-stream");
+        d->contentEncoding = Base64;
+
+        d->contentDevice = file;
+        d->contentDevice->setParent(nullptr);
     }
 }
 
@@ -62,6 +63,4 @@ MimeFile::MimeFile(const QByteArray &stream, const QString &fileName, const QByt
     setContent(stream);
 }
 
-MimeFile::~MimeFile()
-{
-}
+MimeFile::~MimeFile() = default;
