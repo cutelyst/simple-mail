@@ -21,7 +21,8 @@
 
 using namespace SimpleMail;
 
-MimeInlineFile::MimeInlineFile(std::shared_ptr<QFile> && file) : MimeFile(std::move(file))
+MimeInlineFile::MimeInlineFile(std::shared_ptr<QFile> &&file)
+    : MimeFile(std::move(file))
 {
     Q_D(MimePart);
     d->header.append(QByteArrayLiteral("Content-Disposition: inline\r\n"));

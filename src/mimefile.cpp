@@ -25,12 +25,12 @@
 
 using namespace SimpleMail;
 
-MimeFile::MimeFile(std::shared_ptr<QFile> && file)
+MimeFile::MimeFile(std::shared_ptr<QFile> &&file)
 {
     Q_D(MimePart);
     if (file) {
         const QString filename = QFileInfo(*file).fileName();
-        d->contentName = filename.toLatin1();
+        d->contentName         = filename.toLatin1();
 
         QMimeDatabase db;
         QMimeType mime = db.mimeTypeForFile(filename);
