@@ -21,6 +21,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 option(BUILD_SHARED_LIBS "Build in shared lib mode" ON)
+option(BUILD_WITH_SMIME "Build with SMIME Support" OFF)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -79,6 +80,10 @@ install(EXPORT SimpleMailTargets
     NAMESPACE SimpleMail::
     COMPONENT Devel
 )
+
+if(BUILD_WITH_SMIME)
+    find_package(OpenSSL REQUIRED)
+endif()
 
 add_subdirectory(src)
 if (BUILD_DEMOS)
