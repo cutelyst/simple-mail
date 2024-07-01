@@ -231,6 +231,9 @@ bool MimePart::write(QIODevice *device)
         headers.append("; name=\"?UTF-8?B?" + d->contentName.toBase64(QByteArray::Base64Encoding) +
                        "?=\"");
     }
+    if (headers.contains("signed")) {
+        headers.append("; protocol=\"application/pkcs7-signature\"; micalg=sha1");
+    }
     if (!d->contentCharset.isEmpty()) {
         headers.append("; charset=" + d->contentCharset);
     }
