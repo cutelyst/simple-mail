@@ -47,6 +47,7 @@ set(simplemailqt_HEADERS_PRIVATE
 )
 
 if(BUILD_WITH_SMIME)
+    add_definitions(-DWITH_SMIME)
     list(APPEND simplemailqt_SRC
         smime.cpp
     )
