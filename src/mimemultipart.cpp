@@ -59,6 +59,18 @@ void MimeMultiPart::removeParts()
     static_cast<MimeMultiPartPrivate*>(d)->parts.clear();
 }
 
+QByteArray MimeMultiPart::getBoundary() const
+{
+    Q_D(const MimePart);
+    return d->contentBoundary;
+}
+
+void MimeMultiPart::setBoundary(const QByteArray &boundary)
+{
+    Q_D(MimePart);
+    d->contentBoundary = boundary;
+}
+
 QList<MimePart*> MimeMultiPart::parts() const
 {
     Q_D(const MimePart);
