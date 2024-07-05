@@ -47,6 +47,7 @@ public:
 
     QList<MimePart *> parts() const;
     void addPart(MimePart *part);
+    void removeParts();
 
 protected:
     virtual bool writeData(QIODevice *device) Q_DECL_FINAL;

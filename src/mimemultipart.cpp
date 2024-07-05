@@ -53,6 +53,12 @@ void MimeMultiPart::addPart(MimePart *part)
     static_cast<MimeMultiPartPrivate*>(d)->parts.append(part);
 }
 
+void MimeMultiPart::removeParts()
+{
+    Q_D(MimePart);
+    static_cast<MimeMultiPartPrivate*>(d)->parts.clear();
+}
+
 QList<MimePart*> MimeMultiPart::parts() const
 {
     Q_D(const MimePart);
