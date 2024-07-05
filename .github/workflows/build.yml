@@ -24,7 +24,9 @@ jobs:
 
         config:
           - qt_version: "5.15"
+            macos_architectures: "x86_64"
           - qt_version: "6.6.0"
+            macos_architectures: "x86_64;arm64"
 
     steps:
       - name: Install Qt
@@ -48,8 +50,11 @@ jobs:
       - name: Configure project
         run: >
           cmake -S . -B ./build -G Ninja
+          --warn-uninitialized
+          -Werror=dev
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DENABLE_MAINTAINER_CFLAGS=${{ matrix.build_type == 'Debug' }}
+          -DCMAKE_OSX_ARCHITECTURES="${{ matrix.config.macos_architectures }}"
 
       - name: Build project
         run: cmake --build ./build
