@@ -28,7 +28,7 @@ MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
 }
 
-MimePart::MimePart(const MimePart &other)
+MimePart::MimePart(const MimePart &other) : d_ptr(new MimePartPrivate)
 {
     Q_D(MimePart);
     d->contentCharset = other.charset();
