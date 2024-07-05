@@ -49,6 +49,9 @@ public:
     void addPart(MimePart *part);
     void removeParts();
 
+    QByteArray getBoundary() const;
+    void setBoundary(const QByteArray &boundary);
+
 protected:
     virtual bool writeData(QIODevice *device) Q_DECL_FINAL;
 };
