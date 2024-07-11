@@ -26,3 +26,6 @@
 #include "mimefile.h"
 #include "server.h"
 #include "serverreply.h"
+#ifdef WITH_SMIME
+#include "smime.h"
+#endif
