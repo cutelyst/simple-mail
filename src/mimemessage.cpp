@@ -192,9 +192,11 @@ void MimeMessage::setSubject(const QString &subject)
 
 void MimeMessage::addPart(const std::shared_ptr<MimePart> &part)
 {
-    auto content = *d->content;
-    if (typeid(content) == typeid(MimeMultiPart)) {
-        std::static_pointer_cast<MimeMultiPart>(d->content)->addPart(part);
+    if (d->content) {
+        auto& content = *d->content;
+        if (typeid(content) == typeid(MimeMultiPart)) {
+            std::static_pointer_cast<MimeMultiPart>(d->content)->addPart(part);
+        }
     }
 }
 
@@ -231,11 +233,13 @@ QString MimeMessage::subject() const
 QList<std::shared_ptr<MimePart>> MimeMessage::parts() const
 {
     QList<std::shared_ptr<MimePart>> ret;
-    auto content = *d->content;
-    if (typeid(content) == typeid(MimeMultiPart)) {
-        ret = std::static_pointer_cast<MimeMultiPart>(d->content)->parts();
-    } else {
-        ret.append(std::shared_ptr<MimePart>(d->content));
+    if (d->content) {
+        auto& content = *d->content;
+        if (typeid(content) == typeid(MimeMultiPart)) {
+            ret = std::static_pointer_cast<MimeMultiPart>(d->content)->parts();
+        } else {
+            ret.append(std::shared_ptr<MimePart>(d->content));
+        }
     }
 
     return ret;
