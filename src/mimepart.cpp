@@ -46,6 +46,7 @@ MimePart::MimePart(const MimePart &other)
     d->contentType     = other.contentType();
     d->contentEncoding = other.encoding();
     d->header          = other.header();
+    d->contentIsBase64 = other.contentIsBase64();
 }
 
 MimePart::~MimePart()
@@ -66,6 +67,7 @@ MimePart &MimePart::operator=(const MimePart &other)
     d->contentType     = other.contentType();
     d->contentEncoding = other.encoding();
     d->header          = other.header();
+    d->contentIsBase64 = other.contentIsBase64();
 
     return *this;
 }
@@ -275,6 +277,18 @@ MimePart::MimePart(MimePartPrivate *d)
 {
 }
 
+void MimePart::setContentIsBase64(bool isBase64)
+{
+    Q_D(MimePart);
+    d->contentIsBase64 = isBase64;
+}
+
+bool MimePart::contentIsBase64() const
+{
+    Q_D(const MimePart);
+    return d->contentIsBase64;
+}
+
 bool MimePart::writeData(QIODevice *device)
 {
     Q_D(MimePart);
@@ -297,8 +311,14 @@ bool MimePart::writeData(QIODevice *device)
         }
         break;
     case MimePart::Base64:
-        if (!d->writeBase64(input, device)) {
-            return false;
+        if (!d->contentIsBase64) {
+            if (!d->writeBase64(input, device)) {
+                return false;
+            }
+        } else {
+            if (!d->writeRaw(input, device)) {
+                return false;
+            }
         }
         break;
     case MimePart::QuotedPrintable:
