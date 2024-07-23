@@ -195,7 +195,7 @@ err:
 void SMime::setSignedHeader()
 {
     Q_D(MimePart);
-    d->contentType     = QByteArrayLiteral("application/pkcs7-signature; name=\"smime.p7s\"");
+    d->contentType = QByteArrayLiteral("application/pkcs7-signature; name=\"smime.p7s\"");
     d->contentCharset.clear();
     d->contentEncoding = Base64;
     d->contentIsBase64 = true;
