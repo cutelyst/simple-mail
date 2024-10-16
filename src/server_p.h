@@ -93,7 +93,7 @@ public:
     Server *q_ptr;
     QTcpSocket *socket = nullptr;
     QStringList caps;
-    QString host;
+    QString host = QStringLiteral("localhost");
     QString hostname;
     QString username;
     QString password;
