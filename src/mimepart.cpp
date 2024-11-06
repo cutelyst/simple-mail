@@ -232,8 +232,7 @@ bool MimePart::write(QIODevice *device)
                        "?=\"");
     }
     if (headers.contains("signed")) {
-        headers.append("; protocol=\"application/pkcs7-signature\";");
-        headers.append("; micalg=sha1");
+        headers.append("; protocol=\"application/pkcs7-signature\"; micalg=sha1");
     }
     if (!d->contentCharset.isEmpty()) {
         headers.append("; charset=" + d->contentCharset);
