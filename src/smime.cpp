@@ -311,14 +311,13 @@ bool SMime::writeInputBuffer()
 bool SMime::writeMimeMessageBuffer()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
-    QBuffer *buffer = new QBuffer;
-    buffer->open(QBuffer::ReadWrite);
+    QBuffer buffer;
+    buffer.open(QBuffer::ReadWrite);
 
-    _mimeMessage->getContent()->write(buffer);
-    buffer->close();
+    _mimeMessage->getContent()->write(&buffer);
+    buffer.close();
 
-    d->_message = buffer->data();
-    delete buffer;
+    d->_message = buffer.data();
 
     return true;
 }
