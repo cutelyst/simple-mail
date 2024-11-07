@@ -215,7 +215,7 @@ void SMime::setEncryptionHeader()
 void SMime::loadPKCS12PrivateKey()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
-    QFile file(QString::fromLatin1(d->_keyfile.toStdString().c_str()));
+    QFile file(d->_keyfile);
     if (!file.exists())
         return;
     file.open(QFile::ReadOnly);
@@ -255,7 +255,7 @@ void SMime::loadPKCS12PrivateKey()
 void SMime::loadPKCS12PublicKey()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
-    QFile file(QString::fromLatin1(d->_publicKeyfile.toStdString().c_str()));
+    QFile file(d->_publicKeyfile);
     if (!file.exists())
         return;
     file.open(QFile::ReadOnly);
