@@ -53,12 +53,6 @@ if(BUILD_WITH_SMIME)
         smime.h
         smimepart_p.h
     )
-    set(OPENSSL_LIBS
-        OpenSSL::SSL
-        OpenSSL::Crypto
-    )
-else()
-    set(OPENSSL_LIBS)
 endif()
 
 add_library(SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
@@ -111,8 +105,15 @@ target_link_libraries(SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
     PUBLIC
         Qt::Core
         Qt::Network
-        ${OPENSSL_LIBS}
 )
+
+if(BUILD_WITH_SMIME)
+    target_link_libraries(SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
+        PUBLIC
+            OpenSSL::SSL
+            OpenSSL::Crypto
+    )
+endif()
 
 set_property(TARGET SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR} PROPERTY PUBLIC_HEADER ${simplemailqt_HEADERS})
 install(TARGETS SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
