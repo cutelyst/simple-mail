@@ -47,9 +47,11 @@ if(BUILD_WITH_SMIME)
     add_definitions(-DWITH_SMIME)
     list(APPEND simplemailqt_SRC
         smime.cpp
+        smimepart_p.cpp
     )
     list(APPEND simplemailqt_HEADERS
         smime.h
+        smimepart_p.h
     )
     set(OPENSSL_LIBS
         OpenSSL::SSL

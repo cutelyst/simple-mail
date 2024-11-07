@@ -38,22 +38,6 @@ private:
     bool handleData(PKCS7 *p7, BIO *dataIn, int flags);
 
     MimeMessage *_mimeMessage;
-
-    QByteArray _message;
-    QString _keyfile;
-    QString _publicKeyfile;
-    QString _password;
-
-    // private key for signing
-    EVP_PKEY *_privateKey;
-
-    // certificate from private Key
-    X509 *_certificate;
-    STACK_OF(X509) * _certificateCA;
-    // certificate from public key, used for encrypting
-    STACK_OF(X509) * _recipsReceiver;
-    // buffer to be signed/encrypted
-    BIO *_input;
 };
 } // namespace SimpleMail
 
