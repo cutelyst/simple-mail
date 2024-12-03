@@ -43,6 +43,18 @@ set(simplemailqt_HEADERS_PRIVATE
 #     common.h
 )
 
+if(BUILD_WITH_SMIME)
+    add_definitions(-DWITH_SMIME)
+    list(APPEND simplemailqt_SRC
+        smime.cpp
+        smimepart_p.cpp
+    )
+    list(APPEND simplemailqt_HEADERS
+        smime.h
+        smimepart_p.h
+    )
+endif()
+
 add_library(SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
     ${simplemailqt_SRC}
     ${simplemailqt_HEADERS}
@@ -94,6 +106,14 @@ target_link_libraries(SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
         Qt::Core
         Qt::Network
 )
+
+if(BUILD_WITH_SMIME)
+    target_link_libraries(SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
+        PUBLIC
+            OpenSSL::SSL
+            OpenSSL::Crypto
+    )
+endif()
 
 set_property(TARGET SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR} PROPERTY PUBLIC_HEADER ${simplemailqt_HEADERS})
 install(TARGETS SimpleMail${PROJECT_VERSION_MAJOR}Qt${QT_VERSION_MAJOR}
