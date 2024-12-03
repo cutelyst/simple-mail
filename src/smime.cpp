@@ -67,7 +67,7 @@ bool SMime::sign()
         goto err;
 
     /* Sign content */
-    p7 = PKCS7_sign(d->_certificate, d->_privateKey, NULL, d->_input, flags);
+    p7 = PKCS7_sign(d->_certificate.get(), d->_privateKey.get(), NULL, d->_input.get(), flags);
     if (!p7)
         goto err;
 
@@ -78,7 +78,7 @@ bool SMime::sign()
     /* Write out S/MIME message */
     if (!SMIME_write_PKCS7(out,
                            p7,
-                           d->_input,
+                           d->_input.get(),
                            flags |
                                PKCS7_CRLFEOL)) // needed for intializing/finalizing SMIME structure
         goto err;
@@ -117,12 +117,12 @@ bool SMime::encrypt()
         goto err;
 
     /* encrypt content */
-    p7 = PKCS7_encrypt(d->_recipsReceiver, d->_input, EVP_des_ede3_cbc(), flags);
+    p7 = PKCS7_encrypt(d->_recipsReceiver.get(), d->_input.get(), EVP_des_ede3_cbc(), flags);
 
     if (!p7)
         goto err;
 
-    if (!handleData(p7, d->_input, flags))
+    if (!handleData(p7, d->_input.get(), flags))
         goto err;
 
     _mimeMessage->setContent(std::shared_ptr<SMime>(this));
@@ -159,17 +159,17 @@ bool SMime::signAndEncrypt()
         goto err;
 
     /* Sign content */
-    p7 = PKCS7_sign(d->_certificate, d->_privateKey, NULL, d->_input, flags);
+    p7 = PKCS7_sign(d->_certificate.get(), d->_privateKey.get(), NULL, d->_input.get(), flags);
     if (!p7)
         goto err;
 
     signedContent = BIO_new(BIO_s_mem());
-    if (!SMIME_write_PKCS7(signedContent, p7, d->_input, flags | PKCS7_CRLFEOL))
+    if (!SMIME_write_PKCS7(signedContent, p7, d->_input.get(), flags | PKCS7_CRLFEOL))
         goto err;
 
     PKCS7_free(p7);
     p7 = NULL;
-    p7 = PKCS7_encrypt(d->_recipsReceiver, signedContent, EVP_des_ede3_cbc(), flags);
+    p7 = PKCS7_encrypt(d->_recipsReceiver.get(), signedContent, EVP_des_ede3_cbc(), flags);
 
     if (!p7)
         goto err;
@@ -236,18 +236,24 @@ void SMime::loadPKCS12PrivateKey()
         qCDebug(SIMPLEMAIL_SMIME) << "Error reading PKCS#12 file";
     }
 
+    EVP_PKEY *privateKey = nullptr;
+    X509 *certificate = nullptr;
+    STACK_OF(X509) *certificateCA = nullptr;
     if (!PKCS12_parse(
-            p12, d->_password.toStdString().c_str(), &d->_privateKey, &d->_certificate, &d->_certificateCA)) {
+            p12, d->_password.toStdString().c_str(), &privateKey, &certificate, &certificateCA)) {
         OSSL_PROVIDER_try_load(nullptr, "legacy", 1);
 
         if (!PKCS12_parse(p12,
                           d->_password.toStdString().c_str(),
-                          &d->_privateKey,
-                          &d->_certificate,
-                          &d->_certificateCA)) {
+                          &privateKey,
+                          &certificate,
+                          &certificateCA)) {
             qCDebug(SIMPLEMAIL_SMIME) << "Error parsing PKCS#12 file";
         }
     }
+    d->_privateKey.reset(privateKey);
+    d->_certificate.reset(certificate);
+    d->_certificateCA.reset(certificateCA);
 
     PKCS12_free(p12);
 }
@@ -272,11 +278,13 @@ void SMime::loadPKCS12PublicKey()
     X509 *publicrcert = PEM_read_bio_X509(keyBuffer, NULL, 0, NULL);
     BIO_free(keyBuffer);
 
-    d->_recipsReceiver = sk_X509_new_null();
 
-    if (!d->_recipsReceiver || !sk_X509_push(d->_recipsReceiver, publicrcert)) {
+    STACK_OF(X509) *recipsReceiver = sk_X509_new_null();
+
+    if (!recipsReceiver || !sk_X509_push(recipsReceiver, publicrcert)) {
         return;
     }
+    d->_recipsReceiver.reset(recipsReceiver);
     publicrcert = nullptr;
 }
 
@@ -300,10 +308,11 @@ void SMime::wrapMimeMultiPart()
 bool SMime::writeInputBuffer()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
-    d->_input = BIO_new(BIO_s_mem());
+    BIO *input = BIO_new(BIO_s_mem());
+    d->_input = std::unique_ptr<BIO>(input);
     if (!d->_input)
         return false;
-    if (!BIO_write(d->_input, (void *) d->_message.data(), d->_message.length()))
+    if (!BIO_write(d->_input.get(), (void *) d->_message.data(), d->_message.length()))
         return false;
     return true;
 }
