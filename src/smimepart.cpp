@@ -1,4 +1,4 @@
-#include "smime.h"
+#include "smimepart.h"
 
 #include "mimemultipart.h"
 #include "mimepart_p.h"
