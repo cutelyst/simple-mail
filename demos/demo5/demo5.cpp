@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
     // Now create an SMime object
 
-    auto smime = new SimpleMail::SMime(&message);
+    auto smime = new SimpleMail::SMimePart(&message);
 
     // Setup private and public key/certificate in PKCS#12 format
 
