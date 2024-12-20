@@ -55,9 +55,9 @@ MimeMessage &MimeMessage::operator=(const MimeMessage &other)
     return *this;
 }
 
-MimePart &MimeMessage::getContent()
+std::shared_ptr<SimpleMail::MimePart> MimeMessage::getContent()
 {
-    return *d->content;
+    return d->content;
 }
 
 void MimeMessage::setContent(const std::shared_ptr<MimePart> &content)
