@@ -1,5 +1,5 @@
-#ifndef SMIME_H
-#define SMIME_H
+#ifndef SMIMEPART_H
+#define SMIMEPART_H
 
 #include "mimemessage.h"
 #include "mimepart.h"
@@ -9,11 +9,11 @@
 #include <QString>
 
 namespace SimpleMail {
-class SMTP_EXPORT SMime : public MimePart
+class SMTP_EXPORT SMimePart : public MimePart
 {
 public:
-    SMime(MimeMessage *message);
-    virtual ~SMime();
+    SMimePart(MimeMessage *message);
+    virtual ~SMimePart();
 
     void setKeyFile(const QString &filename, const QString &password);
 
