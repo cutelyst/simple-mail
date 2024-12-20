@@ -13,11 +13,11 @@
 #include <QFile>
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(SIMPLEMAIL_SMIME, "simplemail.smime", QtInfoMsg)
+Q_LOGGING_CATEGORY(SIMPLEMAIL_SMIMEPART, "simplemail.smimepart", QtInfoMsg)
 
 using namespace SimpleMail;
 
-SMime::SMime(MimeMessage *message)
+SMimePart::SMimePart(MimeMessage *message)
     : MimePart(new SMimePrivate)
 {
     initOpenSSL();
@@ -25,12 +25,12 @@ SMime::SMime(MimeMessage *message)
     writeMimeMessageBuffer();
 }
 
-SMime::~SMime()
+SMimePart::~SMimePart()
 {
     _mimeMessage = nullptr;
 }
 
-void SMime::setKeyFile(const QString &filename, const QString &password)
+void SMimePart::setKeyFile(const QString &filename, const QString &password)
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     d->_keyfile  = filename;
@@ -38,21 +38,21 @@ void SMime::setKeyFile(const QString &filename, const QString &password)
     loadPKCS12PrivateKey();
 }
 
-void SMime::setPublicKey(const QString &filename)
+void SMimePart::setPublicKey(const QString &filename)
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     d->_publicKeyfile = filename;
     loadPKCS12PublicKey();
 }
 
-bool SMime::sign()
+bool SMimePart::sign()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     bool ret  = false;
     PKCS7 *p7 = nullptr;
 
     if (!d->_certificate || !d->_privateKey) {
-        qCDebug(SIMPLEMAIL_SMIME) << "no certificate or private key";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "no certificate or private key";
         return ret;
     }
 
@@ -86,26 +86,26 @@ bool SMime::sign()
     if (!handleData(p7, nullptr, 0))
         goto err;
 
-    _mimeMessage->addPart(std::shared_ptr<SMime>(this));
+    _mimeMessage->addPart(std::shared_ptr<SMimePart>(this));
 
     ret = true;
 err:
     if (!ret) {
-        qCDebug(SIMPLEMAIL_SMIME) << "Error Signing Data";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "Error Signing Data";
     }
     PKCS7_free(p7);
     BIO_free(out);
     return ret;
 }
 
-bool SMime::encrypt()
+bool SMimePart::encrypt()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     bool ret  = false;
     PKCS7 *p7 = nullptr;
 
     if (!d->_recipsReceiver) {
-        qCDebug(SIMPLEMAIL_SMIME) << "no public key";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "no public key";
         return ret;
     }
 
@@ -125,29 +125,29 @@ bool SMime::encrypt()
     if (!handleData(p7, d->_input.get(), flags))
         goto err;
 
-    _mimeMessage->setContent(std::shared_ptr<SMime>(this));
+    _mimeMessage->setContent(std::shared_ptr<SMimePart>(this));
 
     ret = true;
 err:
     if (!ret) {
-        qCDebug(SIMPLEMAIL_SMIME) << "Error Encrypting Data";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "Error Encrypting Data";
     }
     PKCS7_free(p7);
     return ret;
 }
 
-bool SMime::signAndEncrypt()
+bool SMimePart::signAndEncrypt()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     bool ret           = false;
     PKCS7 *p7          = nullptr;
     BIO *signedContent = nullptr;
     if (!d->_certificate || !d->_privateKey) {
-        qCDebug(SIMPLEMAIL_SMIME) << "no certificate or private key";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "no certificate or private key";
         return ret;
     }
     if (!d->_recipsReceiver) {
-        qCDebug(SIMPLEMAIL_SMIME) << "no public key";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "no public key";
         return ret;
     }
 
@@ -177,19 +177,19 @@ bool SMime::signAndEncrypt()
     if (!handleData(p7, signedContent, flags))
         goto err;
 
-    _mimeMessage->setContent(std::shared_ptr<SMime>(this));
+    _mimeMessage->setContent(std::shared_ptr<SMimePart>(this));
 
     ret = true;
 err:
     if (!ret) {
-        qCDebug(SIMPLEMAIL_SMIME) << "Error Signing/Encrypting Data";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "Error Signing/Encrypting Data";
     }
     PKCS7_free(p7);
     BIO_free(signedContent);
     return ret;
 }
 
-void SMime::setSignedHeader()
+void SMimePart::setSignedHeader()
 {
     Q_D(MimePart);
     d->contentType = QByteArrayLiteral("application/pkcs7-signature; name=\"smime.p7s\"");
@@ -200,7 +200,7 @@ void SMime::setSignedHeader()
     d->header.append("Content-Disposition: attachment; filename=\"smime.p7s\"\r\n");
 }
 
-void SMime::setEncryptionHeader()
+void SMimePart::setEncryptionHeader()
 {
     Q_D(MimePart);
     d->contentType = QByteArrayLiteral(
@@ -212,7 +212,7 @@ void SMime::setEncryptionHeader()
     d->header.append("Content-Disposition: attachment; filename=\"smime.p7m\"\r\n");
 }
 
-void SMime::loadPKCS12PrivateKey()
+void SMimePart::loadPKCS12PrivateKey()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     QFile file(d->_keyfile);
@@ -224,7 +224,7 @@ void SMime::loadPKCS12PrivateKey()
 
     BIO *keyBuffer = BIO_new(BIO_s_mem());
     if (keyBuffer == NULL) {
-        qCDebug(SIMPLEMAIL_SMIME) << "Error opening file " << d->_keyfile;
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "Error opening file " << d->_keyfile;
         return;
     }
 
@@ -233,7 +233,7 @@ void SMime::loadPKCS12PrivateKey()
     BIO_free(keyBuffer);
 
     if (p12 == NULL) {
-        qCDebug(SIMPLEMAIL_SMIME) << "Error reading PKCS#12 file";
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "Error reading PKCS#12 file";
     }
 
     EVP_PKEY *privateKey = nullptr;
@@ -248,7 +248,7 @@ void SMime::loadPKCS12PrivateKey()
                           &privateKey,
                           &certificate,
                           &certificateCA)) {
-            qCDebug(SIMPLEMAIL_SMIME) << "Error parsing PKCS#12 file";
+            qCDebug(SIMPLEMAIL_SMIMEPART) << "Error parsing PKCS#12 file";
         }
     }
     d->_privateKey.reset(privateKey);
@@ -258,7 +258,7 @@ void SMime::loadPKCS12PrivateKey()
     PKCS12_free(p12);
 }
 
-void SMime::loadPKCS12PublicKey()
+void SMimePart::loadPKCS12PublicKey()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     QFile file(d->_publicKeyfile);
@@ -270,7 +270,7 @@ void SMime::loadPKCS12PublicKey()
 
     BIO *keyBuffer = BIO_new(BIO_s_mem());
     if (keyBuffer == NULL) {
-        qCDebug(SIMPLEMAIL_SMIME) << "Error opening file " << d->_publicKeyfile;
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "Error opening file " << d->_publicKeyfile;
         return;
     }
     BIO_write(keyBuffer, (void *) buffer.data(), buffer.length());
@@ -288,13 +288,13 @@ void SMime::loadPKCS12PublicKey()
     publicrcert = nullptr;
 }
 
-void SMime::initOpenSSL()
+void SMimePart::initOpenSSL()
 {
     OpenSSL_add_all_algorithms();
     ERR_load_crypto_strings();
 }
 
-void SMime::wrapMimeMultiPart()
+void SMimePart::wrapMimeMultiPart()
 {
     auto &mimeMultiPart = *_mimeMessage->getContent();
 
@@ -305,7 +305,7 @@ void SMime::wrapMimeMultiPart()
     }
 }
 
-bool SMime::writeInputBuffer()
+bool SMimePart::writeInputBuffer()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     BIO *input = BIO_new(BIO_s_mem());
@@ -317,7 +317,7 @@ bool SMime::writeInputBuffer()
     return true;
 }
 
-bool SMime::writeMimeMessageBuffer()
+bool SMimePart::writeMimeMessageBuffer()
 {
     SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
     QBuffer buffer;
@@ -331,7 +331,7 @@ bool SMime::writeMimeMessageBuffer()
     return true;
 }
 
-bool SMime::handleData(PKCS7 *p7, BIO *dataIn, int flags)
+bool SMimePart::handleData(PKCS7 *p7, BIO *dataIn, int flags)
 {
     QByteArray contentBuffer;
 
@@ -351,7 +351,7 @@ bool SMime::handleData(PKCS7 *p7, BIO *dataIn, int flags)
 
     char buffer[1024];
     while (BIO_get_line(encryptedData, &buffer[0], sizeof(buffer))) {
-        qCDebug(SIMPLEMAIL_SMIME) << QString::fromLatin1(buffer);
+        qCDebug(SIMPLEMAIL_SMIMEPART) << QString::fromLatin1(buffer);
         if (strncmp(&buffer[0], "-----", strlen("-----")) != 0) {
             contentBuffer += QByteArray(&buffer[0], strlen(buffer) - 1);
             contentBuffer += QByteArray("\r\n");
