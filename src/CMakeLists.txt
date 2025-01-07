@@ -46,11 +46,13 @@ set(simplemailqt_HEADERS_PRIVATE
 if(BUILD_WITH_SMIME)
     add_definitions(-DWITH_SMIME)
     list(APPEND simplemailqt_SRC
+        smimemessage.cpp
         smimemessage_p.cpp
         smimepart.cpp
         smimepart_p.cpp
     )
     list(APPEND simplemailqt_HEADERS
+        smimemessage.h
         smimemessage_p.h
         smimepart.h
         smimepart_p.h
