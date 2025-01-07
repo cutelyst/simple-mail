@@ -17,17 +17,14 @@ Q_LOGGING_CATEGORY(SIMPLEMAIL_SMIMEPART, "simplemail.smimepart", QtInfoMsg)
 
 using namespace SimpleMail;
 
-SMimePart::SMimePart(MimeMessage *message)
+SMimePart::SMimePart()
     : MimePart(new SMimePartPrivate)
 {
     initOpenSSL();
-    _mimeMessage = message;
-    writeMimeMessageBuffer();
 }
 
 SMimePart::~SMimePart()
 {
-    _mimeMessage = nullptr;
 }
 
 void SMimePart::setKeyFile(const QString &filename, const QString &password)
@@ -56,7 +53,6 @@ bool SMimePart::sign()
         return ret;
     }
 
-    wrapMimeMultiPart();
     setSignedHeader();
 
     int flags = PKCS7_DETACHED | PKCS7_STREAM | PKCS7_BINARY;
@@ -85,8 +81,6 @@ bool SMimePart::sign()
 
     if (!handleData(p7, nullptr, 0))
         goto err;
-
-    _mimeMessage->addPart(std::shared_ptr<SMimePart>(this));
 
     ret = true;
 err:
@@ -124,8 +118,6 @@ bool SMimePart::encrypt()
 
     if (!handleData(p7, d->_input.get(), flags))
         goto err;
-
-    _mimeMessage->setContent(std::shared_ptr<SMimePart>(this));
 
     ret = true;
 err:
@@ -176,8 +168,6 @@ bool SMimePart::signAndEncrypt()
 
     if (!handleData(p7, signedContent, flags))
         goto err;
-
-    _mimeMessage->setContent(std::shared_ptr<SMimePart>(this));
 
     ret = true;
 err:
@@ -294,17 +284,6 @@ void SMimePart::initOpenSSL()
     ERR_load_crypto_strings();
 }
 
-void SMimePart::wrapMimeMultiPart()
-{
-    auto &mimeMultiPart = *_mimeMessage->getContent();
-
-    if (typeid(mimeMultiPart) == typeid(MimeMultiPart)) {
-        MimeMultiPart *multiPartSigned = new MimeMultiPart(MimeMultiPart::Signed);
-        multiPartSigned->addPart(_mimeMessage->getContent());
-        _mimeMessage->setContent(std::shared_ptr<MimeMultiPart>(multiPartSigned));
-    }
-}
-
 bool SMimePart::writeInputBuffer()
 {
     SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
@@ -317,13 +296,13 @@ bool SMimePart::writeInputBuffer()
     return true;
 }
 
-bool SMimePart::writeMimeMessageBuffer()
+bool SMimePart::writeMimeMessageBuffer(const std::shared_ptr<SimpleMail::MimePart> &mimeParts)
 {
     SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     QBuffer buffer;
     buffer.open(QBuffer::ReadWrite);
 
-    _mimeMessage->getContent()->write(&buffer);
+    mimeParts->write(&buffer);
     buffer.close();
 
     d->_message = buffer.data();

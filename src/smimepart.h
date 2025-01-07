@@ -9,10 +9,10 @@
 #include <QString>
 
 namespace SimpleMail {
-class SMTP_EXPORT SMimePart : public MimePart
+class SMimePart : public MimePart
 {
 public:
-    SMimePart(MimeMessage *message);
+    SMimePart();
     virtual ~SMimePart();
 
     void setKeyFile(const QString &filename, const QString &password);
@@ -23,6 +23,8 @@ public:
     bool encrypt();
     bool signAndEncrypt();
 
+    bool writeMimeMessageBuffer(const std::shared_ptr<SimpleMail::MimePart> &mimeParts);
+
 private:
     void setSignedHeader();
     void setEncryptionHeader();
@@ -32,12 +34,8 @@ private:
 
     void initOpenSSL();
 
-    void wrapMimeMultiPart();
     bool writeInputBuffer();
-    bool writeMimeMessageBuffer();
     bool handleData(PKCS7 *p7, BIO *dataIn, int flags);
-
-    MimeMessage *_mimeMessage;
 };
 } // namespace SimpleMail
 
