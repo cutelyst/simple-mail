@@ -42,10 +42,10 @@ public:
 };
 
 namespace SimpleMail {
-class SMimePrivate : public MimePartPrivate
+class SMimePartPrivate : public MimePartPrivate
 {
 public:
-    virtual ~SMimePrivate();
+    virtual ~SMimePartPrivate();
 
     QByteArray _message;
     QString _keyfile;

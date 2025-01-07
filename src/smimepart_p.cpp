@@ -2,7 +2,7 @@
 
 using namespace SimpleMail;
 
-SMimePrivate::~SMimePrivate()
+SMimePartPrivate::~SMimePartPrivate()
 {
     _input = nullptr;
     _privateKey = nullptr;
