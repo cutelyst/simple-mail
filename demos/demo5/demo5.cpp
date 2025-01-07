@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
     server.setUsername(QLatin1String("your_email_address@host.com"));
     server.setPassword(QLatin1String("your_password"));
 
-    // Now we create a MimeMessage object. This is the email.
+    // Now we create a SMimeMessage object. This is the email.
 
-    MimeMessage message;
+    SMimeMessage message;
 
     EmailAddress sender(QLatin1String("your_email_address@host.com"), QLatin1String("Your Name"));
     message.setSender(sender);
@@ -53,34 +53,27 @@ int main(int argc, char *argv[])
         std::make_shared<MimeAttachment>(std::make_shared<QFile>(QLatin1String("document.pdf")));
     message.addPart(document);
 
-    // Now create an SMime object
-
-    auto smime = new SimpleMail::SMimePart(&message);
-
     // Setup private and public key/certificate in PKCS#12 format
 
-    smime->setKeyFile(QLatin1String("your_private_key.p12"),
-                      QLatin1String("your_private_key_password"));
-    smime->setPublicKey(QLatin1String("recipient_public_key.cert"));
+    message.setKeyFile(QLatin1String("your_private_key.p12"),
+                       QLatin1String("your_private_key_password"));
+    message.setPublicKey(QLatin1String("recipient_public_key.cert"));
 
     // Sign the message. Only your private key is required.
-    // if(!smime->sign()) {
+    // if(!message.sign()) {
     //     qDebug() << "Failed to create signed email";
-    //     delete smime;
     //     return -3;
     // }
 
     // Encrypt the message. Only the recipient's public key/certificate is required.
-    // if(!smime->encrypt()) {
+    // if(!message.encrypt()) {
     //     qDebug() << "Failed to create encrypted email";
-    //     delete smime;
     //     return -3;
     // }
 
     // Sign and encrypt the message
-    if (!smime->signAndEncrypt()) {
+    if (!message.signAndEncrypt()) {
         qDebug() << "Failed to create signed and encrypted email";
-        delete smime;
         return -3;
     }
 
