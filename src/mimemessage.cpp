@@ -135,6 +135,16 @@ bool MimeMessage::write(QIODevice *device) const
     return true;
 }
 
+MimeMessage::MimeMessage(MimeMessagePrivate *d, bool createAutoMimeContent)
+    : d(d)
+{
+    if (createAutoMimeContent) {
+        d->content = std::make_shared<MimeMultiPart>();
+    }
+
+    d->autoMimeContentCreated = createAutoMimeContent;
+}
+
 void MimeMessage::setSender(const EmailAddress &sender)
 {
     d->sender = sender;
