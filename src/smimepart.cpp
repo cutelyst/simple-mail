@@ -29,24 +29,24 @@ SMimePart::~SMimePart()
 
 void SMimePart::setKeyFile(const QString &filename, const QString &password)
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
-    d->_keyfile  = filename;
-    d->_password = password;
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
+    d->_keyfile         = filename;
+    d->_password        = password;
     loadPKCS12PrivateKey();
 }
 
 void SMimePart::setPublicKey(const QString &filename)
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
-    d->_publicKeyfile = filename;
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
+    d->_publicKeyfile   = filename;
     loadPKCS12PublicKey();
 }
 
 bool SMimePart::sign()
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
-    bool ret  = false;
-    PKCS7 *p7 = nullptr;
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
+    bool ret            = false;
+    PKCS7 *p7           = nullptr;
 
     if (!d->_certificate || !d->_privateKey) {
         qCDebug(SIMPLEMAIL_SMIMEPART) << "no certificate or private key";
@@ -94,9 +94,9 @@ err:
 
 bool SMimePart::encrypt()
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
-    bool ret  = false;
-    PKCS7 *p7 = nullptr;
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
+    bool ret            = false;
+    PKCS7 *p7           = nullptr;
 
     if (!d->_recipsReceiver) {
         qCDebug(SIMPLEMAIL_SMIMEPART) << "no public key";
@@ -130,10 +130,10 @@ err:
 
 bool SMimePart::signAndEncrypt()
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
-    bool ret           = false;
-    PKCS7 *p7          = nullptr;
-    BIO *signedContent = nullptr;
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
+    bool ret            = false;
+    PKCS7 *p7           = nullptr;
+    BIO *signedContent  = nullptr;
     if (!d->_certificate || !d->_privateKey) {
         qCDebug(SIMPLEMAIL_SMIMEPART) << "no certificate or private key";
         return ret;
@@ -204,7 +204,7 @@ void SMimePart::setEncryptionHeader()
 
 void SMimePart::loadPKCS12PrivateKey()
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
     QFile file(d->_keyfile);
     if (!file.exists())
         return;
@@ -226,8 +226,8 @@ void SMimePart::loadPKCS12PrivateKey()
         qCDebug(SIMPLEMAIL_SMIMEPART) << "Error reading PKCS#12 file";
     }
 
-    EVP_PKEY *privateKey = nullptr;
-    X509 *certificate = nullptr;
+    EVP_PKEY *privateKey          = nullptr;
+    X509 *certificate             = nullptr;
     STACK_OF(X509) *certificateCA = nullptr;
     if (!PKCS12_parse(
             p12, d->_password.toStdString().c_str(), &privateKey, &certificate, &certificateCA)) {
@@ -250,7 +250,7 @@ void SMimePart::loadPKCS12PrivateKey()
 
 void SMimePart::loadPKCS12PublicKey()
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
     QFile file(d->_publicKeyfile);
     if (!file.exists())
         return;
@@ -267,7 +267,6 @@ void SMimePart::loadPKCS12PublicKey()
 
     X509 *publicrcert = PEM_read_bio_X509(keyBuffer, NULL, 0, NULL);
     BIO_free(keyBuffer);
-
 
     STACK_OF(X509) *recipsReceiver = sk_X509_new_null();
 
@@ -286,9 +285,9 @@ void SMimePart::initOpenSSL()
 
 bool SMimePart::writeInputBuffer()
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
-    BIO *input = BIO_new(BIO_s_mem());
-    d->_input = std::unique_ptr<BIO>(input);
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
+    BIO *input          = BIO_new(BIO_s_mem());
+    d->_input           = std::unique_ptr<BIO>(input);
     if (!d->_input)
         return false;
     if (!BIO_write(d->_input.get(), (void *) d->_message.data(), d->_message.length()))
@@ -298,7 +297,7 @@ bool SMimePart::writeInputBuffer()
 
 bool SMimePart::writeMimeMessageBuffer(const std::shared_ptr<SimpleMail::MimePart> &mimeParts)
 {
-    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate *>(d_ptr.data());
     QBuffer buffer;
     buffer.open(QBuffer::ReadWrite);
 

@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     // Setup private and public key/certificate in PKCS#12 format
 
     message.setKeyFile(QLatin1String("your_private_key.p12"),
-                      QLatin1String("your_private_key_password"));
+                       QLatin1String("your_private_key_password"));
     message.setPublicKey(QLatin1String("recipient_public_key.cert"));
 
     // Sign the message. Only your private key is required.
