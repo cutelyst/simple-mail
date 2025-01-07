@@ -72,6 +72,7 @@ public:
     bool write(QIODevice *device) const;
 
 protected:
+    MimeMessage(MimeMessagePrivate *d, bool createAutoMimeContent = true);
     QSharedDataPointer<MimeMessagePrivate> d;
 };
 
