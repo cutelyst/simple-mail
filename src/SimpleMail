@@ -27,5 +27,4 @@
 #include "server.h"
 #include "serverreply.h"
 #ifdef WITH_SMIME
-#include "smimepart.h"
 #endif
