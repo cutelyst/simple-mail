@@ -18,7 +18,7 @@ Q_LOGGING_CATEGORY(SIMPLEMAIL_SMIMEPART, "simplemail.smimepart", QtInfoMsg)
 using namespace SimpleMail;
 
 SMimePart::SMimePart(MimeMessage *message)
-    : MimePart(new SMimePrivate)
+    : MimePart(new SMimePartPrivate)
 {
     initOpenSSL();
     _mimeMessage = message;
@@ -32,7 +32,7 @@ SMimePart::~SMimePart()
 
 void SMimePart::setKeyFile(const QString &filename, const QString &password)
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     d->_keyfile  = filename;
     d->_password = password;
     loadPKCS12PrivateKey();
@@ -40,14 +40,14 @@ void SMimePart::setKeyFile(const QString &filename, const QString &password)
 
 void SMimePart::setPublicKey(const QString &filename)
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     d->_publicKeyfile = filename;
     loadPKCS12PublicKey();
 }
 
 bool SMimePart::sign()
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     bool ret  = false;
     PKCS7 *p7 = nullptr;
 
@@ -100,7 +100,7 @@ err:
 
 bool SMimePart::encrypt()
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     bool ret  = false;
     PKCS7 *p7 = nullptr;
 
@@ -138,7 +138,7 @@ err:
 
 bool SMimePart::signAndEncrypt()
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     bool ret           = false;
     PKCS7 *p7          = nullptr;
     BIO *signedContent = nullptr;
@@ -214,7 +214,7 @@ void SMimePart::setEncryptionHeader()
 
 void SMimePart::loadPKCS12PrivateKey()
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     QFile file(d->_keyfile);
     if (!file.exists())
         return;
@@ -260,7 +260,7 @@ void SMimePart::loadPKCS12PrivateKey()
 
 void SMimePart::loadPKCS12PublicKey()
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     QFile file(d->_publicKeyfile);
     if (!file.exists())
         return;
@@ -307,7 +307,7 @@ void SMimePart::wrapMimeMultiPart()
 
 bool SMimePart::writeInputBuffer()
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     BIO *input = BIO_new(BIO_s_mem());
     d->_input = std::unique_ptr<BIO>(input);
     if (!d->_input)
@@ -319,7 +319,7 @@ bool SMimePart::writeInputBuffer()
 
 bool SMimePart::writeMimeMessageBuffer()
 {
-    SMimePrivate *d = static_cast<SMimePrivate*>(d_ptr.data());
+    SMimePartPrivate *d = static_cast<SMimePartPrivate*>(d_ptr.data());
     QBuffer buffer;
     buffer.open(QBuffer::ReadWrite);
 
