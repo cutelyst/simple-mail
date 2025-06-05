@@ -580,6 +580,7 @@ bool ServerPrivate::parseResponseCode(int expectedCode,
     while (socket->canReadLine()) {
         // Save the server's response
         const QByteArray responseText = socket->readLine().trimmed();
+        const int responseSize = responseText.size();
         qCDebug(SIMPLEMAIL_SERVER) << "Got response" << responseText << "expected" << expectedCode;
 
         // Extract the respose code from the server's responce (first 3 digits)
@@ -595,7 +596,7 @@ bool ServerPrivate::parseResponseCode(int expectedCode,
             return false;
         }
 
-        if (responseText[3] == '-') {
+        if (responseSize >= 4 && responseText[3] == '-') {
             if (responseCode != expectedCode) {
                 const QString lastError = QString::fromLatin1(responseText);
                 qCWarning(SIMPLEMAIL_SERVER)
@@ -606,7 +607,7 @@ bool ServerPrivate::parseResponseCode(int expectedCode,
             continue;
         }
 
-        if (responseText[3] == ' ') {
+        if (responseSize >= 4 && responseText[3] == ' ') {
             if (responseCode != expectedCode) {
                 const QString lastError = QString::fromLatin1(responseText);
                 qCWarning(SIMPLEMAIL_SERVER)
