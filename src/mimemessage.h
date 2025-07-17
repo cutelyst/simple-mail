@@ -66,12 +66,13 @@ public:
     QString subject() const;
     QList<std::shared_ptr<MimePart>> parts() const;
 
-    MimePart &getContent();
+    std::shared_ptr<MimePart> getContent();
     void setContent(const std::shared_ptr<MimePart> &content);
 
     bool write(QIODevice *device) const;
 
 protected:
+    MimeMessage(MimeMessagePrivate *d, bool createAutoMimeContent = true);
     QSharedDataPointer<MimeMessagePrivate> d;
 };
 
