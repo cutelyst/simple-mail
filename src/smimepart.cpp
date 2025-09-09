@@ -83,16 +83,16 @@ bool SMimePart::sign()
         return false;
     }
     /* Write out S/MIME message */
-    if (!SMIME_write_PKCS7(out,
-                           p7,
-                           d->_input.get(),
-                           flags |
-                               PKCS7_CRLFEOL)) { // needed for intializing/finalizing SMIME structure
-            qCDebug(SIMPLEMAIL_SMIMEPART) << "Error finalizing S/MIME message structure";
-            return false;
+    if (!SMIME_write_PKCS7(
+            out,
+            p7,
+            d->_input.get(),
+            flags | PKCS7_CRLFEOL)) { // needed for intializing/finalizing SMIME structure
+        qCDebug(SIMPLEMAIL_SMIMEPART) << "Error finalizing S/MIME message structure";
+        return false;
     }
 
-    if (!handleData(p7, nullptr, 0)){
+    if (!handleData(p7, nullptr, 0)) {
         qCDebug(SIMPLEMAIL_SMIMEPART) << "Error finishing S/MIME message";
         return false;
     }
@@ -115,9 +115,7 @@ bool SMimePart::encrypt()
 
     int flags = PKCS7_STREAM;
 
-    auto cleanup = qScopeGuard([&]() {
-        PKCS7_free(p7);
-    });
+    auto cleanup = qScopeGuard([&]() { PKCS7_free(p7); });
 
     if (!writeInputBuffer()) {
         qCDebug(SIMPLEMAIL_SMIMEPART) << "Error writing input buffer";
@@ -177,7 +175,7 @@ bool SMimePart::signAndEncrypt()
     }
 
     signedContent = BIO_new(BIO_s_mem());
-    if (!SMIME_write_PKCS7(signedContent, p7, d->_input.get(), flags | PKCS7_CRLFEOL)){
+    if (!SMIME_write_PKCS7(signedContent, p7, d->_input.get(), flags | PKCS7_CRLFEOL)) {
         qCDebug(SIMPLEMAIL_SMIMEPART) << "Error finalizing S/MIME message structure";
         return false;
     }
