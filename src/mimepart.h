@@ -67,6 +67,10 @@ public:
 
     bool write(QIODevice *device);
 
+    void setContentIsBase64(bool isBase64);
+
+    bool contentIsBase64() const;
+
 protected:
     MimePart(MimePartPrivate *d);
     virtual bool writeData(QIODevice *device);
