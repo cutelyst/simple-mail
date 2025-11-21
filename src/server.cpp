@@ -555,7 +555,7 @@ void ServerPrivate::processNextMail()
                 << "Sending MAIL command" << capPipelining << cont.commands.size() << cont.commands
                 << cont.awaitedCodes;
             if (capPipelining) {
-                for (const QByteArray &cmd : qAsConst(cont.commands)) {
+                for (const QByteArray &cmd : std::as_const(cont.commands)) {
                     socket->write(cmd);
                 }
             } else {
