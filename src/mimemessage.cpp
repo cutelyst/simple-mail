@@ -55,9 +55,9 @@ MimeMessage &MimeMessage::operator=(const MimeMessage &other)
     return *this;
 }
 
-MimePart &MimeMessage::getContent()
+std::shared_ptr<SimpleMail::MimePart> MimeMessage::getContent()
 {
-    return *d->content;
+    return d->content;
 }
 
 void MimeMessage::setContent(const std::shared_ptr<MimePart> &content)
@@ -133,6 +133,16 @@ bool MimeMessage::write(QIODevice *device) const
     }
 
     return true;
+}
+
+MimeMessage::MimeMessage(MimeMessagePrivate *d, bool createAutoMimeContent)
+    : d(d)
+{
+    if (createAutoMimeContent) {
+        d->content = std::make_shared<MimeMultiPart>();
+    }
+
+    d->autoMimeContentCreated = createAutoMimeContent;
 }
 
 void MimeMessage::setSender(const EmailAddress &sender)

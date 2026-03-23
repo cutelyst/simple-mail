@@ -44,6 +44,7 @@ public:
     QByteArray contentType;
     QByteArray contentCharset;
     QByteArray contentBoundary;
+    bool contentIsBase64 = false;
 
     MimeContentFormatter formatter;
     MimePart::Encoding contentEncoding = MimePart::_7Bit;
