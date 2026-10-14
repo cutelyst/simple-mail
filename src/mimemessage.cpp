@@ -234,7 +234,7 @@ QString MimeMessage::subject() const
 
 QList<std::shared_ptr<MimePart>> MimeMessage::parts() const
 {
-    if (!d|| !d->content) {
+    if (!d || !d->content) {
         return {};
     }
 
